@@ -42,6 +42,14 @@ letters_Table = {'''  '<initial>' '<medial>' '<final>' '<isolated>' '''
                     "پ" : [u"\ufb58", u"\ufb59", u"\ufb57", u"\ufb56"],
                     "چ" : [u"\ufb7c", u"\ufb7d", u"\ufb7b", u"\ufb7a"],
                     "ڤ" : [u"\ufb6c", u"\ufb6d", u"\ufb6b", u"\ufb6a"],
+                    "ً" : [u"\ufe70", u"\ufe70", u"\ufe70", u"\ufe70"],
+                    "ٌ" : [u"\ufe72", u"\ufe72", u"\ufe72", u"\ufe72"],
+                    "ٍ" : [u"\ufe74", u"\ufe74", u"\ufe74", u"\ufe74"],
+                    "َ" : [u"\ufe76", u"\ufe76", u"\ufe76", u"\ufe76"],
+                    "ُ" : [u"\ufe78", u"\ufe78", u"\ufe78", u"\ufe78"],
+                    "ِ" : [u"\ufe7a", u"\ufe7a", u"\ufe7a", u"\ufe7a"],
+                    "ّ" : [u"\ufe7c", u"\ufe7c", u"\ufe7c", u"\ufe7c"],
+                    "ْ" : [u"\ufe7e", u"\ufe7e", u"\ufe7e", u"\ufe7e"],
     }
 
 def Un_Freeze(text, case = True):

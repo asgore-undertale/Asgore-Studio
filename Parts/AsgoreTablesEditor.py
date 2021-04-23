@@ -29,9 +29,15 @@ def delete_trash(table : str, x = 10):
 
 def load_table(ate_file : str): #table.setHorizontalHeaderItem(0, QTableWidgetItem("Name"))
     if not ate_file: return
+    global ROWS, COLS
+    
     table = open(ate_file, 'r', encoding="utf-8").read()
     table = delete_trash(table)
     rows = table.split('\n')
+    
+    if len(rows) > ROWS:
+        ROWS = len(rows) - 4
+        Table.setRowCount(ROWS)
     
     VERSION = float(rows[1][9:-1])
     if check_version(VERSION): QMessageBox.about(Table, "!!تحذير", f"النسخة {VERSION} غير مدعومة.\n(سيتم فتح الملف على أي حال.)")
@@ -39,6 +45,9 @@ def load_table(ate_file : str): #table.setHorizontalHeaderItem(0, QTableWidgetIt
     
     for row in range(4, len(rows)):
         cols = rows[row].split(SEPARATOR)
+        if len(cols) > COLS:
+            COLS = len(cols)
+            Table.setColumnCount(COLS)
         for col in range(len(cols)):
             Table.setItem(row-4, col, QTableWidgetItem(cols[col]))
 

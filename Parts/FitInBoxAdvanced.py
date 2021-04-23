@@ -129,7 +129,7 @@ def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fn
 
 def openPng(Directory = ''):
     global pngDirectory
-    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جداول إكسل', '')
+    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جداول إكسل', '' , '*.jpg, *.png')
     if Directory != '' and path.exists(Directory): pngDirectory = Directory
     
 def openGeo(Directory = ''):

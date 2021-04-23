@@ -8,7 +8,7 @@ class MotherWindow(QMainWindow):
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
-        self.setWindowTitle("Asgore Studio Beta")
+        self.setWindowTitle("Asgore Studio 1.0v")
         
         self.createBars()
         self.createMenus()

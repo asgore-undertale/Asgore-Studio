@@ -140,7 +140,7 @@ max_text_convert_label.setGeometry(QtCore.QRect(85, 335, 95, 26))
 max_text_convert_label.setText("أقصى حد لطولها:")
 converted_byte = QTextEdit(OptionsWindow)
 converted_byte.setGeometry(QtCore.QRect(10, 375, 70, 26))
-converted_byte.setText(r'\nXY')
+converted_byte.setText(r'\xXY')
 converted_byte_label = QLabel(OptionsWindow)
 converted_byte_label.setGeometry(QtCore.QRect(85, 375, 95, 26))
 converted_byte_label.setText("صيغة البايت المحول:")
@@ -171,8 +171,11 @@ convert_button = QPushButton(CMainWindow)
 convert_button.setGeometry(QtCore.QRect(295, 95, 93, 28))
 convert_button.setText("تحويل")
 openfile_button = QPushButton(CMainWindow)
-openfile_button.setGeometry(QtCore.QRect(295, 135, 93, 41))
+openfile_button.setGeometry(QtCore.QRect(295, 130, 93, 41))
 openfile_button.setText("فتح ملف\nنص")
+convert_files_button = QPushButton(CMainWindow)
+convert_files_button.setGeometry(QtCore.QRect(295, 177, 93, 41))
+convert_files_button.setText("فتح مجلد\nوتحويل ملفاته")
 
 
 #نافذة الإدخال
@@ -266,6 +269,7 @@ extract_database_button.setText("فتح قاعدة\nبيانات الاستخر�
 #توصيل الإشارات
 convert_button.clicked.connect(lambda: result_text.setPlainText(convert(entered_text.toPlainText())))
 openfile_button.clicked.connect(lambda: open_def(4))
+convert_files_button.clicked.connect(lambda:convertFiles())
 
 text_database_button.clicked.connect(lambda: open_def(0))
 UC_database_button.clicked.connect(lambda: open_def(1))
@@ -293,6 +297,8 @@ if path.exists(chars_width_database_directory): fit_database = Take_From_Table(c
 else: fit_database = {}
 
 #الدوال
+def dir_list(path): return [root+'/'+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
+
 def cell_bytes():
     if '[b]' in start_command.toPlainText(): cell_bytes._start_command = bytearray.fromhex(start_command.toPlainText().replace('[b]', '')).decode()
     else: cell_bytes._start_command = start_command.toPlainText()
@@ -350,10 +356,10 @@ def open_def(num):
             extracted_text_database_directory = fileName
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار قاعدة البيانات.")
     elif num == 4:
-        fileName, _ = QFileDialog.getOpenFileName(MainWindow, 'ملف نص', '' , '*')
+        fileName, _ = QFileDialog.getOpenFileName(CMainWindow, 'ملف نص', '' , '*')
         if path.exists(fileName) and fileName != '/':
             entered_text.setPlainText(open(fileName, 'r', encoding='utf-8').read())
-            QMessageBox.about(MainWindow, "!!تهانيّ", "تم اختيار ملف النص.")
+            QMessageBox.about(CMainWindow, "!!تهانيّ", "تم اختيار ملف النص.")
     elif num == 5:
         folder = str(QFileDialog.getExistingDirectory(EnteringWindow, "Select Directory"))+'/'
         if path.exists(folder) and folder != '/':
@@ -416,7 +422,16 @@ def convert(text):
     if RAO_check.isChecked(): text = Reverse(text, cell_bytes._start_command, cell_bytes._end_command, cell_bytes._page_command, cell_bytes._line_command, False)#‫Reverse Arabic only
     return text
 
-def dir_list(path): return [root+'/'+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
+def convertFiles():
+    folder = str(QFileDialog.getExistingDirectory(CMainWindow, "اختر مجلداً"))+'/'
+    files = dir_list(folder)
+    
+    for file in files:
+        content = open(file, 'r', encoding='utf-8').read()
+        if not content: continue
+        open(file, 'w', encoding='utf-8').write(str(convert(content)))
+    
+    QMessageBox.about(EnteringWindow, "!!تهانينا", "انتهى تحويل الملفات.")
 
 def enter(convert_bool = True):
     ##المتغيرات
