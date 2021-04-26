@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QFileDialog, QMessageBox, QRadioButton
 from PyQt5.QtCore import QRect, Qt
-from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 from Parts.Scripts.LineOffset import OffsetLine
 from Parts.Scripts.CharmapCreator import CreateCharmap
 from Parts.Scripts.Fit_in_box import fit
@@ -101,7 +100,7 @@ def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fn
     
     font_size = charmap['height']
     lines_num = int(box_height / (font_size * 2 + px_per_line) * 2)
-    fitted_text = fit(Un_Freeze(text), charmap, box_width, lines_num, newline, newpage, before_command, after_command)
+    fitted_text = fit(text, charmap, box_width, lines_num, newline, newpage, before_command, after_command)
     
     if newpage: pages = fitted_text.split(newpage)
     else: pages = [fitted_text]

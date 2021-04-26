@@ -42,7 +42,7 @@ def reverse_script(text, start_command, end_command, case = True):
     for bow in bows_list:
         if bow[0] not in (start_command + end_command) or bow[1] not in (start_command + end_command):
             text = swap(text, bow[0], bow[1])
-    if start_command == '' or end_command == '':
+    if not start_command or not end_command:
         if case:
             text = text[::-1]
         else:
@@ -70,10 +70,10 @@ def reverse_script(text, start_command, end_command, case = True):
         text = ''.join(text_list[::-1])
         return text
 
-def Reverse(text, start_command, end_command, new_page_command='', new_line_command='\n', case = True):
-    if new_page_command != '': text_pages_list = text.split(new_page_command)
+def Reverse(text, start_command, end_command, new_page_command='\n\n', new_line_command='\n', case = True):
+    if new_page_command: text_pages_list = text.split(new_page_command)
     else: text_pages_list = [text]
-    if new_line_command != '':  text_pages_lines_list = [page.split(new_line_command) for page in text_pages_list]
+    if new_line_command:  text_pages_lines_list = [page.split(new_line_command) for page in text_pages_list]
     else: text_pages_lines_list = [text_pages_list]
    
     reversed_text = ''
@@ -84,5 +84,4 @@ def Reverse(text, start_command, end_command, new_page_command='', new_line_comm
             if len(text_pages_lines_list[page])-1 > line: reversed_text += new_line_command 
         if len(text_pages_lines_list)-1 > page : reversed_text += new_page_command 
     
-    if case: reversed_text = '\n'.join(reversed_text.split('\n')[::-1])
     return reversed_text

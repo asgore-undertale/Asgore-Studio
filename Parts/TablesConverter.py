@@ -22,6 +22,7 @@ def convertTable():
         tableContent = open(openDirectory, 'r', encoding='utf-8').read()
         open(saveDirectory, 'w', encoding='utf-8').write(XmlToAte(tableContent))
     
+    else: return
     QMessageBox.about(TablesConverterWindow, "!!تم", "!!تم")
     
 

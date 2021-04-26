@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLab
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
 import openpyxl
+import re
 
 ##استيراد السكربتات
 from Parts.Scripts.Delete_Duplicated_lines import DDL
@@ -29,7 +30,7 @@ def pos_y(line_num, Height = checkbox_size[1], Between_every_y = 15):
     return (Between_every_y+checkbox_size[1]) * line_num + (Between_every_y-Height//2) + (Between_every_y//2)
 
 OptionsWindow = QMainWindow()
-OptionsWindow.setFixedSize(OptionsWindow_Width, 380)
+OptionsWindow.setFixedSize(OptionsWindow_Width, 410)
 
 DDL_check = QCheckBox("حذف الأسطر المكررة", OptionsWindow)
 DDL_check.setGeometry(QtCore.QRect(0, pos_y(0), checkbox_size[0], checkbox_size[1]))
@@ -68,10 +69,6 @@ DH_check = QCheckBox("حذف الحركات المتتالية", OptionsWindow)
 DH_check.setGeometry(QtCore.QRect(0, pos_y(11), checkbox_size[0], checkbox_size[1]))
 DH_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 
-UC_database_button = QPushButton(OptionsWindow)
-UC_database_button.setGeometry(QtCore.QRect(20, 310, 93, 56))
-UC_database_button.setText("قاعدة بيانات\nالتحويل")
-
 start_command = QTextEdit(OptionsWindow)
 start_command.setGeometry(QtCore.QRect(10, 10, 70, 26))
 start_com_label = QLabel(OptionsWindow)
@@ -82,36 +79,50 @@ end_command.setGeometry(QtCore.QRect(10, 43, 70, 26))
 end_com_end_label = QLabel(OptionsWindow)
 end_com_end_label.setGeometry(QtCore.QRect(145, 43, 35, 26))
 end_com_end_label.setText("بعدها:")
+pageCommand = QTextEdit(OptionsWindow)
+pageCommand.setGeometry(QtCore.QRect(10, 76, 70, 26))
+pageCommandLabel = QLabel(OptionsWindow)
+pageCommandLabel.setGeometry(QtCore.QRect(80, 76, 100, 26))
+pageCommandLabel.setText("أمر صفحة جديدة:")
+lineCommand = QTextEdit(OptionsWindow)
+lineCommand.setGeometry(QtCore.QRect(10, 109, 70, 26))
+lineCommandLabel = QLabel(OptionsWindow)
+lineCommandLabel.setGeometry(QtCore.QRect(80, 109, 100, 26))
+lineCommandLabel.setText("أمر سطر جديد:")
 before_text_convert = QTextEdit(OptionsWindow)
-before_text_convert.setGeometry(QtCore.QRect(10, 76, 70, 26))
+before_text_convert.setGeometry(QtCore.QRect(10, 142, 70, 26))
 before_text_convert_label = QLabel(OptionsWindow)
-before_text_convert_label.setGeometry(QtCore.QRect(85, 76, 95, 26))
+before_text_convert_label.setGeometry(QtCore.QRect(85, 142, 95, 26))
 before_text_convert_label.setText("ما قبل النصوص:")
 after_text_convert = QTextEdit(OptionsWindow)
-after_text_convert.setGeometry(QtCore.QRect(10, 109, 70, 26))
+after_text_convert.setGeometry(QtCore.QRect(10, 175, 70, 26))
 after_text_convert_label = QLabel(OptionsWindow)
-after_text_convert_label.setGeometry(QtCore.QRect(85, 109, 95, 26))
+after_text_convert_label.setGeometry(QtCore.QRect(85, 175, 95, 26))
 after_text_convert_label.setText("ما بعدها:")
 min_text_convert = QTextEdit(OptionsWindow)
-min_text_convert.setGeometry(QtCore.QRect(10, 142, 70, 26))
+min_text_convert.setGeometry(QtCore.QRect(10, 208, 70, 26))
 min_text_convert_label = QLabel(OptionsWindow)
-min_text_convert_label.setGeometry(QtCore.QRect(85, 142, 95, 26))
+min_text_convert_label.setGeometry(QtCore.QRect(85, 208, 95, 26))
 min_text_convert_label.setText("أقصى حد لقصرها:")
 max_text_convert = QTextEdit(OptionsWindow)
-max_text_convert.setGeometry(QtCore.QRect(10, 175, 70, 26))
+max_text_convert.setGeometry(QtCore.QRect(10, 241, 70, 26))
 max_text_convert_label = QLabel(OptionsWindow)
-max_text_convert_label.setGeometry(QtCore.QRect(85, 175, 95, 26))
+max_text_convert_label.setGeometry(QtCore.QRect(85, 241, 95, 26))
 max_text_convert_label.setText("أقصى حد لطولها:")
 converted_byte = QTextEdit(OptionsWindow)
-converted_byte.setGeometry(QtCore.QRect(10, 208, 70, 26))
+converted_byte.setGeometry(QtCore.QRect(10, 274, 70, 26))
 converted_byte.setText(r'\xXY')
 converted_byte_label = QLabel(OptionsWindow)
-converted_byte_label.setGeometry(QtCore.QRect(85, 208, 95, 26))
+converted_byte_label.setGeometry(QtCore.QRect(85, 274, 95, 26))
 converted_byte_label.setText("صيغة البايت المحول:")
 
 Slash_check = QCheckBox(r"مراعاة: n, \t, \r, \a\ ", OptionsWindow)
-Slash_check.setGeometry(QtCore.QRect(35, 235, 140, 26))
+Slash_check.setGeometry(QtCore.QRect(35, 305, 140, 26))
 Slash_check.setLayoutDirection(QtCore.Qt.RightToLeft)
+
+UC_database_button = QPushButton(OptionsWindow)
+UC_database_button.setGeometry(QtCore.QRect(20, 340, 93, 56))
+UC_database_button.setText("قاعدة بيانات\nالتحويل")
 ##
 
 
@@ -256,7 +267,6 @@ chars_width_database_directory = r'Parts/Scripts/Chars_Width_Database.ate'
 text_database_directory = r'OtherFiles/TextTable.xlsx'
 extracted_text_database_directory = r'OtherFiles/ExtractedTextTable.xlsx'
 input_folder, output_folder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
-cell_byte = True
 
 if path.exists(converting_database_directory): convert_database = Take_From_Table(converting_database_directory)
 else: convert_database = {}
@@ -264,24 +274,30 @@ else: convert_database = {}
 #الدوال
 def dir_list(path): return [root+'/'+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
 
-def cell_bytes():
-    if '[b]' in start_command.toPlainText(): cell_bytes._start_command = bytearray.fromhex(start_command.toPlainText().replace('[b]', '')).decode()
-    else: cell_bytes._start_command = start_command.toPlainText()
-    if '[b]' in end_command.toPlainText(): cell_bytes._end_command = bytearray.fromhex(end_command.toPlainText().replace('[b]', '')).decode()
-    else: cell_bytes._end_command = end_command.toPlainText()
-    if '[b]' in before_text_convert.toPlainText(): cell_bytes._before_text_convert = bytearray.fromhex(before_text_convert.toPlainText().replace('[b]', '')).decode()
-    else: cell_bytes._before_text_convert = before_text_convert.toPlainText()
-    if '[b]' in after_text_convert.toPlainText(): cell_bytes._after_text_convert = bytearray.fromhex(after_text_convert.toPlainText().replace('[b]', '')).decode()
-    else: cell_bytes._after_text_convert = after_text_convert.toPlainText()
-    if '[b]' in converted_byte.toPlainText(): cell_bytes._converted_byte = bytearray.fromhex(converted_byte.toPlainText().replace('[b]', '')).decode()
-    else: cell_bytes._converted_byte = converted_byte.toPlainText()
+def cell():
+    if '[b]' in start_command.toPlainText(): cell._start_command = bytearray.fromhex(start_command.toPlainText().replace('[b]', '')).decode()
+    else: cell._start_command = start_command.toPlainText()
+    if '[b]' in end_command.toPlainText(): cell._end_command = bytearray.fromhex(end_command.toPlainText().replace('[b]', '')).decode()
+    else: cell._end_command = end_command.toPlainText()
+    if '[b]' in pageCommand.toPlainText(): cell._pageCommand = bytearray.fromhex(pageCommand.toPlainText().replace('[b]', '')).decode()
+    else: cell._pageCommand = pageCommand.toPlainText()
+    if '[b]' in lineCommand.toPlainText(): cell._lineCommand = bytearray.fromhex(lineCommand.toPlainText().replace('[b]', '')).decode()
+    else: cell._lineCommand = lineCommand.toPlainText()
+    if '[b]' in before_text_convert.toPlainText(): cell._before_text_convert = bytearray.fromhex(before_text_convert.toPlainText().replace('[b]', '')).decode()
+    else: cell._before_text_convert = before_text_convert.toPlainText()
+    if '[b]' in after_text_convert.toPlainText(): cell._after_text_convert = bytearray.fromhex(after_text_convert.toPlainText().replace('[b]', '')).decode()
+    else: cell._after_text_convert = after_text_convert.toPlainText()
+    if '[b]' in converted_byte.toPlainText(): cell._converted_byte = bytearray.fromhex(converted_byte.toPlainText().replace('[b]', '')).decode()
+    else: cell._converted_byte = converted_byte.toPlainText()
 
     if Slash_check.isChecked():
-        cell_bytes._start_command = cell_bytes._start_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell_bytes._end_command = cell_bytes._end_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell_bytes._before_text_convert = cell_bytes._before_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell_bytes._after_text_convert = cell_bytes._after_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell_bytes._converted_byte = cell_bytes._converted_byte.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._start_command = cell._start_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._end_command = cell._end_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._pageCommand = cell._pageCommand.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._lineCommand = cell._lineCommand.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._before_text_convert = cell._before_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._after_text_convert = cell._after_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._converted_byte = cell._converted_byte.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
 
 def open_def(num):
     if num == 0:
@@ -321,16 +337,60 @@ def open_def(num):
             output_folder = folder
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار المجلد.")
 
+def splitByComs(text):
+    if cell._start_command and cell._end_command:
+        if cell._start_command == cell._end_command:
+            text_list = text.split(cell._start_command)
+        else:
+            commands_chars = '.[]{}*+?()^'
+            re_start_command = cell._start_command
+            re_end_command = cell._end_command
+            for char in commands_chars:
+                re_start_command = re_start_command.replace(char, '\\'+char)
+                re_end_command = re_end_command.replace(char, '\\'+char)
+            pattern = re_start_command + "(.*?)" + re_end_command
+            text_list = re.split(pattern, text)
+        
+        for _ in range(len(text_list)):
+            if _%2:
+                text_list[_] = cell._start_command + text_list[_] + cell._end_command
+            else:
+                text_list[_] = splitByLinesAndConvert(text_list[_])
+        text = ''.join(text_list)
+    else:
+        text = splitByLinesAndConvert(text)
+    
+    return text
+
+def splitByLinesAndConvert(text):
+    if cell._pageCommand: text_pages_list = text.split(cell._pageCommand)
+    else: text_pages_list = [text]
+    if cell._lineCommand:  text_pages_lines_list = [page.split(cell._lineCommand) for page in text_pages_list]
+    else: text_pages_lines_list = [text_pages_list]
+    
+    for page in range(len(text_pages_lines_list)):
+        for line in range(len(text_pages_lines_list[page])):
+            if DH_check.isChecked(): text_pages_lines_list[page][line] = handle_harakat(text_pages_lines_list[page][line])#Delete Harakat
+            if RA_check.isChecked() or C_check.isChecked(): text_pages_lines_list[page][line] = Un_Freeze(text_pages_lines_list[page][line])#Freeze Arabic
+            if C_check.isChecked(): text_pages_lines_list[page][line] = Convert(text_pages_lines_list[page][line], convert_database, True)#Convert
+            if UC_check.isChecked(): text_pages_lines_list[page][line] = Convert(text_pages_lines_list[page][line], convert_database, False)#Unconvert
+            if UA_check.isChecked() or UC_check.isChecked(): text_pages_lines_list[page][line] = Un_Freeze(text_pages_lines_list[page][line], False)#UnFreeze Arabic
+            if CB_check.isChecked(): text_pages_lines_list[page][line] = convert_bytes(text_pages_lines_list[page][line], cell._converted_byte)#Convert bytes
+        text_pages_lines_list[page] = cell._lineCommand.join(text_pages_lines_list[page])
+    text = cell._pageCommand.join(text_pages_lines_list)
+    
+    return text
+
 def convert(text):
     ##إلغاء العملية في حال تحقق إحدى هذه الشروط
     if text == '': return
     if (C_check.isChecked() or UC_check.isChecked()) and not path.exists(converting_database_directory):
         QMessageBox.about(CMainWindow, "!!خطأ", "قاعدة بيانات التحويل غير موجودة")
     
-    if cell_byte: cell_bytes()
+    cell()
     
     if Ext_check.isChecked():#Extract from text
-        if cell_bytes._before_text_convert == '' or cell_bytes._after_text_convert == '':
+        if cell._before_text_convert == '' or cell._after_text_convert == '':
             QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
             return
         
@@ -347,20 +407,17 @@ def convert(text):
             QMessageBox.about(EnteringWindow, "!!خطأ", "لا يمكن أن يكون قصر النصوص أطول من طولها.")
             return
         
-        text = Extract(text, cell_bytes._before_text_convert, cell_bytes._after_text_convert, mini, maxi)
+        text = Extract(text, cell._before_text_convert, cell._after_text_convert, mini, maxi)
         text = '\n'.join(text)
     
-    if DH_check.isChecked(): text = handle_harakat(text)#Delete Harakat
-    if DDL_check.isChecked(): text = DDL(text)#Delete Duplicated lines
-    if SSL_check.isChecked(): text = Sort(text)#Sort short to long
-    if SLS_check.isChecked(): text = Sort(text, False)#Sort long to short
-    if RA_check.isChecked() or C_check.isChecked(): text = Un_Freeze(text)#Freeze Arabic
-    if C_check.isChecked(): text = Convert(text, convert_database, True, cell_bytes._start_command, cell_bytes._end_command)#Convert
-    if UC_check.isChecked(): text = Convert(text, convert_database, False, cell_bytes._start_command, cell_bytes._end_command)#Unconvert
-    if UA_check.isChecked() or UC_check.isChecked(): text = Un_Freeze(text, False)#UnFreeze Arabic
-    if CB_check.isChecked(): text = convert_bytes(text, cell_bytes._converted_byte)#Convert bytes
-    if RT_check.isChecked(): text = Reverse(text, cell_bytes._start_command, cell_bytes._end_command, cell_bytes._page_command, cell_bytes._line_command)#Reverse whole text
-    if RAO_check.isChecked(): text = Reverse(text, cell_bytes._start_command, cell_bytes._end_command, cell_bytes._page_command, cell_bytes._line_command, False)#‫Reverse Arabic only
+    if DDL_check.isChecked(): text = DDL(text) #Delete Duplicated lines
+    if SSL_check.isChecked(): text = Sort(text) #Sort short to long
+    if SLS_check.isChecked(): text = Sort(text, False) #Sort long to short
+    
+    text = splitByComs(text) #الكثير من التحويلات في هذا الفاتغشن
+    
+    if RT_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand) #Reverse whole text
+    if RAO_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand, False) #‫Reverse Arabic only
     return text
 
 def convertFiles():

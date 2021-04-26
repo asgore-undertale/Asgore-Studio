@@ -62,15 +62,16 @@ def MsytToTxt(file_content):
             new_file_commands = new_file_commands.replace(']]', ']')
             new_file_commands += '[' + str(command_num) + ']]\n'
             command_num += 1
-            #elif '          ' in line:
-            #   if 'animation' in line or 'sound' in line or 'sound2' in line or 'raw' in line:
-            #      first_commands += '＜c' + str(command_num-1) + '＞'
-            #     new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
-                #elif 'auto_advance' in line or 'pause' in line or 'choice' in line or 'single_choice' in line:
-                #   last_commands += '＜c' + str(command_num-1) + '＞'
-                #  new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
-                
-                #new_file_commands = new_file_commands.replace(']]', ', ' + line.replace('          ', '') + ']]')
+        elif '          ' in line:
+            '''
+            if 'animation' in line or 'sound' in line or 'sound2' in line or 'raw' in line:
+                first_commands += '＜c' + str(command_num-1) + '＞'
+                new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
+                elif 'auto_advance' in line or 'pause' in line or 'choice' in line or 'single_choice' in line:
+                   last_commands += '＜c' + str(command_num-1) + '＞'
+                  new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
+            '''
+            new_file_commands = new_file_commands.replace(']]', ', ' + line.replace('          ', '') + ']]')
         else:
             if new_file_text_line:
                 new_file_dump += '\t\t[-----------]\n'
@@ -86,6 +87,7 @@ def MsytToTxt(file_content):
 def TxtToMsyt(file_content):
     msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", file_content.replace('\n', '\uffff'))#for regex
     for i in range(len(msyt_content_list)): msyt_content_list[i] = msyt_content_list[i].replace('\uffff', '\n')
+    if len(msyt_content_list) == 2: msyt_content_list.insert(1, '')
     
     TxtToMsyt.new_file_content = msyt_content_list[2]
     
@@ -98,7 +100,7 @@ def TxtToMsyt(file_content):
         line = line.replace('\n', '\n      - text: ').replace('＞', '＞      - text: ')
         line = line.replace('＞      - text: ＜', '＞＜').replace('＞      - text: \n', '＞\n')
         line = line.replace('＞      - text: ', '＞\n      - text: ').replace('＜', '\n＜')
-        line = line.replace('""', '')
+        line = line.replace('""', '').replace('\n', r'\n')
         TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('\t\t[-----------]', line, 1)
     
     list(map(edit_line, text_list))
@@ -109,7 +111,9 @@ def TxtToMsyt(file_content):
         TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('＜c' + str(i) + '＞', j)
     
     TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('\n      - text: \n', '\n')
-    return TxtToMsyt.new_file_content.replace('\n\n\n      - control:', '\n      - control:').replace('\n\n      - control:\n', '\n      - control:\n')
+    TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('\n\n\n      - control:', '\n      - control:').replace('\n\n      - control:\n', '\n      - control:\n')
+    TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('}\n\n{\n', '')
+    return TxtToMsyt.new_file_content
 
 def script(boolen = True):
     if boolen:
@@ -130,22 +134,30 @@ def script(boolen = True):
     if not centences_num: return
     global Text_content
     if sheet_text.toPlainText():
-        Text_content = Text_content.replace(text_list[script.current_item-1], sheet_text.toPlainText())  #لسبب ما لم يعمل التجميد والعكس هنا
+        Text_content = Text_content.replace('\n'+text_list[script.current_item-1]+'\n', '\n'+sheet_text.toPlainText()+'\n')  #لسبب ما لم يعمل التجميد والعكس هنا
         text_list[script.current_item-1] = sheet_text.toPlainText()
     
     msyt_text.setPlainText(text_list[script.current_item])
     sheet_text.setPlainText('')
 
+    r = False
     if path.exists(dataBaseDirectory):
         _list = re.split('＜(.*?)＞', text_list[script.current_item])
         for item in range(len(_list)):
-            if not item % 2 and _list[item]:
-                for cell in range(2, len(text_table['A'])+1):
-                    if text_table['A'+str(cell)].value == _list[item]:
-                        sheet_text.setPlainText(sheet_text.toPlainText() + text_table['B'+str(cell)].value)
+            for sheet in text_xlsx.sheetnames:
+                text_table = text_xlsx.get_sheet_by_name(sheet)
+                if not item % 2 and _list[item]:
+                    for cell in range(2, len(text_table['A'])+1):
+                        if text_table['A'+str(cell)].value == _list[item]:
+                            sheet_text.setPlainText(sheet_text.toPlainText() + text_table['B'+str(cell)].value)
+                            r = True
+                            break
+                    if r:
+                        r = False
+                        break
 
 script.current_item = 0
-Text_content, text_list, centences_num, file_path, text_table = '', '', '', '', ''
+Text_content, text_list, centences_num, file_path, text_xlsx = '', '', '', '', ''
 dataBaseDirectory = r'OtherFiles/TextTable.xlsx'
 
 def typeC():
@@ -158,17 +170,16 @@ def typeC():
                 break
 
 def openTextDataBase(Directory = ''):
-    global dataBaseDirectory, text_table
+    global dataBaseDirectory, text_xlsx
     if not Directory:
         Directory, _ = QFileDialog.getOpenFileName(MsytWindow, 'جداول إكسل', '' , '*.xlsx')
 
     if Directory != '' and path.exists(Directory):
         dataBaseDirectory = Directory
         text_xlsx = openpyxl.load_workbook(Directory)
-        text_table = text_xlsx.get_sheet_by_name("Main")
 
 def openNewFile():
-    global Text_content, text_list, centences_num
+    global Text_content, text_list, centences_num, file_path
     file_path, _ = QFileDialog.getOpenFileName(MsytWindow, 'Zelda .msyt file', '' , '*.msyt')
     if not file_path != '' or not path.exists(file_path): return
     file_content = open(file_path, 'r', encoding='utf-8').read()
@@ -189,6 +200,7 @@ def openNewFile():
 
 def save():
     if file_path: open(file_path, 'w', encoding='utf-8').write(TxtToMsyt(Text_content))
+    QMessageBox.about(MsytWindow, "!!تهانينا", "تم حفظ الملف.")
 
 if __name__ == '__main__':
     MsytWindow.show()

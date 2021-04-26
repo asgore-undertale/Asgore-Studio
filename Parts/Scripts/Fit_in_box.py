@@ -1,4 +1,5 @@
 import re
+from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 
 def increase_y(y : int):
     if y == fit.lines_num - 1:
@@ -59,6 +60,7 @@ def fit(text : str, charmap : dict, textzone_width : int, lines_num : int, newli
             elif sentence[part] == newline: x, y = 0, increase_y(y)
             continue
         
+        sentence[part] = Un_Freeze(sentence[part])
         words_list = split_handling(sentence[part], before_command, after_command, False)
 
         for word in words_list:
