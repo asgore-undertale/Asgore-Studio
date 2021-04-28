@@ -1,8 +1,10 @@
-def Sort(text, case = True):
-    lines_list = text.split('\n')
+def Sort(text, lineCom = '\n', case = True):
+    if not lineCom: lineCom = '\n'
+
+    lines_list = text.split(lineCom)
     lines_list.sort(key=len)
     
-    if case == False: lines_list = lines_list[::-1]
-    text = '\n'.join(lines_list)
+    if not case: lines_list = lines_list[::-1]
+    text = lineCom.join(lines_list)
     
     return text

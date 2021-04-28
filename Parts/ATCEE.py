@@ -262,7 +262,7 @@ output_from_folder.clicked.connect(lambda: open_def(6))
 
 
 #المتغيرات
-converting_database_directory = r'Parts/Scripts/Un-Converting_Database.ate'
+converting_database_directory = r'Parts/Scripts/CharsConvertingTable.ate'
 chars_width_database_directory = r'Parts/Scripts/Chars_Width_Database.ate'
 text_database_directory = r'OtherFiles/TextTable.xlsx'
 extracted_text_database_directory = r'OtherFiles/ExtractedTextTable.xlsx'
@@ -410,9 +410,9 @@ def convert(text):
         text = Extract(text, cell._before_text_convert, cell._after_text_convert, mini, maxi)
         text = '\n'.join(text)
     
-    if DDL_check.isChecked(): text = DDL(text) #Delete Duplicated lines
-    if SSL_check.isChecked(): text = Sort(text) #Sort short to long
-    if SLS_check.isChecked(): text = Sort(text, False) #Sort long to short
+    if DDL_check.isChecked(): text = DDL(text, cell._lineCommand) #Delete Duplicated lines
+    if SSL_check.isChecked(): text = Sort(text, cell._lineCommand) #Sort short to long
+    if SLS_check.isChecked(): text = Sort(text, cell._lineCommand, False) #Sort long to short
     
     text = splitByComs(text) #الكثير من التحويلات في هذا الفاتغشن
     

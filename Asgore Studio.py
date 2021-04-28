@@ -18,7 +18,7 @@ class MotherWindow(QMainWindow):
         def check(text): return action.text() == text
 
         if check("عني"): QMessageBox.about(self, "عني", "صفحتي: https://github.com/asgore-undertale\nلك كامل الحرية في التعديل والنشر بشرط ذكري وصفحتي.")
-        elif check("معلومات مهمة"): QMessageBox.about(self, "معلومات مهمة", "- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n  (هذا في المدخل وخيارات التحويل فقط)\n  (ولا تضع فراغات)\n- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.")
+        elif check("معلومات مهمة"): QMessageBox.about(self, "معلومات مهمة", "- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n  (هذا في المدخل وخيارات التحويل فقط)\n  (ولا تضع فراغات)\n- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n- حذف وترتيب الاسطر في المحول يستخدم فقط أمر السطر الجديد")
         elif check("تكبير النوافذ وصفها"): self.mdiArea.tileSubWindows()
         elif check("تصغير النوافذ"): self.mdiArea.cascadeSubWindows()
         elif check("إغلاق كافة النوافذ"): self.mdiArea.closeAllSubWindows()
@@ -29,6 +29,7 @@ class MotherWindow(QMainWindow):
         elif check("محرّر msyt."): self.newChild(MsytWindow, MsytContainer, 'محرّر msyt.')
         elif check("مربع الحوار"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مربع الحوار')
         elif check("منشئ جداول الخطوط"): self.newChild(FontsTablesCreatorWindow, FontsTablesCreatorContainer, 'منشئ جداول الخطوط')
+        elif check("منشئ جداول الحروف"): self.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
         elif check("محوّل الجداول"): self.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
     
     def createBars(self):
@@ -52,6 +53,7 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("محرّر msyt.")
         self.tools.addAction("مربع الحوار")
         self.tools.addAction("منشئ جداول الخطوط")
+        self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("محوّل الجداول")
 
     def newChild(self, widget, container, name):
@@ -67,6 +69,7 @@ if __name__ == '__main__':
     from Parts.FitInBoxAdvanced import FitAdvancedWindow
     from Parts.FontsTablesCreator import FontsTablesCreatorWindow
     from Parts.TablesConverter import TablesConverterWindow
+    from Parts.CharsTablesCreator import CharsTablesCreatorWindow
     from sys import argv
 
     app = QApplication(argv)
@@ -87,6 +90,8 @@ if __name__ == '__main__':
     FontsTablesCreatorContainer.setWidget(FontsTablesCreatorWindow)
     TablesConverterContainer = QMdiSubWindow()
     TablesConverterContainer.setWidget(TablesConverterWindow)
+    CharsTablesCreatorContainer = QMdiSubWindow()
+    CharsTablesCreatorContainer.setWidget(CharsTablesCreatorWindow)
 
     main = MotherWindow()
     main.show()

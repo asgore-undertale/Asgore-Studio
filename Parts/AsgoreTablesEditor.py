@@ -1,59 +1,13 @@
 from sys import argv, exit
-from PyQt5.QtWidgets import QWidget, QApplication, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QFileDialog, QMessageBox
-from os import path
+from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QVBoxLayout, QMessageBox, QAction
+from Parts.Scripts.TablesEditorsFunctions import *
+from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 
 app = QApplication(argv)
-_VERSION_ = 1.0
-ROWS, COLS = 100, 10
+ROWS, COLS = 100, 40
 
-def check_version(ver : int):
-    if ver > _VERSION_: return True
-
-def open_file(type : str):
-    _open, _ = QFileDialog.getOpenFileName(Table, 'جداول آسغور', '' , '*.'+type)
-    if _open == '/' or not _open or not path.exists(_open): return
-    return _open
-
-def save_file(type : str):
-    _save, _ = QFileDialog.getSaveFileName(Table, 'جداول آسغور', '' , '*.'+type)
-    if _save == '/' or not _save: return
-    return _save
-
-def delete_trash(table : str, x = 10):
-    for i in range(1, x):
-        i = x - i
-        while '█'*i + '\n' in table: table = table.replace('█'*i + '\n', '\n')
-    for i in range(1, x):
-        i = x - i
-        while '\n'*i + '\n' in table: table = table.replace('\n'*i + '\n', '\n')
-    return table
-
-def load_table(ate_file : str): #table.setHorizontalHeaderItem(0, QTableWidgetItem("Name"))
-    if not ate_file: return
-    global ROWS, COLS
-    
-    table = open(ate_file, 'r', encoding="utf-8").read()
-    table = delete_trash(table)
-    rows = table.split('\n')
-    
-    if len(rows) > ROWS:
-        ROWS = len(rows) - 4
-        Table.setRowCount(ROWS)
-    
-    VERSION = float(rows[1][9:-1])
-    if check_version(VERSION): QMessageBox.about(Table, "!!تحذير", f"النسخة {VERSION} غير مدعومة.\n(سيتم فتح الملف على أي حال.)")
-    SEPARATOR = rows[2][11:-1]
-    
-    for row in range(4, len(rows)):
-        cols = rows[row].split(SEPARATOR)
-        if len(cols) > COLS:
-            COLS = len(cols)
-            Table.setColumnCount(COLS)
-        for col in range(len(cols)):
-            Table.setItem(row-4, col, QTableWidgetItem(cols[col]))
-
-def save_table(save_loc : str):
-    content = '\nVERSION="1.0"\nSEPARATOR="█"\n#####################\n'
+def saveATE(save_loc : str):
+    content = f'\nVERSION="1.0"\nSEPARATOR="{_SEPARATOR_}"\n#####################\n'
 
     for row in range(Table.rowCount()):
         csv_row = []
@@ -61,77 +15,74 @@ def save_table(save_loc : str):
             if Table.item(row, col): csv_row.append(Table.item(row, col).text())
             else: csv_row.append('')
  
-        content += '█'.join(csv_row) + '\n'
+        content += _SEPARATOR_.join(csv_row) + '\n'
     
     content = delete_trash(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
 
-def add_row():
-    global ROWS
-    ROWS += 1
-    Table.setRowCount(ROWS)
+def saveCSV(save_loc : str):
+    content = f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
+    
+    for row in range(Table.rowCount()):
+        csv_row = []
+        for col in range(Table.columnCount()):
+            if not Table.item(row, col): continue
+            content += f'{Table.item(row, col).text()},,,,{hexToString(intToHex(row)+intToHex(col))}\n'
+    
+    content = delete_trash(content)
+    
+    open(save_loc, 'w', encoding="utf-8").write(content)
+    QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
 
-def remove_row():
-    global ROWS
-    if ROWS == 0: return
-    ROWS -= 1
-    Table.setRowCount(ROWS)
-
-def add_col():
-    global COLS
-    COLS += 1
-    Table.setColumnCount(COLS)
-
-def remove_col():
-    global COLS
-    if COLS == 0: return
-    COLS -= 1
-    Table.setColumnCount(COLS)
+def windowTrig(action):
+    def check(text): return action.text() == text
+    
+    if check("فتح جدول حروف .tbl"): loadTBL(open_file('tbl', TableEditorWindow), Table, ROWS, COLS)
+    elif check("فتح جدول حروف .ate"): loadATE(open_file('ate', TableEditorWindow), Table, ROWS, COLS, True)
+    elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(save_file('tbl', TableEditorWindow), Table)
+    elif check("حفظ جدول الحروف كـ .ate"): saveATE(save_file('ate', TableEditorWindow))
+    elif check("حفظ جدول الحروف كـ .csv"): saveCSV(save_file('csv', TableEditorWindow))
+    elif check("إضافة صف"): add_row(Table, ROWS)
+    elif check("حذف صف"): remove_row(Table, ROWS)
+    elif check("إضافة عمود"): add_col(Table, COLS)
+    elif check("حذف عمود"): remove_col(Table, COLS)
+    elif check("مسح محتوى الجدول"): eraseTable(Table, ROWS, COLS)
 
 #####################
-TableEditorWindow = QWidget()
+TableEditorWindow = QMainWindow()
+TableContainer = QWidget()
 layout = QVBoxLayout()
 
-TableEditorWindow.setWindowTitle(f"Asgore Tables {_VERSION_}v")
-TableEditorWindow.resize(340, 400)
+TableContainer.setWindowTitle(f"Asgore Tables {_VERSION_}v")
 Table = QTableWidget()
 Table.setColumnCount(COLS)
 Table.setRowCount(ROWS)
 
-row_p_button = QPushButton()
-row_p_button.setText("+ صف")
-row_m_button = QPushButton()
-row_m_button.setText("- صف")
-col_p_button = QPushButton()
-col_p_button.setText("+ عمود")
-col_m_button = QPushButton()
-col_m_button.setText("- عمود")
+bar = TableEditorWindow.menuBar()
 
-load_button = QPushButton()
-load_button.setText("فتح")
-save_button = QPushButton()
-save_button.setText("حفظ")
+file = bar.addMenu("ملف")
+options = bar.addMenu("خيارات الجدول")
 
+file.addAction("فتح جدول حروف .tbl")
+file.addAction("فتح جدول حروف .ate")
+file.addAction("حفظ جدول الحروف كـ .tbl")
+file.addAction("حفظ جدول الحروف كـ .ate")
+file.addAction("حفظ جدول الحروف كـ .csv")
+options.addAction("إضافة صف")
+options.addAction("حذف صف")
+options.addAction("إضافة عمود")
+options.addAction("حذف عمود")
+bar.addAction("مسح محتوى الجدول")
 
-load_button.clicked.connect(lambda: load_table(open_file('ate')))
-save_button.clicked.connect(lambda: save_table(save_file('ate')))
-row_p_button.clicked.connect(lambda: add_row())
-row_m_button.clicked.connect(lambda: remove_row())
-col_p_button.clicked.connect(lambda: add_col())
-col_m_button.clicked.connect(lambda: remove_col())
+bar.triggered[QAction].connect(windowTrig)
 
 #####################
 
-layout.addWidget(row_p_button)
-layout.addWidget(row_m_button)
-layout.addWidget(col_p_button)
-layout.addWidget(col_m_button)
 layout.addWidget(Table)
-layout.addWidget(load_button)
-layout.addWidget(save_button)
-TableEditorWindow.setLayout(layout)
+TableContainer.setLayout(layout)
+TableEditorWindow.setCentralWidget(TableContainer)
 
 if __name__ == '__main__':
     TableEditorWindow.show()

@@ -171,6 +171,21 @@ def Take_From_Table(ate_file):
         elif cols[0] == 'لا':
             chars_table['ﻻ'] = cols[4]
             chars_table['ﻼ'] = cols[3]
+        elif cols[0] == 'پ':
+            chars_table['ﭖ'] = cols[4]
+            chars_table['ﭗ'] = cols[3]
+            chars_table['ﭙ'] = cols[2]
+            chars_table['ﭘ'] = cols[1]
+        elif cols[0] == 'چ':
+            chars_table['ﭺ'] = cols[4]
+            chars_table['ﭻ'] = cols[3]
+            chars_table['ﭽ'] = cols[2]
+            chars_table['ﭼ'] = cols[1]
+        elif cols[0] == 'ڤ':
+            chars_table['ﭪ'] = cols[4]
+            chars_table['ﭫ'] = cols[3]
+            chars_table['ﭭ'] = cols[2]
+            chars_table['ﭬ'] = cols[1]
         else:
             if len(cols) == 5: chars_table[cols[0]] = cols[4]
 
