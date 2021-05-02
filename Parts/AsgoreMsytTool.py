@@ -80,7 +80,6 @@ def MsytToTxt(file_content):
             new_file_dump += line + '\n'
     
     new_file_content = '{\n'+new_file_text+'}\n\n' + '{\n'+new_file_commands+'}\n\n' + '{\n'+new_file_dump+'}'
-    print('\nPress F3 to add <c>')
     print(new_file_commands)
     return new_file_content
 

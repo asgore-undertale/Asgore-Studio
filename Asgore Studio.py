@@ -18,7 +18,7 @@ class MotherWindow(QMainWindow):
         def check(text): return action.text() == text
 
         if check("عني"): QMessageBox.about(self, "عني", "صفحتي: https://github.com/asgore-undertale\nلك كامل الحرية في التعديل والنشر بشرط ذكري وصفحتي.")
-        elif check("معلومات مهمة"): QMessageBox.about(self, "معلومات مهمة", "- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n  (هذا في المدخل وخيارات التحويل فقط)\n  (ولا تضع فراغات)\n- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n- حذف وترتيب الاسطر في المحول يستخدم فقط أمر السطر الجديد")
+        elif check("معلومات مهمة"): QMessageBox.about(self, "معلومات مهمة", importantInfo)
         elif check("تكبير النوافذ وصفها"): self.mdiArea.tileSubWindows()
         elif check("تصغير النوافذ"): self.mdiArea.cascadeSubWindows()
         elif check("إغلاق كافة النوافذ"): self.mdiArea.closeAllSubWindows()
@@ -61,6 +61,14 @@ class MotherWindow(QMainWindow):
             container.setWindowTitle(name)
             self.mdiArea.addSubWindow(container)
         widget.show()
+
+importantInfo = ('- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n'
+                '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
+                '- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n'
+                '- ترتيب وحذف السطور يعمل لكل صفحة على حدة.\n'
+                '- اضغط F3 في محرّر msyt. لإضافة <c>.\n'
+                '- في أداة مربع الحوار اضغط F3 لالتقاط صورة للمربع تخزن في مسار البرنامج.\n'
+                '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء.\n')
 
 if __name__ == '__main__':
     from Parts.AsgoreTablesEditor import TableEditorWindow

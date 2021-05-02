@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessa
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
-from Parts.Scripts.SortCharsConvertingTable import sortTable
+from Parts.Scripts.sortTables import sortCharsConvertingTable
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 from Parts.Scripts.UsefulFunctions import intToHex, hexToString
@@ -18,6 +18,7 @@ defultChars1 = ' !"#$%&' + "'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ
 userChars = 'ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼ'
 
 def saveATE(save_loc : str):
+    if not save_loc: return
     content = f'\nVERSION="1.0"\nSEPARATOR="{_SEPARATOR_}"\n#####################\nالحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
     
     for row in range(Table.rowCount()):
@@ -26,12 +27,13 @@ def saveATE(save_loc : str):
             if not Table.item(row, col): continue
             content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)+intToHex(col))}\n'
     
-    content = sortTable(delete_trash(content))
+    content = sortCharsConvertingTable(delete_trash(content))
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
 
 def saveCSV(save_loc : str):
+    if not save_loc: return
     content = f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
     
     for row in range(Table.rowCount()):
@@ -40,7 +42,7 @@ def saveCSV(save_loc : str):
             if not Table.item(row, col): continue
             content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)+intToHex(col))}\n'
     
-    content = sortTable(delete_trash(content)).replace(_SEPARATOR_, ',')
+    content = sortCharsConvertingTable(delete_trash(content)).replace(_SEPARATOR_, ',')
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
@@ -67,6 +69,11 @@ def previousChar():
     writeChar.char -= 1
     nextChar.setText(f"الحرف التالي: {userChars[writeChar.char]}")
 
+def resetCharCounter():
+    global userChars
+    writeChar.char = 0
+    nextChar.setText(f"الحرف التالي: {userChars[writeChar.char]}")
+
 def checkUserChars():
     global userChars
     if userChars == charsCell.toPlainText(): return
@@ -76,9 +83,6 @@ def checkUserChars():
 
 def windowTrig(action):
     def check(text): return action.text() == text
-    
-    print('Select a cell and press F3 to write the next char.')
-    print('press F4 to go back to the previous char.')
 
     if check("فتح جدول حروف .tbl"): loadTBL(open_file('tbl', CharsTablesCreatorWindow), Table, ROWS, COLS)
     elif check("فتح جدول حروف .ate"): loadATE(open_file('ate', CharsTablesCreatorWindow), Table, ROWS, COLS, False)
@@ -90,16 +94,17 @@ def windowTrig(action):
 
 #####################
 CharsTablesCreatorWindow = QMainWindow()
-CharsTablesCreatorWindow.setFixedSize(600, 580)
+CharsTablesCreatorWindow.setFixedSize(600, 600)
 CharsTablesCreatorWindow.setWindowTitle("CharsTablesCreator")
 
 label_font = QFont()
-label_font.setPointSize(10)
+label_font.setPointSize(13)
 
 Table = QTableWidget(CharsTablesCreatorWindow)
 Table.setColumnCount(COLS)
 Table.setRowCount(ROWS)
 Table.setGeometry(QRect(0, 20, 600, 505))
+Table.setLayoutDirection(Qt.LeftToRight)
 
 bar = CharsTablesCreatorWindow.menuBar()
 
@@ -113,12 +118,12 @@ file.addAction("حفظ جدول الحروف كـ .csv")
 bar.addAction("مسح محتوى الجدول")
 
 nextChar = QLabel(CharsTablesCreatorWindow)
-nextChar.setGeometry(QRect(10, 523, 100, 40))
+nextChar.setGeometry(QRect(10, 523, 120, 40))
 nextChar.setFont(label_font)
 nextChar.setText(f"الحرف التالي: {userChars[0]}")
 
 charsCell = QTextEdit(CharsTablesCreatorWindow)
-charsCell.setGeometry(QRect(150, 529, 330, 46))
+charsCell.setGeometry(QRect(150, 529, 330, 66))
 charsCell.setText(userChars)
 charsLabel = QLabel(CharsTablesCreatorWindow)
 charsLabel.setGeometry(QRect(460, 529, 130, 26))
@@ -127,6 +132,7 @@ charsLabel.setText("الحروف المراد إدخالها:")
 bar.triggered[QAction].connect(windowTrig)
 keyboard.on_press_key("F3", lambda _: writeChar())
 keyboard.on_press_key("F4", lambda _: previousChar())
+keyboard.on_press_key("F5", lambda _: resetCharCounter())
 
 Table.setHorizontalHeaderLabels(list(nums))
 Table.setVerticalHeaderLabels(list(nums))

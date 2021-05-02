@@ -365,18 +365,24 @@ def splitByComs(text):
 def splitByLinesAndConvert(text):
     if cell._pageCommand: text_pages_list = text.split(cell._pageCommand)
     else: text_pages_list = [text]
+    
+    for p in range(len(text_pages_list)):
+        if DDL_check.isChecked(): text_pages_list[p] = DDL (text_pages_list[p], cell._lineCommand) #Delete Duplicated lines
+        if SSL_check.isChecked(): text_pages_list[p] = Sort(text_pages_list[p], cell._lineCommand) #Sort short to long
+        if SLS_check.isChecked(): text_pages_list[p] = Sort(text_pages_list[p], cell._lineCommand, False) #Sort long to short
+    
     if cell._lineCommand:  text_pages_lines_list = [page.split(cell._lineCommand) for page in text_pages_list]
     else: text_pages_lines_list = [text_pages_list]
     
-    for page in range(len(text_pages_lines_list)):
-        for line in range(len(text_pages_lines_list[page])):
-            if DH_check.isChecked(): text_pages_lines_list[page][line] = handle_harakat(text_pages_lines_list[page][line])#Delete Harakat
-            if RA_check.isChecked() or C_check.isChecked(): text_pages_lines_list[page][line] = Un_Freeze(text_pages_lines_list[page][line])#Freeze Arabic
-            if C_check.isChecked(): text_pages_lines_list[page][line] = Convert(text_pages_lines_list[page][line], convert_database, True)#Convert
-            if UC_check.isChecked(): text_pages_lines_list[page][line] = Convert(text_pages_lines_list[page][line], convert_database, False)#Unconvert
-            if UA_check.isChecked() or UC_check.isChecked(): text_pages_lines_list[page][line] = Un_Freeze(text_pages_lines_list[page][line], False)#UnFreeze Arabic
-            if CB_check.isChecked(): text_pages_lines_list[page][line] = convert_bytes(text_pages_lines_list[page][line], cell._converted_byte)#Convert bytes
-        text_pages_lines_list[page] = cell._lineCommand.join(text_pages_lines_list[page])
+    for p in range(len(text_pages_lines_list)):
+        for l in range(len(text_pages_lines_list[p])):
+            if DH_check.isChecked(): text_pages_lines_list[p][l] = handle_harakat(text_pages_lines_list[p][l])#Delete Harakat
+            if RA_check.isChecked() or C_check.isChecked(): text_pages_lines_list[p][l] = Un_Freeze(text_pages_lines_list[p][l])#Freeze Arabic
+            if C_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, True)#Convert
+            if UC_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, False)#Unconvert
+            if UA_check.isChecked() or UC_check.isChecked(): text_pages_lines_list[p][l] = Un_Freeze(text_pages_lines_list[p][l], False)#UnFreeze Arabic
+            if CB_check.isChecked(): text_pages_lines_list[p][l] = convert_bytes(text_pages_lines_list[p][l], cell._converted_byte)#Convert bytes
+        text_pages_lines_list[p] = cell._lineCommand.join(text_pages_lines_list[p])
     text = cell._pageCommand.join(text_pages_lines_list)
     
     return text
@@ -409,10 +415,6 @@ def convert(text):
         
         text = Extract(text, cell._before_text_convert, cell._after_text_convert, mini, maxi)
         text = '\n'.join(text)
-    
-    if DDL_check.isChecked(): text = DDL(text, cell._lineCommand) #Delete Duplicated lines
-    if SSL_check.isChecked(): text = Sort(text, cell._lineCommand) #Sort short to long
-    if SLS_check.isChecked(): text = Sort(text, cell._lineCommand, False) #Sort long to short
     
     text = splitByComs(text) #الكثير من التحويلات في هذا الفاتغشن
     

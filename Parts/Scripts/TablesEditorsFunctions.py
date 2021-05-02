@@ -10,26 +10,17 @@ def check_version(ver : int):
 
 def open_file(type : str, window):
     _open, _ = QFileDialog.getOpenFileName(window, 'جدول حروف', '' , '*.'+type)
-    if _open == '/' or not _open or not path.exists(_open): return
-    return _open
+    return _open * (_open != '/') * (_open != '') * (path.exists(_open))
 
 def save_file(type : str, window):
     _save, _ = QFileDialog.getSaveFileName(window, 'جدول حروف', '' , '*.'+type)
-    if _save == '/' or not _save: return
-    return _save
+    return _save * (_save != '/') * (_save != '') * (path.exists(_save))
 
-def delete_trash(table : str, x = 10):
-    '''
-    for i in range(1, x):
-        i = x - i
-        while _SEPARATOR_ *i + '\n' in table: table = table.replace(_SEPARATOR_*i + '\n', '\n')
-    for i in range(1, x):
-        i = x - i
-        while '\n'*i + '\n' in table: table = table.replace('\n'*i + '\n', '\n')
-    '''
-    table = table.split('\n')
-    while not table[-1]: del table[-1]
-    table = '\n'.join(table)
+def delete_trash(table : str):
+    while _SEPARATOR_+'\n' in table: table = table.replace(_SEPARATOR_+'\n', '\n')
+    #while '\n\n' in table: table = table.replace('\n\n', '\n')
+    while table[-1] == '\n': table = table[:-1]
+
     return table
 
 def loadTBL(table : str, Table, ROWS, COLS):
@@ -69,11 +60,44 @@ def loadATE(table : str, Table, ROWS, COLS, increaseCells : bool):
             Table.setItem(row-4, col, QTableWidgetItem(cols[col]))
 
 def saveTBL(save_loc : str, Table):
+    if not save_loc: return
     content = ''
     
     for row in range(Table.rowCount()):
         for col in range(Table.columnCount()):
             if Table.item(row, col): content += f'{intToHex(row)}{intToHex(col)}={Table.item(row, col).text()}\n'
+    
+    open(save_loc, 'w', encoding="utf-8").write(content)
+    QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
+
+def saveATE(save_loc : str, Table):
+    if not save_loc: return
+    content = f'\nVERSION="1.0"\nSEPARATOR="{_SEPARATOR_}"\n#####################\n'
+
+    for row in range(Table.rowCount()):
+        csv_row = []
+        for col in range(Table.columnCount()):
+            if Table.item(row, col).text(): csv_row.append(Table.item(row, col).text())
+            else: csv_row.append('')
+ 
+        content += _SEPARATOR_.join(csv_row) + '\n'
+    
+    content = delete_trash(content)
+    
+    open(save_loc, 'w', encoding="utf-8").write(content)
+    QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
+
+def saveCSV(save_loc : str, Table):
+    if not save_loc: return
+    content = f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
+    
+    for row in range(Table.rowCount()):
+        csv_row = []
+        for col in range(Table.columnCount()):
+            if not Table.item(row, col): continue
+            content += f'{Table.item(row, col).text()},,,,{hexToString(intToHex(row)+intToHex(col))}\n'
+    
+    content = delete_trash(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")

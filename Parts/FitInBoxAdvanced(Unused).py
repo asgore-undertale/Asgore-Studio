@@ -8,21 +8,18 @@ from os import path
 from sys import argv, exit
 from time import sleep
 from PIL import Image
+from ctypes import windll
 import keyboard
 import pygame
 
-geoDirectory, pngDirectory = '', ''
-pygameXoffset, pygameYoffset = 10, 180
-
-def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, newline, newpage, display, char_border = False, from_Right = False,
-                x = 0, y = 0, sleep_time = 0):
+def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, display, char_border = False, from_Right = False,
+                x = 0, y = 0, sleep_time = 0, frames = 1, box_style = 0):
     Y = y
-    if from_Right: X = box_width + x
+    if from_Right: X = box_width + border_thick
     else: X = x
     for page in textList:
-        setPygame(display, int(box_width + x * 2), int(box_height + x * 2), x)
-        embed(FitAdvancedWindow, embedLabel, display, pygameXoffset, pygameYoffset)
         y = Y
+        conversation(0, 0, box_width + border_thick * 2, box_height + border_thick * 2, 0, (255, 255, 255), border_thick, frames, box_style, display)
         for line in page:
             x = X
             for char in line:
@@ -43,12 +40,54 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
                 if from_Right: x -= char_xadvance
                 else: x += char_width + char_xadvance
                 
-                embed(FitAdvancedWindow, embedLabel, display, pygameXoffset, pygameYoffset)
+                pygame.display.update()
+                sleep(sleep_time)
             y += font_size + px_per_line
-        sleep(sleep_time)
+        
+        while True:
+            pygameCheck()
+            if keyboard.is_pressed('enter'): break
+
+def conversation(x, y, width, height, box_color, border_color, border_thick, frames, box_style, display):
+    if box_style == 0:
+        h = height
+        for i in range(frames):
+            w = width * (i + 1) / frames
+            x = width / 2 - w / 2 
+            pygame.draw.rect(display, box_color, (x, y, w, h))
+            pygame.draw.rect(display, border_color, (x, y, w, h), border_thick)
+            pygame.display.update()
+            sleep(0.005)
+    elif box_style == 1:
+        for i in range(frames):
+            w = width * (i + 1) / frames
+            h = height * (i + 1) / frames
+            x = width / 2 - w / 2 
+            y = height / 2 - h / 2 
+            pygame.draw.rect(display, box_color, (x, y, w, h))
+            pygame.draw.rect(display, border_color, (x, y, w, h), border_thick)
+            pygame.display.update()
+            sleep(0.005)
+    else: #if box_style == 2
+        x, w = width / 2, 0
+        for i in range(frames):
+            h = height * (i + 1) / frames
+            y = height / 2 - h / 2
+            pygame.draw.rect(display, box_color, (x, y, w, h))
+            pygame.draw.rect(display, border_color, (x, y, w, h), border_thick)
+            pygame.display.update()
+            sleep(0.0025)
+        h = height
+        for i in range(frames):
+            w = width * (i + 1) / frames
+            x = width / 2 - w / 2 
+            pygame.draw.rect(display, box_color, (x, y, w, h))
+            pygame.draw.rect(display, border_color, (x, y, w, h), border_thick)
+            pygame.display.update()
+            sleep(0.0025)
 
 def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fnt_directory = '', img_directory = '', newline = '', newpage = '',
-                before_command = '', after_command = '', from_Right = False, lineOffset = 3, sleep_time = 0, border_thick = 10):
+                before_command = '', after_command = '', from_Right = False, lineOfssef = 3,sleep_time = 0, frames = 1, border_thick = 10, box_style = 0):
     if not fnt_directory or not img_directory:
         QMessageBox.about(FitAdvancedWindow, "تذكر", "لا تنسى تحديد ملف وصورة الخط")
         return
@@ -69,20 +108,26 @@ def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fn
     print_text = []
     for p in range(len(textList)):
         for l in range(len(textList[p])):
-            textList[p][l] = OffsetLine(textList[p][l], charmap, box_width, lineOffset)
-        print_text.append(newline.join(textList[p]))
+            textList[p][l] = OffsetLine(textList[p][l], charmap, box_width, lineOfssef)
+        print_text.append('\n'.join(textList[p]))
     
-    resultTextCell.setPlainText(newpage.join(print_text))
+    resultTextCell.setPlainText('\n\n'.join(print_text))
     
     pygame.init()
-    textbox = pygame.Surface((int(box_width + border_thick * 2), int(box_height + border_thick * 2)))
+    pygame.display.set_caption('Fit in box (Advanced)')
+    textbox = pygame.display.set_mode((int(box_width + border_thick * 2), int(box_height + border_thick * 2)))
     
-    type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, newline, newpage, textbox, False, from_Right,
-                border_thick, border_thick, sleep_time)
+    SetWindowPos = windll.user32.SetWindowPos
+    SetWindowPos(pygame.display.get_wm_info()['window'], -1, 250, 250, 0, 0, 0x0001)
+    
+    type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, textbox, False, from_Right,
+                border_thick, border_thick, sleep_time, frames, box_style)
 
-def setPygame(display, pygameWidth, pygameHeught, border_thick):
-    pygame.draw.rect(display, 0, (0, 0, pygameWidth, pygameHeught))
-    pygame.draw.rect(display, 255, (0, 0, pygameWidth, pygameHeught), border_thick)
+    while True: pygameCheck()
+
+def pygameCheck():
+    for event in pygame.event.get():
+        if event.type is pygame.QUIT: pygame.display.set_mode((1, 1), flags = pygame.HIDDEN)
 
 def openPng(Directory = ''):
     global pngDirectory
@@ -96,15 +141,19 @@ def openGeo(Directory = ''):
 
 def start():
     if boxWidthCell.toPlainText(): boxWidth = float(boxWidthCell.toPlainText())
-    else: boxWidth = 190
+    else: boxWidth = 1
     if boxHeightCell.toPlainText(): boxHeight = float(boxHeightCell.toPlainText())
-    else: boxHeight = 180
+    else: boxHeight = 1
     if pixelsPerCell.toPlainText(): pixelsPer = float(pixelsPerCell.toPlainText())
     else: pixelsPer = 0
-    if timePerPageCell.toPlainText(): timePerPage = float(timePerPageCell.toPlainText())
-    else: timePerPage = 0
+    if timePerCharCell.toPlainText(): timePerChar = float(timePerCharCell.toPlainText())
+    else: timePerChar = 0
+    if framesNumCell.toPlainText(): framesNum = int(float(framesNumCell.toPlainText()))
+    else: framesNum = 100
     if borderThickCell.toPlainText(): borderThick = float(borderThickCell.toPlainText())
     else: borderThick = 10
+    if boxAnimationCell.toPlainText(): boxAnimation = int(float(boxAnimationCell.toPlainText()))
+    else: boxAnimation = 2
     
     if offset0Radio.isChecked(): offset = 0
     elif offset1Radio.isChecked(): offset = 1
@@ -112,13 +161,14 @@ def start():
     elif offset3Radio.isChecked(): offset = 3
     else: offset = -1
     
-    fit_advance(enteredTextCell.toPlainText(), boxWidth, boxHeight, pixelsPer, geoDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), offset, timePerPage, borderThick)
+    fit_advance(enteredTextCell.toPlainText(), boxWidth, boxHeight, pixelsPer, geoDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), offset, timePerChar, framesNum, borderThick, boxAnimation)
+
+geoDirectory, pngDirectory = '', ''
 
 app = QApplication(argv)
 
 FitAdvancedWindow = QMainWindow()
 FitAdvancedWindow.setFixedSize(700, 390)
-embedLabel = QLabel(FitAdvancedWindow)
 
 labelsWidth, labelsHeight = 130, 26
 
@@ -156,20 +206,30 @@ newPageLabel = QLabel(FitAdvancedWindow)
 newPageLabel.setGeometry(QRect(320, y(5), labelsWidth, labelsHeight))
 newPageLabel.setText("أمر صفحة جديدة:")
 beforeComCell = QTextEdit(FitAdvancedWindow)
-beforeComCell.setGeometry(QRect(240, y(6), 70, 26))
+beforeComCell.setGeometry(QRect(10, y(0), 70, 26))
 beforeComLabel = QLabel(FitAdvancedWindow)
-beforeComLabel.setGeometry(QRect(320, y(6), labelsWidth, labelsHeight))
+beforeComLabel.setGeometry(QRect(90, y(0), labelsWidth, labelsHeight))
 beforeComLabel.setText("ما قبل الأوامر:")
 afterComCell = QTextEdit(FitAdvancedWindow)
-afterComCell.setGeometry(QRect(240, y(7), 70, 26))
+afterComCell.setGeometry(QRect(10, y(1), 70, 26))
 afterComLabel = QLabel(FitAdvancedWindow)
-afterComLabel.setGeometry(QRect(320, y(7), labelsWidth, labelsHeight))
+afterComLabel.setGeometry(QRect(90, y(1), labelsWidth, labelsHeight))
 afterComLabel.setText("ما بعدها:")
-timePerPageCell = QTextEdit(FitAdvancedWindow)
-timePerPageCell.setGeometry(QRect(240, y(8), 70, 26))
-timePerPageLabel = QLabel(FitAdvancedWindow)
-timePerPageLabel.setGeometry(QRect(320, y(8), labelsWidth, labelsHeight))
-timePerPageLabel.setText("الزمن بين كل صفحة بالثواني:")
+timePerCharCell = QTextEdit(FitAdvancedWindow)
+timePerCharCell.setGeometry(QRect(10, y(2), 70, 26))
+timePerCharLabel = QLabel(FitAdvancedWindow)
+timePerCharLabel.setGeometry(QRect(90, y(2), labelsWidth, labelsHeight))
+timePerCharLabel.setText("الزمن بين كل حرف بالثواني:")
+framesNumCell = QTextEdit(FitAdvancedWindow)
+framesNumCell.setGeometry(QRect(10, y(3), 70, 26))
+framesNumLabel = QLabel(FitAdvancedWindow)
+framesNumLabel.setGeometry(QRect(90, y(3), labelsWidth, labelsHeight))
+framesNumLabel.setText("عدد الإطارات:")
+boxAnimationCell = QTextEdit(FitAdvancedWindow)
+boxAnimationCell.setGeometry(QRect(10, y(4), 70, 26))
+boxAnimationLabel = QLabel(FitAdvancedWindow)
+boxAnimationLabel.setGeometry(QRect(90, y(4), labelsWidth, labelsHeight))
+boxAnimationLabel.setText("أنميشن المربع (0-2):")
 
 label = QLabel(FitAdvancedWindow)
 label.setGeometry(QRect(580, 5, 81, 20))
@@ -184,35 +244,46 @@ resultTextCell = QTextEdit(FitAdvancedWindow)
 resultTextCell.setGeometry(QRect(480, 210, 200, 150))
 
 fromRightCheck = QCheckBox("تدفق النص من اليمين", FitAdvancedWindow)
-fromRightCheck.setGeometry(QRect(80, 10, 145, 26))
+fromRightCheck.setGeometry(QRect(300, 225, 145, 26))
 fromRightCheck.setLayoutDirection(Qt.RightToLeft)
 offsetRadio = QRadioButton("اترك النص على حاله", FitAdvancedWindow)
-offsetRadio.setGeometry(QRect(10, 35, 210, 26))
+offsetRadio.setGeometry(QRect(220, 258, 210, 26))
 offsetRadio.setLayoutDirection(Qt.RightToLeft)
 offset0Radio = QRadioButton("النص في البداية واملأ بعده فراغات", FitAdvancedWindow)
-offset0Radio.setGeometry(QRect(10, 60, 210, 26))
+offset0Radio.setGeometry(QRect(220, 283, 210, 26))
 offset0Radio.setLayoutDirection(Qt.RightToLeft)
 offset1Radio = QRadioButton("النص في النهاية واملأ قبله فراغات", FitAdvancedWindow)
-offset1Radio.setGeometry(QRect(10, 85, 210, 26))
+offset1Radio.setGeometry(QRect(220, 308, 210, 26))
 offset1Radio.setLayoutDirection(Qt.RightToLeft)
 offset2Radio = QRadioButton("النص في الوسط واملأ قبله فراغات", FitAdvancedWindow)
-offset2Radio.setGeometry(QRect(10, 110, 210, 26))
+offset2Radio.setGeometry(QRect(220, 333, 210, 26))
 offset2Radio.setLayoutDirection(Qt.RightToLeft)
 offset3Radio = QRadioButton("النص في الوسط واملأ قبله وبعده فراغات", FitAdvancedWindow)
-offset3Radio.setGeometry(QRect(10, 135, 210, 26))
+offset3Radio.setGeometry(QRect(220, 358, 210, 26))
 offset3Radio.setLayoutDirection(Qt.RightToLeft)
 
 geoButton = QPushButton(FitAdvancedWindow)
-geoButton.setGeometry(QRect(360, 338, 80, 40))
+geoButton.setGeometry(QRect(30, 240, 100, 40))
 geoButton.setText("جدول الخط")
 pngButton = QPushButton(FitAdvancedWindow)
-pngButton.setGeometry(QRect(260, 338, 80, 40))
+pngButton.setGeometry(QRect(30, 290, 100, 40))
 pngButton.setText("صورة الخط")
+startButton = QPushButton(FitAdvancedWindow)
+startButton.setGeometry(QRect(30, 340, 100, 40))
+startButton.setText("بدء")
 
 pngButton.clicked.connect(lambda: openPng())
 geoButton.clicked.connect(lambda: openGeo())
-enteredTextCell.textChanged.connect(start)
+startButton.clicked.connect(lambda: start())
 
 if __name__ == '__main__':
     FitAdvancedWindow.show()
     exit(app.exec_())
+
+#fnt_directory, img_directory = r'tests\The Legend of Zelda A Link to the Past\table.txt', r'tests\The Legend of Zelda A Link to the Past\unknown.png'
+#text = 'Long ago, in the[gr] beautiful kingdom of hyrule surrounded by mountains and forests...'
+#fit_advance(text, 180, 65, 5, fnt_directory, img_directory, '[br]', '[page]', '[', ']', False, 0.03, 10, 100, 2)
+
+#text = 'خط الميترويد يحييكم'
+#fnt_directory, img_directory = r'tests\Mitroid\font.fiba', r'tests\Mitroid\unknown.png'
+#fit_advance(text, 180, 65, 5, fnt_directory, img_directory, '[br]', '[page]', '[', ']', True, 0.03, 100, 10, 2)

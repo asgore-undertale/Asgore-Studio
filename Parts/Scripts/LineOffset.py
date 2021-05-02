@@ -6,11 +6,11 @@ def OffsetLine(line, charmap, LineMaxWidth, lineOffset):
     lineWidth = 0
     for char in line:
         if char not in charmap: continue
-        lineWidth += charmap[char][2]
+        lineWidth += charmap[char][2] + charmap[char][6]
     
-    SpacesNum = int((LineMaxWidth - lineWidth) // charmap[' '][2])
+    SpacesNum = (LineMaxWidth - lineWidth) // (charmap[' '][2] + charmap[' '][6])
     
-    if lineOffset == 0: # إزاحة من اليمين لليسار
+    if   lineOffset == 0: # إزاحة من اليمين لليسار
         line = line + (' ' * SpacesNum)
     elif lineOffset == 1: # إزاحة من اليسار لليمين
         line = (' ' * SpacesNum) + line
