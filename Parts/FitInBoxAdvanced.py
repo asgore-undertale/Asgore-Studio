@@ -8,8 +8,8 @@ from os import path
 from sys import argv, exit
 from time import sleep
 from PIL import Image
-import keyboard
 import pygame
+import threading
 
 geoDirectory, pngDirectory = '', ''
 pygameXoffset, pygameYoffset = 10, 180
@@ -20,7 +20,7 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
     if from_Right: X = box_width + x
     else: X = x
     for page in textList:
-        setPygame(display, int(box_width + x * 2), int(box_height + x * 2), x)
+        setPygame(display, int(box_width + Y * 2), int(box_height + Y * 2), Y)
         embed(FitAdvancedWindow, embedLabel, display, pygameXoffset, pygameYoffset)
         y = Y
         for line in page:
@@ -50,10 +50,8 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
 def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fnt_directory = '', img_directory = '', newline = '', newpage = '',
                 before_command = '', after_command = '', from_Right = False, lineOffset = 3, sleep_time = 0, border_thick = 10):
     if not fnt_directory or not img_directory:
-        QMessageBox.about(FitAdvancedWindow, "تذكر", "لا تنسى تحديد ملف وصورة الخط")
+        QMessageBox.about(FitAdvancedWindow, "تذكر", "لا تنسى اختيار الخط")
         return
-    
-    keyboard.on_press_key("F3", lambda _: pygame.image.save(textbox, "screenshot.png"))
 
     charmap = CreateCharmap(fnt_directory)
     
@@ -80,30 +78,27 @@ def fit_advance(text = '', box_width = 10, box_height = 10, px_per_line = 10, fn
     type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, newline, newpage, textbox, False, from_Right,
                 border_thick, border_thick, sleep_time)
 
-def setPygame(display, pygameWidth, pygameHeught, border_thick):
-    pygame.draw.rect(display, 0, (0, 0, pygameWidth, pygameHeught))
-    pygame.draw.rect(display, 255, (0, 0, pygameWidth, pygameHeught), border_thick)
+def setPygame(display, pygameWidth, pygameHeight, border_thick):
+    pygame.draw.rect(display, 0, (0, 0, pygameWidth, pygameHeight))
+    pygame.draw.rect(display, 255, (0, 0, pygameWidth, pygameHeight), border_thick)
 
-def openPng(Directory = ''):
-    global pngDirectory
-    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'صورة الخط', '' , '*.jpg, *.png')
-    if Directory and Directory != '/' and path.exists(Directory): pngDirectory = Directory
-    
-def openGeo(Directory = ''):
-    global geoDirectory
-    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.ate')
-    if Directory and Directory != '/' and path.exists(Directory): geoDirectory = Directory
+def openFont():
+    global pngDirectory, geoDirectory
+    d1, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'صورة الخط', '' , '*.jpg, *.png')
+    d2, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.ate')
+    if d1 and d1 != '/' and path.exists(d1): pngDirectory = d1
+    if d2 and d2 != '/' and path.exists(d2): geoDirectory = d2
 
 def start():
-    if boxWidthCell.toPlainText(): boxWidth = float(boxWidthCell.toPlainText())
+    if boxWidthCell.toPlainText(): boxWidth = int(float(boxWidthCell.toPlainText()))
     else: boxWidth = 190
-    if boxHeightCell.toPlainText(): boxHeight = float(boxHeightCell.toPlainText())
+    if boxHeightCell.toPlainText(): boxHeight = int(float(boxHeightCell.toPlainText()))
     else: boxHeight = 180
-    if pixelsPerCell.toPlainText(): pixelsPer = float(pixelsPerCell.toPlainText())
+    if pixelsPerCell.toPlainText(): pixelsPer = int(float(pixelsPerCell.toPlainText()))
     else: pixelsPer = 0
-    if timePerPageCell.toPlainText(): timePerPage = float(timePerPageCell.toPlainText())
+    if timePerPageCell.toPlainText(): timePerPage = int(float(timePerPageCell.toPlainText()))
     else: timePerPage = 0
-    if borderThickCell.toPlainText(): borderThick = float(borderThickCell.toPlainText())
+    if borderThickCell.toPlainText(): borderThick = int(float(borderThickCell.toPlainText()))
     else: borderThick = 10
     
     if offset0Radio.isChecked(): offset = 0
@@ -202,16 +197,15 @@ offset3Radio = QRadioButton("النص في الوسط واملأ قبله وبع
 offset3Radio.setGeometry(QRect(10, 135, 210, 26))
 offset3Radio.setLayoutDirection(Qt.RightToLeft)
 
-geoButton = QPushButton(FitAdvancedWindow)
-geoButton.setGeometry(QRect(360, 338, 80, 40))
-geoButton.setText("جدول الخط")
-pngButton = QPushButton(FitAdvancedWindow)
-pngButton.setGeometry(QRect(260, 338, 80, 40))
-pngButton.setText("صورة الخط")
+fontButton = QPushButton(FitAdvancedWindow)
+fontButton.setGeometry(QRect(360, 338, 80, 40))
+fontButton.setText("اختر الخط")
+startButton = QPushButton(FitAdvancedWindow)
+startButton.setGeometry(QRect(260, 338, 80, 40))
+startButton.setText("بدء")
 
-pngButton.clicked.connect(lambda: openPng())
-geoButton.clicked.connect(lambda: openGeo())
-enteredTextCell.textChanged.connect(start)
+fontButton.clicked.connect(lambda: openFont())
+startButton.clicked.connect(lambda: start())
 
 if __name__ == '__main__':
     FitAdvancedWindow.show()
