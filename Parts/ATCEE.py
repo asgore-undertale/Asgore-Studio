@@ -314,7 +314,7 @@ def open_def(num):
             convert_database = Take_From_Table(fileName)
             QMessageBox.about(OptionsWindow, "!!تهانيّ", "تم اختيار قاعدة البيانات.")
     elif num == 3:
-        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'قاعدة بيانات الاستخراج', '' , '*.ate')
+        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'قاعدة بيانات الاستخراج', '' , '*.xlsx')
         if path.exists(fileName) and fileName != '/':
             global extracted_text_database_directory
             extracted_text_database_directory = fileName

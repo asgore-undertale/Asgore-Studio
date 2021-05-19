@@ -28,7 +28,7 @@ class MotherWindow(QMainWindow):
         elif check("خيارات التحويل"): self.newChild(OptionsWindow, OptionsContainer, 'خيارات التحويل')
         elif check("محرّر msyt."): self.newChild(MsytWindow, MsytContainer, 'محرّر msyt.')
         elif check("مربع الحوار"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مربع الحوار')
-        elif check("منشئ جداول الخطوط"): self.newChild(FontsTablesCreatorWindow, FontsTablesCreatorContainer, 'منشئ جداول الخطوط')
+        elif check("منشئ الخطوط"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط')
         elif check("منشئ جداول الحروف"): self.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
         elif check("محوّل الجداول"): self.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
     
@@ -52,7 +52,7 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("خيارات التحويل")
         self.tools.addAction("محرّر msyt.")
         self.tools.addAction("مربع الحوار")
-        self.tools.addAction("منشئ جداول الخطوط")
+        self.tools.addAction("منشئ الخطوط")
         self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("محوّل الجداول")
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     from Parts.ATCEE import OptionsWindow, CMainWindow, EnteringWindow
     from Parts.AsgoreMsytTool import MsytWindow
     from Parts.FitInBoxAdvanced import FitAdvancedWindow
-    from Parts.FontsTablesCreator import FontsTablesCreatorWindow
+    from Parts.FontsCreator import FontsCreatorWindow
     from Parts.TablesConverter import TablesConverterWindow
     from Parts.CharsTablesCreator import CharsTablesCreatorWindow
     from sys import argv
@@ -93,8 +93,8 @@ if __name__ == '__main__':
     MsytContainer.setWidget(MsytWindow)
     FitAdvancedContainer = QMdiSubWindow()
     FitAdvancedContainer.setWidget(FitAdvancedWindow)
-    FontsTablesCreatorContainer = QMdiSubWindow()
-    FontsTablesCreatorContainer.setWidget(FontsTablesCreatorWindow)
+    FontsCreatorContainer = QMdiSubWindow()
+    FontsCreatorContainer.setWidget(FontsCreatorWindow)
     TablesConverterContainer = QMdiSubWindow()
     TablesConverterContainer.setWidget(TablesConverterWindow)
     CharsTablesCreatorContainer = QMdiSubWindow()
