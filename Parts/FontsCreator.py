@@ -1,10 +1,14 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QFileDialog, QMessageBox
-from PyQt5.QtCore import QRect
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QFileDialog, QMessageBox, QCheckBox
+from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.CreateFontTable import CreateFontTable
 from Parts.Scripts.drawFontTable import drawFontTable
 from sys import argv, exit
 
 def save():
+    if fromRightCheck.isChecked(): fromRight = True
+    else: fromRight = False
+    if smoothCheck.isChecked(): smooth = 0
+    else: smooth = 1
     if TtfSizeCell.toPlainText(): ttfSize = int(float(TtfSizeCell.toPlainText()))
     else: ttfSize = 28
     if beforeFirstColCell.toPlainText(): beforeFirstCol = int(float(beforeFirstColCell.toPlainText()))
@@ -33,7 +37,10 @@ def save():
         if _file2 == '/' or not _file2: return
         open(_file2, 'w', encoding="utf-8").write(tableContent)
         
-        drawFontTable(_file, charsCell.toPlainText(), Width, Height, charsPerRow, TtfNameCell.toPlainText(), ttfSize, False, _file2)
+        charsPerCol = len(charsCell.toPlainText()) // charsPerRow
+        if len(charsCell.toPlainText()) % charsPerRow: charsPerCol += 1
+        imgSize = (beforeFirstCol + BetweenCharsX * (charsPerRow - 1) + Width * charsPerRow , beforeFirstRow + BetweenCharsY * (charsPerCol - 1) + Height * charsPerCol)
+        drawFontTable(_file, charsCell.toPlainText(), Width, Height, imgSize, TtfNameCell.toPlainText(), ttfSize, fromRight, smooth, _file2)
     
     QMessageBox.about(FontsCreatorWindow, "!!تهانينا", "تم حفظ الخط.")
 
@@ -41,7 +48,7 @@ def save():
 app = QApplication(argv)
 
 FontsCreatorWindow = QMainWindow()
-FontsCreatorWindow.setFixedSize(380, 420)
+FontsCreatorWindow.setFixedSize(380, 460)
 
 labelsWidth, labelsHeight = 200, 26
 
@@ -93,14 +100,20 @@ BetweenCharsYCell.setGeometry(QRect(10, y(8), 180, 26))
 BetweenCharsYLabel = QLabel(FontsCreatorWindow)
 BetweenCharsYLabel.setGeometry(QRect(170, y(8), labelsWidth, labelsHeight))
 BetweenCharsYLabel.setText("المسافة بين كل حرف عمودياً:")
+fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", FontsCreatorWindow)
+fromRightCheck.setGeometry(QRect(10, y(9), 180, 26))
+fromRightCheck.setLayoutDirection(Qt.RightToLeft)
+smoothCheck = QCheckBox("نعومة الخط", FontsCreatorWindow)
+smoothCheck.setGeometry(QRect(190, y(9), 180, 26))
+smoothCheck.setLayoutDirection(Qt.RightToLeft)
 charsCell = QTextEdit(FontsCreatorWindow)
-charsCell.setGeometry(QRect(10, y(9), 180, 80))
+charsCell.setGeometry(QRect(10, y(10), 180, 80))
 charsLabel = QLabel(FontsCreatorWindow)
-charsLabel.setGeometry(QRect(170, y(9), labelsWidth, labelsHeight))
+charsLabel.setGeometry(QRect(170, y(10), labelsWidth, labelsHeight))
 charsLabel.setText("الحروف (بالترتيب من اليسار لليمين):")
 
 save_button = QPushButton(FontsCreatorWindow)
-save_button.setGeometry(QRect(260, 370, 70, 40))
+save_button.setGeometry(QRect(260, 410, 70, 40))
 save_button.setText("حفظ الجدول")
 
 save_button.clicked.connect(lambda: save())
