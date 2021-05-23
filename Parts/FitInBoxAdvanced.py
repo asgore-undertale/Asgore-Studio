@@ -136,7 +136,7 @@ def openPng(Directory = ''):
     
 def openGeo(Directory = ''):
     global geoDirectory
-    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.ate')
+    if not Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.aft')
     if Directory and Directory != '/' and path.exists(Directory): geoDirectory = Directory
 
 def start():

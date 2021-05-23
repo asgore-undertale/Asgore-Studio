@@ -28,7 +28,7 @@ def save():
     
     tableContent = CreateFontTable(beforeFirstCol, beforeFirstRow, BetweenCharsX, BetweenCharsY, Width, Height, charsPerRow, charsCell.toPlainText())
     
-    _file, _ = QFileDialog.getSaveFileName(FontsCreatorWindow, 'جدول الخط', '' , '*.ate')
+    _file, _ = QFileDialog.getSaveFileName(FontsCreatorWindow, 'جدول الخط', '' , '*.aft')
     if _file == '/' or not _file: return
     open(_file, 'w', encoding="utf-8").write(tableContent)
     

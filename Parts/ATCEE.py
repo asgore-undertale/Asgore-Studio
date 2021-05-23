@@ -262,8 +262,7 @@ output_from_folder.clicked.connect(lambda: open_def(6))
 
 
 #المتغيرات
-converting_database_directory = r'Parts/Scripts/CharsConvertingTable.ate'
-chars_width_database_directory = r'Parts/Scripts/Chars_Width_Database.ate'
+converting_database_directory = r'Parts/Scripts/CharsConvertingTable.act'
 text_database_directory = r'OtherFiles/TextTable.xlsx'
 extracted_text_database_directory = r'OtherFiles/ExtractedTextTable.xlsx'
 input_folder, output_folder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
@@ -301,24 +300,24 @@ def cell():
 
 def open_def(num):
     if num == 0:
-        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'قاعدة بيانات النص', '' , '*.xlsx')
+        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول النص', '' , '*.xlsx')
         if path.exists(fileName) and fileName != '/':
             global text_database_directory
             text_database_directory = fileName
-            QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار قاعدة البيانات.")
+            QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 1:
-        fileName, _ = QFileDialog.getOpenFileName(OptionsWindow, 'قاعدة بيانات التحويل', '' , '*.ate')
+        fileName, _ = QFileDialog.getOpenFileName(OptionsWindow, 'جدول التحويل', '' , '*.act')
         if path.exists(fileName) and fileName != '/':
             global converting_database_directory, convert_database
             converting_database_directory = fileName
             convert_database = Take_From_Table(fileName)
-            QMessageBox.about(OptionsWindow, "!!تهانيّ", "تم اختيار قاعدة البيانات.")
+            QMessageBox.about(OptionsWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 3:
-        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'قاعدة بيانات الاستخراج', '' , '*.xlsx')
+        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول الاستخراج', '' , '*.xlsx')
         if path.exists(fileName) and fileName != '/':
             global extracted_text_database_directory
             extracted_text_database_directory = fileName
-            QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار قاعدة البيانات.")
+            QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 4:
         fileName, _ = QFileDialog.getOpenFileName(CMainWindow, 'ملف نص', '' , '*')
         if path.exists(fileName) and fileName != '/':

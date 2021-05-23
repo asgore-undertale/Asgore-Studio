@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessa
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
-from Parts.Scripts.sortTables import sortCharsConvertingTable
+from Parts.Scripts.sortConvertingTables import sortCharsConvertingTable
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 from Parts.Scripts.UsefulFunctions import intToHex, hexToString
@@ -17,7 +17,7 @@ startpoint1 = '20'
 defultChars1 = ' !"#$%&' + "'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 userChars = 'ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼ'
 
-def saveATE(save_loc : str):
+def saveACT(save_loc : str):
     if not save_loc: return
     content = f'\nVERSION="1.0"\nSEPARATOR="{_SEPARATOR_}"\n#####################\nالحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
     
@@ -85,9 +85,9 @@ def windowTrig(action):
     def check(text): return action.text() == text
 
     if check("فتح جدول حروف .tbl"): loadTBL(open_file('tbl', CharsTablesCreatorWindow), Table, ROWS, COLS)
-    elif check("فتح جدول حروف .ate"): loadATE(open_file('ate', CharsTablesCreatorWindow), Table, ROWS, COLS, False)
+    elif check("فتح جدول حروف .act"): loadATE(open_file('act', CharsTablesCreatorWindow), Table, ROWS, COLS, False)
     elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(save_file('tbl', CharsTablesCreatorWindow), Table)
-    elif check("حفظ جدول الحروف كـ .ate"): saveATE(save_file('ate', CharsTablesCreatorWindow))
+    elif check("حفظ جدول الحروف كـ .act"): saveACT(save_file('act', CharsTablesCreatorWindow))
     elif check("حفظ جدول الحروف كـ .csv"): saveCSV(save_file('csv', CharsTablesCreatorWindow))
     elif check("مسح محتوى الجدول"): eraseTable(Table, ROWS, COLS)
 
@@ -111,9 +111,9 @@ bar = CharsTablesCreatorWindow.menuBar()
 file = bar.addMenu("ملف")
 
 file.addAction("فتح جدول حروف .tbl")
-file.addAction("فتح جدول حروف .ate")
+file.addAction("فتح جدول حروف .act")
 file.addAction("حفظ جدول الحروف كـ .tbl")
-file.addAction("حفظ جدول الحروف كـ .ate")
+file.addAction("حفظ جدول الحروف كـ .act")
 file.addAction("حفظ جدول الحروف كـ .csv")
 bar.addAction("مسح محتوى الجدول")
 

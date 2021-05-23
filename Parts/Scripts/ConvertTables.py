@@ -1,4 +1,5 @@
 import re
+from Parts.Scripts.sortConvertingTables import sortCharsConvertingTable
 
 #The Legend of Zelda: A Link to the Past
 #width = '666666663666766666676777766666666635637666656667777664666666663764468666668887777488888884888888884'
@@ -18,8 +19,8 @@ import re
 #yoffset_list = '0' * len(chars_list)
 #xadvance_list = '0' * len(chars_list)
 ################
-    
-def XmlToAte(tableContent):
+
+def XmlToAft(tableContent):
     chars_list = re.findall('<char id="(.*?)"', tableContent)
     x_list = re.findall('x="(.*?)"', tableContent)
     y_list = re.findall('y="(.*?)"', tableContent)
@@ -34,3 +35,12 @@ def XmlToAte(tableContent):
         table += f'\n{chr(int(c))}█{x}█{y}█{w}█{h}█{xoff}█{yoff}█{xad}'
     
     return table
+
+
+def ZtsToAct(tableContent):
+    lines = tableContent.split('\n')
+    string1, string2 = lines[0], lines[1]
+    table = '\nVERSION="1.0"\nSEPARATOR="█"\n#####################\nالحرف█أول█وسط█آخر█منفصل'
+
+    for i, j in zip(string1, string2): table += f'\n{i}████{j}'
+    return sortCharsConvertingTable(table)

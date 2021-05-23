@@ -14,7 +14,7 @@ def open_file(type : str, window):
 
 def save_file(type : str, window):
     _save, _ = QFileDialog.getSaveFileName(window, 'جدول حروف', '' , '*.'+type)
-    return _save * (_save != '/') * (_save != '') * (path.exists(_save))
+    return _save * (_save != '/') * (_save != '')
 
 def delete_trash(table : str):
     while _SEPARATOR_+'\n' in table: table = table.replace(_SEPARATOR_+'\n', '\n')
