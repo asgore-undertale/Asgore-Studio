@@ -501,7 +501,9 @@ def enter(convert_bool = True):
             
             if convert_bool: translation = convert(translation)
             if too_long_check.isChecked() and len(translation.encode('utf-8').hex()) > len(text.encode('utf-8').hex()): continue
-            file_content = file_content.replace(bytes(text, 'utf-8'), bytes(translation, 'utf-8'), 1)
+            if text in file_content:
+                file_content = file_content.replace(bytes(text, 'utf-8'), bytes(translation, 'utf-8'), 1)
+                del textList[i]
         
         directory = filename.replace('./'+input_folder, output_folder)
         makedirs(path.dirname(directory), exist_ok=True)
