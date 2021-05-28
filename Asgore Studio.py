@@ -28,7 +28,7 @@ class MotherWindow(QMainWindow):
         elif check("خيارات التحويل"): self.newChild(OptionsWindow, OptionsContainer, 'خيارات التحويل')
         elif check("محرّر msyt."): self.newChild(MsytWindow, MsytContainer, 'محرّر msyt.')
         elif check("مربع الحوار"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مربع الحوار')
-        elif check("منشئ الخطوط"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط')
+        elif check("منشئ الخطوط الموحدة الحجم"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط الموحدة الحجم')
         elif check("منشئ جداول الحروف"): self.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
         elif check("محوّل الجداول"): self.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
     
@@ -52,7 +52,7 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("خيارات التحويل")
         self.tools.addAction("محرّر msyt.")
         self.tools.addAction("مربع الحوار")
-        self.tools.addAction("منشئ الخطوط")
+        self.tools.addAction("منشئ الخطوط الموحدة الحجم")
         self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("محوّل الجداول")
 

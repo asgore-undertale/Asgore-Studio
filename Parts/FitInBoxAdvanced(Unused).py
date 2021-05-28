@@ -84,10 +84,10 @@ def setPygame(display, pygameWidth, pygameHeight, border_thick):
 
 def openFont():
     global pngDirectory, geoDirectory
-    d1, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'صورة الخط', '' , '*.jpg, *.png')
-    d2, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.aft')
-    if d1 and d1 != '/' and path.exists(d1): pngDirectory = d1
-    if d2 and d2 != '/' and path.exists(d2): geoDirectory = d2
+    d1, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'جدول الخط', '' , '*.aft')
+    d2, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'صورة الخط', '' , '*.jpg, *.png')
+    if d1 and d1 != '/' and path.exists(d1): geoDirectory = d1
+    if d2 and d2 != '/' and path.exists(d2): pngDirectory = d2
 
 def start():
     if boxWidthCell.toPlainText(): boxWidth = int(float(boxWidthCell.toPlainText()))

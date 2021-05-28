@@ -2,8 +2,8 @@ import re
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 
 def increase_y(y : int, text : str):
-    if y == fit.lines_num - 1: return 0, text + fit.newpage
-    else: return y + 1, text + fit.newline
+    if y == fit.lines_num - 1: return 0, fit.newpage + text
+    else: return y + 1, fit.newline + text
 
 def handle_xy(x : int, y : int, textWidth : int, newtext : str):
     if x + textWidth > fit.boxWidth:
@@ -30,7 +30,7 @@ def checkWord(word : str, x : int, y : int, case : bool, newword = ''):
         for char in word:
             if checkChar(char): continue
             newword += char
-        x = word_width
+        x = width(newword)
         y, newword = increase_y(y, newword)
     return newword, x, y
 
