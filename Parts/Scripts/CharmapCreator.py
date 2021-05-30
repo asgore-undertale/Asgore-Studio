@@ -27,7 +27,7 @@ def CreateCharmap(fnt_directory, text = '', fontSize = 0, type = 'aft'):
         
         for r in range(5, len(rows)):
             row = rows[r]
-            if not row or row[0] == '#': continue
+            if not row or '|#|' in row: continue
             cols = row.split(SEPARATOR)
             charmap[cols[0]] = (int(cols[1]), int(cols[2]), int(cols[3]), int(cols[4]), int(cols[5]), int(cols[6]), int(cols[7]))
     

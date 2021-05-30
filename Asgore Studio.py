@@ -27,7 +27,8 @@ class MotherWindow(QMainWindow):
         elif check("المدخل والمستخرج"): self.newChild(EnteringWindow, EnteringContainer, 'المدخل والمستخرج')
         elif check("خيارات التحويل"): self.newChild(OptionsWindow, OptionsContainer, 'خيارات التحويل')
         elif check("محرّر msyt."): self.newChild(MsytWindow, MsytContainer, 'محرّر msyt.')
-        elif check("مربع الحوار"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مربع الحوار')
+        elif check("مجرب الخطوط"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مجرب الخطوط')
+        elif check("إعدادات مجرب الخطوط"): self.newChild(FitAdvancedOptionsWindow, FitAdvancedOptionsContainer, 'إعدادات مجرب الخطوط')
         elif check("منشئ الخطوط الموحدة الحجم"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط الموحدة الحجم')
         elif check("منشئ جداول الحروف"): self.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
         elif check("محوّل الجداول"): self.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
@@ -51,7 +52,8 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("المدخل والمستخرج")
         self.tools.addAction("خيارات التحويل")
         self.tools.addAction("محرّر msyt.")
-        self.tools.addAction("مربع الحوار")
+        self.tools.addAction("مجرب الخطوط")
+        self.tools.addAction("إعدادات مجرب الخطوط")
         self.tools.addAction("منشئ الخطوط الموحدة الحجم")
         self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("محوّل الجداول")
@@ -73,7 +75,7 @@ if __name__ == '__main__':
     from Parts.AsgoreTablesEditor import TableEditorWindow
     from Parts.ATCEE import OptionsWindow, CMainWindow, EnteringWindow
     from Parts.AsgoreMsytTool import MsytWindow
-    from Parts.FitInBoxAdvanced import FitAdvancedWindow
+    from Parts.FitInBoxAdvanced import FitAdvancedWindow, FitAdvancedOptionsWindow
     from Parts.FontsCreator import FontsCreatorWindow
     from Parts.TablesConverter import TablesConverterWindow
     from Parts.CharsTablesCreator import CharsTablesCreatorWindow
@@ -93,6 +95,8 @@ if __name__ == '__main__':
     MsytContainer.setWidget(MsytWindow)
     FitAdvancedContainer = QMdiSubWindow()
     FitAdvancedContainer.setWidget(FitAdvancedWindow)
+    FitAdvancedOptionsContainer = QMdiSubWindow()
+    FitAdvancedOptionsContainer.setWidget(FitAdvancedOptionsWindow)
     FontsCreatorContainer = QMdiSubWindow()
     FontsCreatorContainer.setWidget(FontsCreatorWindow)
     TablesConverterContainer = QMdiSubWindow()
