@@ -12,8 +12,8 @@ from ctypes import windll
 import keyboard
 import pygame
 
-def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, display, fontSize, lineBox, from_Right = False,
-                x = 0, y = 0, sleep_time = 0):
+def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, display, fontSize,
+                lineBox = False, from_Right = False, boxAnimation = False, x = 0, y = 0):
     if FileDirectory.endswith('.ttf'): dialogue_font = pygame.font.Font(FileDirectory, font_size)
     
     Y = y
@@ -22,7 +22,7 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
     
     for page in textList:
         _y = Y
-        conversation(0, 0, box_width + border_thick * 2, box_height + border_thick * 2, 0, (255, 255, 255), border_thick, display)
+        conversation(0, 0, box_width + border_thick * 2, box_height + border_thick * 2, 0, (255, 255, 255), border_thick, boxAnimation, display)
         for line in page:
             _x = X
             for char in line:
@@ -49,7 +49,6 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
                 else: _x += char_width + char_xadvance
                 
                 pygame.display.update()
-                sleep(sleep_time)
             
             if lineBox: pygame.draw.rect(display, (255, 0, 0), (x, _y, box_width, fontSize), 1)
             pygame.display.update()
@@ -57,10 +56,16 @@ def type_in_box(textList, font_size, box_width, box_height, px_per_line, charmap
             _y += font_size + px_per_line
         
         while True:
-            pygameCheck()
+            pygameCheck(display)
             if keyboard.is_pressed('enter'): break
 
-def conversation(x, y, width, height, box_color, border_color, border_thick, display):
+def conversation(x, y, width, height, box_color, border_color, border_thick, boxAnimation, display):
+    if not boxAnimation:
+        pygame.draw.rect(display, box_color, (x, y, width, height))
+        pygame.draw.rect(display, border_color, (x, y, width, height), border_thick)
+        pygame.display.update()
+        return
+        
     frames = 100
     x, w = width / 2, 0
     for i in range(frames):
@@ -80,9 +85,9 @@ def conversation(x, y, width, height, box_color, border_color, border_thick, dis
         sleep(0.0025)
 
 def fit_advance(text = '', fontSize = 16, box_width = 10, box_height = 10, px_per_line = 10, fnt_directory = '', img_directory = '', newline = '', newpage = '',
-                before_command = '', after_command = '', from_Right = False, lineBox = False, lineOffset = 3, offsetWith = 0, offsetCommand = '', sleep_time = 0):
+                before_command = '', after_command = '', from_Right = False, lineBox = False, boxAnimation = False, lineOffset = 3, offsetWith = 0, offsetCommand = ''):
     if (not fnt_directory or not img_directory) and not fnt_directory.endswith('.ttf'):
-        QMessageBox.about(FitAdvancedWindow, "تذكر", "لا تنسى تحديد ملف وصورة الخط")
+        QMessageBox.about(FitAdvancedWindow, "تذكر", "لا تنسى اختيار الخط")
         return
     
     border_thick = 10
@@ -117,14 +122,18 @@ def fit_advance(text = '', fontSize = 16, box_width = 10, box_height = 10, px_pe
     SetWindowPos = windll.user32.SetWindowPos
     SetWindowPos(pygame.display.get_wm_info()['window'], -1, 250, 250, 0, 0, 0x0001)
     
-    type_in_box(textList, fontSize, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, textbox, fontSize, lineBox, from_Right,
-                border_thick, border_thick, sleep_time)
+    type_in_box(textList, fontSize, box_width, box_height, px_per_line, charmap, border_thick, newline, newpage, textbox, fontSize,
+                lineBox, from_Right, boxAnimation, border_thick, border_thick)
 
-    while True: pygameCheck()
+    while True: pygameCheck(textbox)
 
-def pygameCheck():
+def pygameCheck(display):
     for event in pygame.event.get():
         if event.type is pygame.QUIT: pygame.display.set_mode((1, 1), flags = pygame.HIDDEN)
+        elif event.type == pygame.KEYDOWN:
+            all_keys = pygame.key.get_pressed()
+            if all_keys[pygame.K_LCTRL] and all_keys[pygame.K_s]:
+                    pygame.image.save(display, save_file('png', FitAdvancedWindow))
 
 def openFont(Directory = ''):
     global pngDirectory, FileDirectory
@@ -136,6 +145,10 @@ def openFont(Directory = ''):
     if Directory: Directory, _ = QFileDialog.getOpenFileName(FitAdvancedWindow, 'صورة الخط', '' , '*.jpg *.png')
     if Directory and Directory != '/' and path.exists(Directory): pngDirectory = Directory
 
+def save_file(type : str, window):
+    _save, _ = QFileDialog.getSaveFileName(window, 'صورة', '' , '*.'+type)
+    return _save * (_save != '/') * (_save != '')
+
 def start():
     if fontSizeCell.toPlainText(): fontSize = int(float(fontSizeCell.toPlainText()))
     else: fontSize = 1
@@ -145,12 +158,10 @@ def start():
     else: boxHeight = 60
     if pixelsPerCell.toPlainText(): pixelsPer = float(pixelsPerCell.toPlainText())
     else: pixelsPer = 0
-    if timePerCharCell.toPlainText(): timePerChar = float(timePerCharCell.toPlainText())
-    else: timePerChar = 0
     offset = offsetComboBox.currentIndex() -1
     offsetWith = offsetWithComboBox.currentIndex()
     
-    fit_advance(enteredTextCell.toPlainText(), fontSize, boxWidth, boxHeight, pixelsPer, FileDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), lineBoxCheck.isChecked(), offset, offsetWith, offsetCommandCell.toPlainText(), timePerChar)
+    fit_advance(enteredTextCell.toPlainText(), fontSize, boxWidth, boxHeight, pixelsPer, FileDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), lineBoxCheck.isChecked(), boxAnimationCheck.isChecked(), offset, offsetWith, offsetCommandCell.toPlainText())
 
 FileDirectory, pngDirectory = '', ''
 
@@ -169,7 +180,7 @@ resultTextLabel_2.setText("النص الناتج:")
 
 enteredTextCell = QTextEdit(FitAdvancedWindow)
 enteredTextCell.setGeometry(QRect(20, 30, 200, 150))
-enteredTextCell.setPlainText('السلام عليكم')
+enteredTextCell.setPlainText('تجربة الخط')
 resultTextCell = QTextEdit(FitAdvancedWindow)
 resultTextCell.setGeometry(QRect(20, 210, 200, 150))
 
@@ -182,9 +193,9 @@ fontButton.setText("الخط")
 
 
 FitAdvancedOptionsWindow = QMainWindow()
-FitAdvancedOptionsWindow.setFixedSize(465, 370)
+FitAdvancedOptionsWindow.setFixedSize(480, 330)
 
-labelsWidth, labelsHeight = 130, 26
+labelsWidth, labelsHeight = 145, 26
 
 def y(num, height = 26, per = 10, first = 20):
     return first + (num * height) + ((num - 1) * per)
@@ -237,17 +248,11 @@ afterComCell.setText("]")
 afterComLabel = QLabel(FitAdvancedOptionsWindow)
 afterComLabel.setGeometry(QRect(320, y(7), labelsWidth, labelsHeight))
 afterComLabel.setText("ما بعدها:")
-timePerCharCell = QTextEdit(FitAdvancedOptionsWindow)
-timePerCharCell.setGeometry(QRect(240, y(8), 70, 26))
-timePerCharCell.setText("0")
-timePerCharLabel = QLabel(FitAdvancedOptionsWindow)
-timePerCharLabel.setGeometry(QRect(320, y(8), labelsWidth, labelsHeight))
-timePerCharLabel.setText("الزمن بين كل حرف بالثواني:")
 offsetCommandCell = QTextEdit(FitAdvancedOptionsWindow)
-offsetCommandCell.setGeometry(QRect(240, y(9), 70, 26))
+offsetCommandCell.setGeometry(QRect(240, y(8), 70, 26))
 offsetCommandCell.setText("(px)")
 offsetCommandLabel = QLabel(FitAdvancedOptionsWindow)
-offsetCommandLabel.setGeometry(QRect(320, y(9), labelsWidth, labelsHeight))
+offsetCommandLabel.setGeometry(QRect(320, y(8), labelsWidth, labelsHeight))
 offsetCommandLabel.setText("أمر الإزاحة:")
 
 offsetComboBoxOptions = ["اترك النص على حاله", "النص في البداية واملأ ما بعده", "النص في النهاية واملأ ما قبله",
@@ -271,10 +276,13 @@ offsetWithComboBoxLabel.setGeometry(QRect(130, 80, 80, 20))
 offsetWithComboBoxLabel.setText("باستعمال:")
 
 fromRightCheck = QCheckBox("تدفق النص من اليمين", FitAdvancedOptionsWindow)
-fromRightCheck.setGeometry(QRect(80, 310, 145, 26))
+fromRightCheck.setGeometry(QRect(80, 250, 145, 26))
 fromRightCheck.setLayoutDirection(Qt.RightToLeft)
+boxAnimationCheck = QCheckBox("أنميشن مربع الحوار", FitAdvancedOptionsWindow)
+boxAnimationCheck.setGeometry(QRect(80, 275, 145, 26))
+boxAnimationCheck.setLayoutDirection(Qt.RightToLeft)
 lineBoxCheck = QCheckBox("صناديق الأسطر", FitAdvancedOptionsWindow)
-lineBoxCheck.setGeometry(QRect(80, 335, 145, 26))
+lineBoxCheck.setGeometry(QRect(80, 300, 145, 26))
 lineBoxCheck.setLayoutDirection(Qt.RightToLeft)
 
 fontButton.clicked.connect(lambda: openFont())
