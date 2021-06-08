@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QFileDialog, QMessageBox, QComboBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QFileDialog, QMessageBox, QComboBox, QWidget, QGridLayout
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.LineOffset import *
 from Parts.Scripts.CharmapCreator import CreateCharmap
@@ -114,7 +114,7 @@ def fit_advance(text = '', fontSize = 16, box_width = 10, box_height = 10, px_pe
         
         fitted_text = newpage.join([newline.join(page) for page in textList])
     
-    resultTextCell.setPlainText(fitted_text)
+    resultTextBox.setPlainText(fitted_text)
     
     pygame.display.set_caption('Font Tester')
     textbox = pygame.display.set_mode((int(box_width + border_thick * 2), int(box_height + border_thick * 2)))
@@ -161,7 +161,7 @@ def start():
     offset = offsetComboBox.currentIndex() -1
     offsetWith = offsetWithComboBox.currentIndex()
     
-    fit_advance(enteredTextCell.toPlainText(), fontSize, boxWidth, boxHeight, pixelsPer, FileDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), lineBoxCheck.isChecked(), boxAnimationCheck.isChecked(), offset, offsetWith, offsetCommandCell.toPlainText())
+    fit_advance(enteredTextBox.toPlainText(), fontSize, boxWidth, boxHeight, pixelsPer, FileDirectory, pngDirectory, newLineCell.toPlainText(), newPageCell.toPlainText(), beforeComCell.toPlainText(), afterComCell.toPlainText(), fromRightCheck.isChecked(), lineBoxCheck.isChecked(), boxAnimationCheck.isChecked(), offset, offsetWith, offsetCommandCell.toPlainText())
 
 FileDirectory, pngDirectory = '', ''
 
@@ -169,27 +169,37 @@ app = QApplication(argv)
 pygame.init()
 
 FitAdvancedWindow = QMainWindow()
-FitAdvancedWindow.setFixedSize(240, 420)
+container = QWidget()
+FitAdvancedWindow.resize(240, 420)
 
-enteredTextLabel = QLabel(FitAdvancedWindow)
-enteredTextLabel.setGeometry(QRect(130, 5, 81, 20))
-enteredTextLabel.setText("النص الداخل:")
-resultTextLabel_2 = QLabel(FitAdvancedWindow)
-resultTextLabel_2.setGeometry(QRect(130, 185, 81, 20))
-resultTextLabel_2.setText("النص الناتج:")
+layout = QGridLayout()
+container.setLayout(layout)
+FitAdvancedWindow.setCentralWidget(container)
 
-enteredTextCell = QTextEdit(FitAdvancedWindow)
-enteredTextCell.setGeometry(QRect(20, 30, 200, 150))
-enteredTextCell.setPlainText('تجربة الخط')
-resultTextCell = QTextEdit(FitAdvancedWindow)
-resultTextCell.setGeometry(QRect(20, 210, 200, 150))
+enteredTextBox = QTextEdit(FitAdvancedWindow)
+resultTextBox = QTextEdit(FitAdvancedWindow)
+enteredTextBox.setPlainText('تجربة الخط')
 
-startButton = QPushButton(FitAdvancedWindow)
-startButton.setGeometry(QRect(30, 370, 80, 40))
+enteredTextLabel = QLabel()
+resultTextLabel = QLabel()
+enteredTextLabel.setText("   النص الداخل:")
+resultTextLabel.setText("   النص الناتج:")
+
+minilayout = QGridLayout()
+startButton = QPushButton()
+fontButton = QPushButton()
+startButton.resize(80, 40)
+fontButton.resize(80, 40)
 startButton.setText("بدء")
-fontButton = QPushButton(FitAdvancedWindow)
-fontButton.setGeometry(QRect(130, 370, 80, 40))
 fontButton.setText("الخط")
+
+layout.addWidget(enteredTextLabel, 0, 0)
+layout.addWidget(enteredTextBox, 1, 0)
+layout.addWidget(resultTextLabel, 2, 0)
+layout.addWidget(resultTextBox, 3, 0)
+layout.addLayout(minilayout, 4, 0)
+minilayout.addWidget(startButton, 0, 1)
+minilayout.addWidget(fontButton, 0, 0)
 
 
 FitAdvancedOptionsWindow = QMainWindow()
