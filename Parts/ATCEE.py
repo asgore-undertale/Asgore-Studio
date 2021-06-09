@@ -1,6 +1,6 @@
 #استيراد المكتبات
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QVBoxLayout
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
 import openpyxl
@@ -21,7 +21,7 @@ from Parts.Scripts.Take_From_Table import Take_From_Table
 labels_font = QtGui.QFont()
 labels_font.setPointSize(9)
 textbox_font = QtGui.QFont()
-textbox_font.setPointSize(12)
+textbox_font.setPointSize(10)
 
 #نافذة خيارات التحويل
 OptionsWindow_Width = 400
@@ -132,33 +132,40 @@ UC_database_button.setText("قاعدة بيانات\nالتحويل")
 
 #النافذة الرئيسية
 CMainWindow = QMainWindow()
-CMainWindow.setFixedSize(685, 290)
+container = QWidget()
+CMainWindow.resize(685, 290)
 
-label = QLabel(CMainWindow)
-label.setGeometry(QtCore.QRect(580, 5, 81, 20))
-label.setFont(labels_font)
-label.setText("النص الداخل:")
-label_2 = QLabel(CMainWindow)
-label_2.setGeometry(QtCore.QRect(185, 5, 81, 20))
-label_2.setFont(labels_font)
-label_2.setText("النص الناتج:")
+layout = QGridLayout()
+container.setLayout(layout)
+CMainWindow.setCentralWidget(container)
 
-result_text = QTextEdit(CMainWindow)
-result_text.setGeometry(QtCore.QRect(10, 30, 270, 250))
-result_text.setFont(textbox_font)
-entered_text = QTextEdit(CMainWindow)
-entered_text.setGeometry(QtCore.QRect(405, 30, 270, 250))
-entered_text.setFont(textbox_font)
+enteredBox = QTextEdit()
+resultBox = QTextEdit()
+enteredBox.setPlainText('تجربة التحويل')
+enteredBox.setFont(textbox_font)
+resultBox.setFont(textbox_font)
 
-convert_button = QPushButton(CMainWindow)
-convert_button.setGeometry(QtCore.QRect(295, 95, 93, 28))
-convert_button.setText("تحويل")
-openfile_button = QPushButton(CMainWindow)
-openfile_button.setGeometry(QtCore.QRect(295, 130, 93, 41))
-openfile_button.setText("فتح ملف\nنص")
-convert_files_button = QPushButton(CMainWindow)
-convert_files_button.setGeometry(QtCore.QRect(295, 177, 93, 41))
-convert_files_button.setText("فتح مجلد\nوتحويل ملفاته")
+enteredLabel = QLabel()
+resultLabel = QLabel()
+enteredLabel.setText("   النص الداخل:")
+resultLabel.setText("   النص الناتج:")
+
+minilayout = QVBoxLayout()
+convertButton = QPushButton()
+openFileButton = QPushButton()
+ConvertFilesButton = QPushButton()
+convertButton.setText("تحويل")
+openFileButton.setText("فتح ملف\nنص")
+ConvertFilesButton.setText("فتح مجلد\nوتحويل ملفاته")
+
+layout.addWidget(enteredLabel, 0, 0)
+layout.addWidget(enteredBox, 1, 0)
+layout.addWidget(resultLabel, 0, 2)
+layout.addWidget(resultBox, 1, 2)
+layout.addLayout(minilayout, 1, 1)
+minilayout.addWidget(convertButton)
+minilayout.addWidget(openFileButton)
+minilayout.addWidget(ConvertFilesButton)
 
 
 #نافذة الإدخال
@@ -250,9 +257,9 @@ extract_database_button.setGeometry(QtCore.QRect(20, 270, 93, 41))
 extract_database_button.setText("فتح قاعدة\nبيانات الاستخراج")
 
 #توصيل الإشارات
-convert_button.clicked.connect(lambda: result_text.setPlainText(convert(entered_text.toPlainText())))
-openfile_button.clicked.connect(lambda: open_def(4))
-convert_files_button.clicked.connect(lambda:convertFiles())
+convertButton.clicked.connect(lambda: resultBox.setPlainText(convert(enteredBox.toPlainText())))
+openFileButton.clicked.connect(lambda: open_def(4))
+ConvertFilesButton.clicked.connect(lambda:convertFiles())
 
 text_database_button.clicked.connect(lambda: open_def(0))
 UC_database_button.clicked.connect(lambda: open_def(1))
@@ -325,7 +332,7 @@ def open_def(num):
     elif num == 4:
         fileName, _ = QFileDialog.getOpenFileName(CMainWindow, 'ملف نص', '' , '*')
         if path.exists(fileName) and fileName != '/':
-            entered_text.setPlainText(open(fileName, 'r', encoding='utf-8').read())
+            enteredBox.setPlainText(open(fileName, 'r', encoding='utf-8').read())
             QMessageBox.about(CMainWindow, "!!تهانيّ", "تم اختيار ملف النص.")
     elif num == 5:
         folder = str(QFileDialog.getExistingDirectory(EnteringWindow, "Select Directory"))+'/'
