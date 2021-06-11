@@ -443,6 +443,10 @@ def convertFiles():
     
     QMessageBox.about(EnteringWindow, "!!تهانينا", "انتهى تحويل الملفات.")
 
+def checkToEnter(text, translation):
+    if len(translation.encode('utf-8').hex()) > len(text.encode('utf-8').hex()): return
+    return True
+
 def enter(convert_bool = True):
     ##المتغيرات
     textList = []
@@ -478,6 +482,10 @@ def enter(convert_bool = True):
             translate_cell_value = text_table['B'+str(cell)].value
             
             if original_cell_value and translate_cell_value:
+                if convert_bool: translate_cell_value = convert(translate_cell_value)
+                if too_long_check.isChecked():
+                    if not checkToEnter(original_cell_value, translate_cell_value):
+                        continue
                 textList.append([original_cell_value, translate_cell_value])
         
         sorted(textList, key=lambda x: len(str(x[0])), reverse=True)
@@ -489,17 +497,20 @@ def enter(convert_bool = True):
         with open(filename, 'rb') as f:
             file_content = f.read()
         
-        for i in range(len(textList)):
+        textListLength = len(textList)
+        for i in range(textListLength):
+            if i == len(textList): break
+            
             text, translation = textList[i][0], textList[i][1]
             text = before + text + after
             translation = before + translation + after
             
+            bytetext = bytes(text, 'utf-8')
+            # print(i, len(textList), bytetext in file_content, textList[i])
+            
             if translation_place_check.isChecked() and len(translation.encode('utf-8').hex()) < len(text.encode('utf-8').hex()):
                 spaces_count = (len(text.encode('utf-8').hex()) // 2) - (len(translation.encode('utf-8').hex()) // 2)
-                if first_radio.isChecked():#first
-                    for i in range(spaces_count):
-                        translation += ' '
-                elif middle_radio.isChecked():#middle
+                if middle_radio.isChecked():#middle
                     for i in range(spaces_count):
                         if i % 2 == 0:
                             translation += ' '
@@ -508,11 +519,12 @@ def enter(convert_bool = True):
                 elif last_radio.isChecked():#last
                     for i in range(spaces_count):
                         translation = ' ' + translation
+                else:#first_radio.isChecked() #first
+                    for i in range(spaces_count):
+                        translation += ' '
             
-            if convert_bool: translation = convert(translation)
-            if too_long_check.isChecked() and len(translation.encode('utf-8').hex()) > len(text.encode('utf-8').hex()): continue
-            if text in file_content:
-                file_content = file_content.replace(bytes(text, 'utf-8'), bytes(translation, 'utf-8'), 1)
+            if bytetext in file_content:
+                file_content = file_content.replace(bytetext, bytes(translation, 'utf-8'), 1)
                 del textList[i]
         
         directory = filename.replace('./'+input_folder, output_folder)

@@ -1,7 +1,8 @@
 from Parts.Scripts.TablesEditorsFunctions import _SEPARATOR_
 
-arabicChar = 'آأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيلآلألإلاپچڤ'
-charmap = {'آ' : ['', '', '', ''],
+arabicChar = 'ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيلآلألإلاپچڤ'
+charmap = {'ء' : ['', '', '', ''],
+           'آ' : ['', '', '', ''],
            'أ' : ['', '', '', ''],
            'ؤ' : ['', '', '', ''],
            'إ' : ['', '', '', ''],
@@ -46,7 +47,8 @@ charmap = {'آ' : ['', '', '', ''],
     }
 
 def check(char, convertTo):
-    if   char == 'ﺁ': charmap['آ'][3] = convertTo
+    if   char == 'ﺀ': charmap['ء'][3] = convertTo
+    elif char == 'ﺁ': charmap['آ'][3] = convertTo
     elif char == 'ﺂ': charmap['آ'][2] = convertTo
     elif char == 'ﺃ': charmap['أ'][3] = convertTo
     elif char == 'ﺄ': charmap['أ'][2] = convertTo

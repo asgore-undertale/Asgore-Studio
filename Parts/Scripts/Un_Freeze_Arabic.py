@@ -88,19 +88,17 @@ def Un_Freeze(text, case = True):
                 after = 0
 
             if textlist[i] not in letters_Table: #إن لم يكن في الجدول
-                if textlist[i] == 'ء':  #وضعت الهمزة هنا لأنها لم تعمل في الجدول
-                    new_text = u"\ufe80"
-                else:
-                    new_text = textlist[i]  #إن لم يكن في الجدول اترك الحرف كما هو
+                if textlist[i] == 'ء': new_text = u"\ufe80" # وضعت الهمزة هنا لأنها لم تعمل في الجدول لسبب ما
+                else: new_text = textlist[i] # إن لم يكن في الجدول اترك الحرف كما هو
             else:
                 #إن كان في الجدول فحدد شكله
                 if before == 0 and after == 1: #أول الكلمة
                     new_text = letters_Table[textlist[i]][0]
-                if before == 1 and after == 1: #وسط الكلمة
-                        new_text = letters_Table[textlist[i]][1]
-                if before == 1 and after == 0: #آخر الكلمة
+                elif before == 1 and after == 1: #وسط الكلمة
+                    new_text = letters_Table[textlist[i]][1]
+                elif before == 1 and after == 0: #آخر الكلمة
                     new_text = letters_Table[textlist[i]][2]
-                if before == 0 and after == 0: #منفصل
+                elif before == 0 and after == 0: #منفصل
                     new_text = letters_Table[textlist[i]][3]
 
             reshaped_text += str(new_text)  #أضف الحرف لمتغير واحد

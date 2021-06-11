@@ -7,8 +7,28 @@ def Take_From_Table(ate_file):
     
     for row in range(5, len(rows)):
         if not rows[row]: continue
+        for i in range(4 - rows[row].count(SEPARATOR)): rows[row] += SEPARATOR
         cols = rows[row].split(SEPARATOR)
-        if cols[0] == 'آ':
+        
+        if   cols[0] == 'ً':
+            chars_table['ﹰ'] = cols[4]
+        elif cols[0] == 'َ':
+            chars_table['ﹶ'] = cols[4]
+        elif cols[0] == 'ٌ':
+            chars_table['ﹲ'] = cols[4]
+        elif cols[0] == 'ُ':
+            chars_table['ﹸ'] = cols[4]
+        elif cols[0] == 'ٍ':
+            chars_table['ﹴ'] = cols[4]
+        elif cols[0] == 'ِ':
+            chars_table['ﹺ'] = cols[4]
+        elif cols[0] == 'ّ':
+            chars_table['ﹼ'] = cols[4]
+        elif cols[0] == 'ْ':
+            chars_table['ﹾ'] = cols[4]
+        elif cols[0] == 'ء':
+            chars_table['ﺀ'] = cols[4]
+        elif cols[0] == 'آ':
             chars_table['ﺁ'] = cols[4]
             chars_table['ﺂ'] = cols[3]
         elif cols[0] == 'أ':
@@ -187,6 +207,6 @@ def Take_From_Table(ate_file):
             chars_table['ﭭ'] = cols[2]
             chars_table['ﭬ'] = cols[1]
         else:
-            if len(cols) == 5: chars_table[cols[0]] = cols[4]
+            chars_table[cols[0]] = cols[4]
 
     return chars_table
