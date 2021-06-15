@@ -226,7 +226,7 @@ database_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 too_long_check = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي (بقيم الهيكس)", EnteringWindow)
 too_long_check.setGeometry(QtCore.QRect(440, 218,280, 16))
 too_long_check.setLayoutDirection(QtCore.Qt.RightToLeft)
-translation_place_check = QCheckBox(":مكان الترجمة في حال كانت أقصر", EnteringWindow)
+translation_place_check = QCheckBox("مكان الترجمة في حال كانت أقصر:", EnteringWindow)
 translation_place_check.setGeometry(QtCore.QRect(470, 243,250, 16))
 translation_place_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 
@@ -273,7 +273,7 @@ output_from_folder.clicked.connect(lambda: open_def(6))
 
 
 #المتغيرات
-converting_database_directory = r'Parts/Scripts/CharsConvertingTable.act'
+converting_database_directory = r'OtherFiles/CharsConvertingTable.act'
 text_database_directory = r'OtherFiles/TextTable.xlsx'
 extracted_text_database_directory = r'OtherFiles/ExtractedTextTable.xlsx'
 input_folder, output_folder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
@@ -284,30 +284,30 @@ else: convert_database = {}
 #الدوال
 def dir_list(path): return [root+'/'+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
 
+def byteInCell(text):
+    if not '[b]' in text: return text
+    return bytearray.fromhex(text.replace('[b]', '')).decode()
+
+def slashInCell(text):
+    return text.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+
 def cell():
-    if '[b]' in start_command.toPlainText(): cell._start_command = bytearray.fromhex(start_command.toPlainText().replace('[b]', '')).decode()
-    else: cell._start_command = start_command.toPlainText()
-    if '[b]' in end_command.toPlainText(): cell._end_command = bytearray.fromhex(end_command.toPlainText().replace('[b]', '')).decode()
-    else: cell._end_command = end_command.toPlainText()
-    if '[b]' in pageCommand.toPlainText(): cell._pageCommand = bytearray.fromhex(pageCommand.toPlainText().replace('[b]', '')).decode()
-    else: cell._pageCommand = pageCommand.toPlainText()
-    if '[b]' in lineCommand.toPlainText(): cell._lineCommand = bytearray.fromhex(lineCommand.toPlainText().replace('[b]', '')).decode()
-    else: cell._lineCommand = lineCommand.toPlainText()
-    if '[b]' in before_text_convert.toPlainText(): cell._before_text_convert = bytearray.fromhex(before_text_convert.toPlainText().replace('[b]', '')).decode()
-    else: cell._before_text_convert = before_text_convert.toPlainText()
-    if '[b]' in after_text_convert.toPlainText(): cell._after_text_convert = bytearray.fromhex(after_text_convert.toPlainText().replace('[b]', '')).decode()
-    else: cell._after_text_convert = after_text_convert.toPlainText()
-    if '[b]' in converted_byte.toPlainText(): cell._converted_byte = bytearray.fromhex(converted_byte.toPlainText().replace('[b]', '')).decode()
-    else: cell._converted_byte = converted_byte.toPlainText()
+    cell._start_command = byteInCell(start_command.toPlainText())
+    cell._end_command = byteInCell(end_command.toPlainText())
+    cell._pageCommand = byteInCell(pageCommand.toPlainText())
+    cell._lineCommand = byteInCell(lineCommand.toPlainText())
+    cell._before_text_convert = byteInCell(before_text_convert.toPlainText())
+    cell._after_text_convert = byteInCell(after_text_convert.toPlainText())
+    cell._converted_byte = byteInCell(converted_byte.toPlainText())
 
     if Slash_check.isChecked():
-        cell._start_command = cell._start_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._end_command = cell._end_command.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._pageCommand = cell._pageCommand.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._lineCommand = cell._lineCommand.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._before_text_convert = cell._before_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._after_text_convert = cell._after_text_convert.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-        cell._converted_byte = cell._converted_byte.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
+        cell._start_command = slashInCell(cell._start_command)
+        cell._end_command = slashInCell(cell._end_command)
+        cell._pageCommand = slashInCell(cell._pageCommand)
+        cell._lineCommand = slashInCell(cell._lineCommand)
+        cell._before_text_convert = slashInCell(cell._before_text_convert)
+        cell._after_text_convert = slashInCell(cell._after_text_convert)
+        cell._converted_byte = slashInCell(cell._converted_byte)
 
 def open_def(num):
     if num == 0:
@@ -399,7 +399,7 @@ def splitByLinesAndConvert(text):
 
 def convert(text):
     ##إلغاء العملية في حال تحقق إحدى هذه الشروط
-    if text == '': return
+    if not text: return text
     if (C_check.isChecked() or UC_check.isChecked()) and not path.exists(converting_database_directory):
         QMessageBox.about(CMainWindow, "!!خطأ", "قاعدة بيانات التحويل غير موجودة")
     
@@ -410,13 +410,11 @@ def convert(text):
             QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
             return
         
-        mini = min_text_convert.toPlainText()
-        maxi = max_text_convert.toPlainText()
-        if '[b]' in mini: mini = bytearray.fromhex(mini.replace('[b]', '')).decode()
-        if '[b]' in maxi: maxi = bytearray.fromhex(maxi.replace('[b]', '')).decode()
-        if mini == '': mini = 0
+        mini = byteInCell(min_text_convert.toPlainText())
+        maxi = byteInCell(max_text_convert.toPlainText())
+        if not mini: mini = 0
         else: mini = int(mini)
-        if maxi == '': maxi = 0
+        if not maxi: maxi = 0
         else: maxi = int(maxi)
         
         if mini > maxi:
@@ -444,16 +442,17 @@ def convertFiles():
     QMessageBox.about(EnteringWindow, "!!تهانينا", "انتهى تحويل الملفات.")
 
 def checkToEnter(text, translation):
+    if not text and not translation: return True
+    if text and not translation: return True
+    if not text and translation: return
     if len(translation.encode('utf-8').hex()) > len(text.encode('utf-8').hex()): return
     return True
 
 def enter(convert_bool = True):
     ##المتغيرات
     textList = []
-    before = before_text.toPlainText()
-    after = after_text.toPlainText()
-    if '[b]' in before: before = bytearray.fromhex(before.replace('[b]', '')).decode() 
-    if '[b]' in after: after = bytearray.fromhex(after.replace('[b]', '')).decode() 
+    before = byteInCell(before_text.toPlainText())
+    after = byteInCell(after_text.toPlainText())
     
     ##إلغاء العملية في حال تحقق إحدى هذه الشروط
     if C_check.isChecked() or UC_check.isChecked():
@@ -465,8 +464,8 @@ def enter(convert_bool = True):
         return
     if not path.exists(output_folder):
         mkdir(output_folder)
-    files_list = dir_list('./'+input_folder)
-    if len(files_list) == 0:
+    files_list = dir_list(input_folder)
+    if not files_list:
         QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف كل العمليات،\nلا توجد أي ملفات للإدخال إليها.")
         return
     
@@ -476,37 +475,41 @@ def enter(convert_bool = True):
             QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف كل العمليات،\nقاعدة بيانات النصوص غير موجودة.")
             return
         text_xlsx = openpyxl.load_workbook(text_database_directory)
-        text_table = text_xlsx.get_sheet_by_name("Main")
-        for cell in range(2, len(text_table['A'])+1):
-            original_cell_value = text_table['A'+str(cell)].value
-            translate_cell_value = text_table['B'+str(cell)].value
+        for sheet in text_xlsx.sheetnames:
+            text_table = text_xlsx.get_sheet_by_name(sheet)
             
-            if original_cell_value and translate_cell_value:
+            for cell in range(2, len(text_table['A'])+1):
+                original_cell_value = text_table['A'+str(cell)].value
+                translate_cell_value = text_table['B'+str(cell)].value
+                
+                if not original_cell_value: continue
+                if not translate_cell_value: translate_cell_value = ''
                 if convert_bool: translate_cell_value = convert(translate_cell_value)
                 if too_long_check.isChecked():
                     if not checkToEnter(original_cell_value, translate_cell_value):
                         continue
+                
                 textList.append([original_cell_value, translate_cell_value])
         
-        sorted(textList, key=lambda x: len(str(x[0])), reverse=True)
+        textList = sorted(textList, key=lambda x: len(str(x[0])), reverse=True)
     else:
-        if original_text.toPlainText(): return
+        if not original_text.toPlainText(): return
         textList.append([original_text.toPlainText(), translate_text.toPlainText()])
     
     for filename in files_list:
         with open(filename, 'rb') as f:
             file_content = f.read()
-        
+                
         textListLength = len(textList)
+        j = 0
         for i in range(textListLength):
-            if i == len(textList): break
+            i -= j
             
             text, translation = textList[i][0], textList[i][1]
             text = before + text + after
             translation = before + translation + after
             
             bytetext = bytes(text, 'utf-8')
-            # print(i, len(textList), bytetext in file_content, textList[i])
             
             if translation_place_check.isChecked() and len(translation.encode('utf-8').hex()) < len(text.encode('utf-8').hex()):
                 spaces_count = (len(text.encode('utf-8').hex()) // 2) - (len(translation.encode('utf-8').hex()) // 2)
@@ -526,8 +529,9 @@ def enter(convert_bool = True):
             if bytetext in file_content:
                 file_content = file_content.replace(bytetext, bytes(translation, 'utf-8'), 1)
                 del textList[i]
+                j += 1
         
-        directory = filename.replace('./'+input_folder, output_folder)
+        directory = filename.replace(input_folder, output_folder, 1) ###
         makedirs(path.dirname(directory), exist_ok=True)
         open(directory, 'wb').write(file_content)
     
