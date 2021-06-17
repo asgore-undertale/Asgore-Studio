@@ -1,7 +1,8 @@
 from Parts.Scripts.TablesEditorsFunctions import _SEPARATOR_
 
 arabicChar = 'ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيلآلألإلاپچڤ'
-charmap = {'ء' : ['', '', '', ''],
+charmap = {}
+charmapParent = {'ء' : ['', '', '', ''],
            'آ' : ['', '', '', ''],
            'أ' : ['', '', '', ''],
            'ؤ' : ['', '', '', ''],
@@ -184,10 +185,13 @@ def check(char, convertTo):
     elif char == 'ﭫ': charmap['ڤ'][2] = convertTo
     elif char == 'ﭭ': charmap['ڤ'][1] = convertTo
     elif char == 'ﭬ': charmap['ڤ'][0] = convertTo
-    else: charmap[char] = ('', '', '', char)
+    else: charmap[char] = ['', '', '', convertTo]
 
 def sortCharsConvertingTable(table):
+    global charmap
+    charmap = dict(charmapParent)
     newTable = ''
+    
     for line in table.split('\n'):
         if _SEPARATOR_ not in line or line == f'SEPARATOR="{_SEPARATOR_}"' or line == f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل' or line == f'ﺍﻟﺤﺮﻑ{_SEPARATOR_}ﺃﻭﻝ{_SEPARATOR_}ﻭﺳﻂ{_SEPARATOR_}ﺁﺧﺮ{_SEPARATOR_}ﻣﻨﻔﺼﻞ':
             newTable += line + '\n'
@@ -199,7 +203,7 @@ def sortCharsConvertingTable(table):
     for k, v in charmap.items():
         if not ''.join(v): continue
         
-        V = list(v)
+        V = v
         if k in arabicChar:
             if not V[0] and V[1]: V[0] = V[1]
             if not V[1] and V[0]: V[1] = V[0]

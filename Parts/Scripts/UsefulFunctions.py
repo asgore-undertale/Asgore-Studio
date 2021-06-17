@@ -1,10 +1,10 @@
 def intToHex(num):
     hexstring = str(hex(num)).replace("0x","")
-    if num < 16: hexstring = '0' + hexstring
+    if len(hexstring) % 2: hexstring = '0' + hexstring
     return hexstring
 
 def hexToString(hexstring):
-    if hexstring % 2: return
+    if len(hexstring) % 2: hexstring = '0' + hexstring
     try:
         return bytearray.fromhex(hexstring).decode()
     except:

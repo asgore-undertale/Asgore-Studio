@@ -16,8 +16,12 @@ def save_file(type : str, window):
     _save, _ = QFileDialog.getSaveFileName(window, 'جدول حروف', '' , '*.'+type)
     return _save * (_save != '/') * (_save != '')
 
-def delete_trash(table : str):
-    while _SEPARATOR_+'\n' in table: table = table.replace(_SEPARATOR_+'\n', '\n')
+def deleteEmptyLines(table : str):
+    while '\n\n' in table: table = table.replace('\n\n', '\n')
+    return table
+
+def delete_trash(table : str, seperator : str):
+    while seperator+'\n' in table: table = table.replace(seperator+'\n', '\n')
     #while '\n\n' in table: table = table.replace('\n\n', '\n')
     while table[-1] == '\n': table = table[:-1]
 
@@ -40,7 +44,7 @@ def loadATE(table : str, Table, ROWS, COLS, increaseCells : bool):
     eraseTable(Table, ROWS, COLS)
     
     table = open(table, 'r', encoding="utf-8").read()
-    table = delete_trash(table)
+    table = delete_trash(table, _SEPARATOR_)
     rows = table.split('\n')
     
     if len(rows) > ROWS and increaseCells:
@@ -65,7 +69,8 @@ def saveTBL(save_loc : str, Table):
     
     for row in range(Table.rowCount()):
         for col in range(Table.columnCount()):
-            if Table.item(row, col): content += f'{intToHex(row)}{intToHex(col)}={Table.item(row, col).text()}\n'
+            if Table.item(row, col) and Table.item(row, col).text():
+                content += f'{intToHex(row)[1]}{intToHex(col)[1]}={Table.item(row, col).text()}\n'
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
@@ -77,12 +82,13 @@ def saveATE(save_loc : str, Table):
     for row in range(Table.rowCount()):
         csv_row = []
         for col in range(Table.columnCount()):
-            if Table.item(row, col).text(): csv_row.append(Table.item(row, col).text())
+            if Table.item(row, col) and Table.item(row, col).text():
+                csv_row.append(Table.item(row, col).text())
             else: csv_row.append('')
  
         content += _SEPARATOR_.join(csv_row) + '\n'
     
-    content = delete_trash(content)
+    content = delete_trash(content, _SEPARATOR_)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
@@ -90,14 +96,18 @@ def saveATE(save_loc : str, Table):
 def saveCSV(save_loc : str, Table):
     if not save_loc: return
     content = f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
+    delimiter = ','
     
     for row in range(Table.rowCount()):
         csv_row = []
         for col in range(Table.columnCount()):
-            if not Table.item(row, col): continue
-            content += f'{Table.item(row, col).text()},,,,{hexToString(intToHex(row)+intToHex(col))}\n'
+            if Table.item(row, col) and Table.item(row, col).text():
+                csv_row.append(Table.item(row, col).text().replace(delimiter, f'"{delimiter}"'))
+            else: csv_row.append('')
     
-    content = delete_trash(content)
+        content += delimiter.join(csv_row) + '\n'
+        
+    content = delete_trash(content, delimiter)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")

@@ -25,9 +25,11 @@ def saveACT(save_loc : str):
         csv_row = []
         for col in range(Table.columnCount()):
             if not Table.item(row, col): continue
-            content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)+intToHex(col))}\n'
+            if not Table.item(row, col).text(): continue
+            content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)[1]+intToHex(col)[1])}\n'
     
-    content = sortCharsConvertingTable(delete_trash(content))
+    content = sortCharsConvertingTable(delete_trash(content, _SEPARATOR_))
+    content = deleteEmptyLines(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
@@ -35,22 +37,26 @@ def saveACT(save_loc : str):
 def saveCSV(save_loc : str):
     if not save_loc: return
     content = f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل\n'
+    delimiter = ','
     
     for row in range(Table.rowCount()):
-        csv_row = []
         for col in range(Table.columnCount()):
             if not Table.item(row, col): continue
-            content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)+intToHex(col))}\n'
+            if not Table.item(row, col).text(): continue
+            char = Table.item(row, col).text().replace(delimiter, f'"{delimiter}"')
+            convert = hexToString(intToHex(row)[1]+intToHex(col)[1]).replace(delimiter, f'"{delimiter}"')
+            content += f'{char}{_SEPARATOR_*4}{convert}\n'
     
-    content = sortCharsConvertingTable(delete_trash(content)).replace(_SEPARATOR_, ',')
+    content = sortCharsConvertingTable(delete_trash(content, _SEPARATOR_)).replace(_SEPARATOR_, delimiter)
+    content = deleteEmptyLines(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
     QMessageBox.about(Table, "!!تم", "تم حفظ الجدول.")
 
-def setChars(startPos, Chars):
+def setChars(startSpot, Chars):
     for i in range(len(Chars)):
-        col = int(startPos[1], 16) + i %  16
-        row = int(startPos[0], 16) + i // 16
+        col = int(startSpot[1], 16) + i %  16
+        row = int(startSpot[0], 16) + i // 16
         Table.setItem(row, col, QTableWidgetItem(Chars[i]))
 
 def writeChar():
