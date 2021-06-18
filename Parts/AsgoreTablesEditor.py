@@ -1,7 +1,7 @@
-from sys import argv, exit
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QVBoxLayout, QMessageBox, QAction
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
+from sys import argv, exit
 
 app = QApplication(argv)
 ROWS, COLS = 100, 40

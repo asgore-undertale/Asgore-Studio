@@ -45,21 +45,30 @@ next_button = QPushButton()
 next_button.setText(">")
 back_button = QPushButton()
 back_button.setText("<")
-
 per = QLabel()
 per.setFont(label_font)
+
+minilayout3 = QHBoxLayout()
+endCommandCell = QTextEdit()
+endCommandCell.setFixedSize(120, 26)
+endCommandCell.setText("<END>")
+endCommandLabel = QLabel()
+endCommandLabel.setText("أمر نهاية الجملة:")
 
 layout.addWidget(fileTypeComboBox, 0, 0)
 layout.addLayout(minilayout2, 1, 0)
 layout.addWidget(msytBox, 2, 0)
 layout.addLayout(minilayout, 3, 0)
 layout.addWidget(translationBox, 4, 0)
-minilayout.addWidget(per)
+layout.addLayout(minilayout3, 5, 0)
 minilayout.addWidget(open_button)
 minilayout.addWidget(save_button)
 minilayout.addWidget(text_button)
 minilayout2.addWidget(back_button)
+minilayout2.addWidget(per)
 minilayout2.addWidget(next_button)
+minilayout3.addWidget(endCommandLabel)
+minilayout3.addWidget(endCommandCell)
 
 text_button.clicked.connect(lambda: openTextDataBase())
 back_button.clicked.connect(lambda: handleText(False))
@@ -72,7 +81,6 @@ keyboard.on_press_key("F5", lambda _: typeCommand())
 file_content, text_list, trans_list, sentences_num, database = '', '', '', '', ''
 before, after = '', ''
 dataBaseDirectory = r'OtherFiles/Tables/TextTable.xlsx'
-endcommand = '<END>'
 
 def fileType():
     index = fileTypeComboBox.currentIndex()
@@ -114,7 +122,7 @@ def openFile():
         before, after = '\n', '\n'
     if index == 1:
         Kruptar()
-        before, after = '', endcommand
+        before, after = '', endCommandCell.toPlainText()
     
     msytBox.setPlainText(text_list[0])
     translationBox.setPlainText(text_list[0])
@@ -137,6 +145,8 @@ def saveFile():
 
 def Kruptar():
     global text_list, trans_list, sentences_num
+    endcommand = endCommandCell.toPlainText()
+    if not endcommand: return
     text_list = file_content.split(endcommand)
     del text_list[-1]
     trans_list = list(text_list)
