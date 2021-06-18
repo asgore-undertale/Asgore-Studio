@@ -10,6 +10,7 @@ def windowTrig(action):
     def check(text): return action.text() == text
     
     if check("فتح جدول .ate"): loadATE(open_file('ate', TableEditorWindow), Table, ROWS, COLS, True)
+    elif check("فتح جدول .csv"): loadCSV(open_file('csv', TableEditorWindow), Table, ROWS, COLS, True)
     elif check("حفظ الجدول كـ .ate"): saveATE(save_file('ate', TableEditorWindow), Table)
     elif check("حفظ الجدول كـ .csv"): saveCSV(save_file('csv', TableEditorWindow), Table)
     elif check("إضافة صف"): add_row(Table, ROWS)
@@ -34,6 +35,7 @@ file = bar.addMenu("ملف")
 options = bar.addMenu("خيارات الجدول")
 
 file.addAction("فتح جدول .ate")
+file.addAction("فتح جدول .csv")
 file.addAction("حفظ الجدول كـ .ate")
 file.addAction("حفظ الجدول كـ .csv")
 options.addAction("إضافة صف")

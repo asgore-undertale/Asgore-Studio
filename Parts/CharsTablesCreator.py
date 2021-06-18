@@ -92,6 +92,7 @@ def windowTrig(action):
 
     if check("فتح جدول حروف .tbl"): loadTBL(open_file('tbl', CharsTablesCreatorWindow), Table, ROWS, COLS)
     elif check("فتح جدول حروف .act"): loadATE(open_file('act', CharsTablesCreatorWindow), Table, ROWS, COLS, False)
+    elif check("فتح جدول حروف .csv"): loadCSV(open_file('csv', CharsTablesCreatorWindow), Table, ROWS, COLS, False)
     elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(save_file('tbl', CharsTablesCreatorWindow), Table)
     elif check("حفظ جدول الحروف كـ .act"): saveACT(save_file('act', CharsTablesCreatorWindow))
     elif check("حفظ جدول الحروف كـ .csv"): saveCSV(save_file('csv', CharsTablesCreatorWindow))
@@ -118,6 +119,7 @@ file = bar.addMenu("ملف")
 
 file.addAction("فتح جدول حروف .tbl")
 file.addAction("فتح جدول حروف .act")
+file.addAction("فتح جدول حروف .csv")
 file.addAction("حفظ جدول الحروف كـ .tbl")
 file.addAction("حفظ جدول الحروف كـ .act")
 file.addAction("حفظ جدول الحروف كـ .csv")

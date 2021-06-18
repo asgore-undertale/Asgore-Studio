@@ -189,7 +189,7 @@ def check(char, convertTo):
 
 def sortCharsConvertingTable(table):
     global charmap
-    charmap = dict(charmapParent)
+    charmap = dict(charmapParent) # dict ليساوي المتغير الجديد قيمة القديم وليس القديم نفسه كي لا يتغير احدهما بتغير الاخر
     newTable = ''
     
     for line in table.split('\n'):

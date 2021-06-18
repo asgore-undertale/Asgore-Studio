@@ -3,8 +3,7 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QVBoxLayout
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
-import openpyxl
-import re
+import openpyxl, re, csv
 
 ##استيراد السكربتات
 from Parts.Scripts.Delete_Duplicated_lines import DDL
@@ -273,9 +272,9 @@ output_from_folder.clicked.connect(lambda: open_def(6))
 
 
 #المتغيرات
-converting_database_directory = r'OtherFiles/CharsConvertingTable.act'
-text_database_directory = r'OtherFiles/TextTable.xlsx'
-extracted_text_database_directory = r'OtherFiles/ExtractedTextTable.xlsx'
+converting_database_directory = r'OtherFiles/Tables/CharsConvertingTable.act'
+text_database_directory = r'OtherFiles/Tables/TextTable.xlsx'
+extracted_text_database_directory = r'OtherFiles/Tables/ExtractedTextTable.xlsx'
 input_folder, output_folder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
 
 if path.exists(converting_database_directory): convert_database = Take_From_Table(converting_database_directory)
@@ -311,7 +310,7 @@ def cell():
 
 def open_def(num):
     if num == 0:
-        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول النص', '' , '*.xlsx')
+        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول النص', '' , '*.xlsx *.csv')
         if path.exists(fileName) and fileName != '/':
             global text_database_directory
             text_database_directory = fileName
@@ -324,7 +323,7 @@ def open_def(num):
             convert_database = Take_From_Table(fileName)
             QMessageBox.about(OptionsWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 3:
-        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول الاستخراج', '' , '*.xlsx')
+        fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول الاستخراج', '' , '*.xlsx *.csv')
         if path.exists(fileName) and fileName != '/':
             global extracted_text_database_directory
             extracted_text_database_directory = fileName
@@ -412,10 +411,10 @@ def convert(text):
         
         mini = byteInCell(min_text_convert.toPlainText())
         maxi = byteInCell(max_text_convert.toPlainText())
-        if not mini: mini = 0
-        else: mini = int(mini)
-        if not maxi: maxi = 0
-        else: maxi = int(maxi)
+        if mini: mini = int(mini)
+        else: mini = 0
+        if maxi: maxi = int(maxi)
+        else: maxi = 0
         
         if mini > maxi:
             QMessageBox.about(EnteringWindow, "!!خطأ", "لا يمكن أن يكون قصر النصوص أطول من طولها.")
@@ -474,22 +473,47 @@ def enter(convert_bool = True):
         if not path.exists(text_database_directory):
             QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف كل العمليات،\nقاعدة بيانات النصوص غير موجودة.")
             return
-        text_xlsx = openpyxl.load_workbook(text_database_directory)
-        for sheet in text_xlsx.sheetnames:
-            text_table = text_xlsx.get_sheet_by_name(sheet)
+        
+        if text_database_directory.endswith('.csv'):
+            textDatabase = open(text_database_directory, 'r', encoding="utf-8")
+            Data = csv.DictReader(textDatabase)
             
-            for cell in range(2, len(text_table['A'])+1):
-                original_cell_value = text_table['A'+str(cell)].value
-                translate_cell_value = text_table['B'+str(cell)].value
-                
-                if not original_cell_value: continue
-                if not translate_cell_value: translate_cell_value = ''
-                if convert_bool: translate_cell_value = convert(translate_cell_value)
+            for row in Data:
+                item0, item1 = row[list(row)[0]], row[list(row)[1]]
+                if isinstance(item0, list):
+                    text = item0[0]
+                    translation = item1[1]
+                elif isinstance(item1, list):
+                    text = item0
+                    translation = item1[0]
+                else:
+                    text = item0
+                    translation = item1
+                if not text: continue
+                if not translation: translation = ''
+                if convert_bool: translation = convert(translation)
                 if too_long_check.isChecked():
-                    if not checkToEnter(original_cell_value, translate_cell_value):
+                    if not checkToEnter(text, translation):
                         continue
+                textList.append([text, translation])
+        
+        elif text_database_directory.endswith('.xlsx'):
+            text_xlsx = openpyxl.load_workbook(text_database_directory)
+            for sheet in text_xlsx.sheetnames:
+                text_table = text_xlsx.get_sheet_by_name(sheet)
                 
-                textList.append([original_cell_value, translate_cell_value])
+                for cell in range(2, len(text_table['A'])+1):
+                    text = text_table['A'+str(cell)].value
+                    translation = text_table['B'+str(cell)].value
+                    
+                    if not text: continue
+                    if not translation: translation = ''
+                    if convert_bool: translation = convert(translation)
+                    if too_long_check.isChecked():
+                        if not checkToEnter(text, translation):
+                            continue
+                    
+                    textList.append([text, translation])
         
         textList = sorted(textList, key=lambda x: len(str(x[0])), reverse=True)
     else:
@@ -542,19 +566,16 @@ def extract():
     after = after_text.toPlainText()
     if '[b]' in before: before = bytearray.fromhex(before.replace('[b]', '')).decode() 
     if '[b]' in after: after = bytearray.fromhex(after.replace('[b]', '')).decode() 
-    if before == '' or after == '':
-        QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما يسبق النصوص، ما يلحقها.\nعلى الأقل.")
+    if not before or not after:
+        QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما يسبق النصوص، ما يلحقها.")
         return
     files_list = dir_list(input_folder)
-    if len(files_list) == 0:
+    if not len(files_list):
         QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nلا توجد أي ملفات للاستخراج منها.")
         return
     
-    mini = min_text.toPlainText()
-    maxi = max_text.toPlainText()
-    if '[b]' in mini: mini = bytearray.fromhex(mini.replace('[b]', '')).decode() 
-    if '[b]' in maxi: maxi = bytearray.fromhex(maxi.replace('[b]', '')).decode() 
-    
+    mini = byteInCell(min_text_convert.toPlainText())
+    maxi = byteInCell(max_text_convert.toPlainText())
     if mini: mini = int(mini)
     else: mini = 0
     if maxi: maxi = int(maxi)
@@ -564,40 +585,50 @@ def extract():
         QMessageBox.about(EnteringWindow, "!!خطأ", "لا يمكن أن يكون قصر النصوص أطول من طولها.")
         return
     
-    extracted_xlsx = openpyxl.load_workbook(extracted_text_database_directory)
-    sheet = extracted_xlsx.get_sheet_by_name("Main")
-    row = 2
-    '''
-    def put_in_sheet(text):
-        print(row)
-        print(text)
-        row += 1
-        print(row)
-    '''
-    sheet.delete_cols(1, 2)
-    sheet['A1'].value = "النص الأصلي"
-    sheet['A1'].font = Font(bold=True)
-    sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-    sheet['A1'].fill = PatternFill(fill_type='solid', start_color='ff8327', end_color='ff8327')
     
-    for filename in files_list:
-        with open(filename, 'r', encoding="cp437") as f:
-            file_content = f.read()
+    if extracted_text_database_directory.endswith('.csv'):
+        database = open(extracted_text_database_directory, 'w', encoding="utf-8")
+        content = ''
         
-        extracted = Extract(file_content, before, after, mini, maxi)
-        
-        if len(extracted):
-            sheet['A'+str(row)].value = filename
-            sheet['A'+str(row)].font = Font(bold=True)
-            sheet['A'+str(row)].alignment = Alignment(vertical='center', wrap_text=True)
-            sheet['A'+str(row)].fill = PatternFill(fill_type='solid', start_color='D112D1', end_color='D112D1')
-            row += 1
+        for filename in files_list:
+            with open(filename, 'r', encoding="utf-8") as f:
+                file_content = f.read()
             
-            '''map(put_in_sheet, extracted)'''
-            for item in extracted:
-                sheet['A'+str(row)].font = Font(bold=False)
-                sheet['A'+str(row)].value = item
+            extracted = Extract(file_content, before, after, mini, maxi)
+            if len(extracted):
+                content += f'<-- {filename} -->\n'
+                for item in extracted:
+                    content += item + '\n'
+        database.write(content)
+        
+    elif extracted_text_database_directory.endswith('.xlsx'):
+        extracted_xlsx = openpyxl.load_workbook(extracted_text_database_directory)
+        sheet = extracted_xlsx.get_sheet_by_name("Main")
+        row = 2
+        
+        sheet.delete_cols(1, 2)
+        sheet['A1'].value = "النص الأصلي"
+        sheet['A1'].font = Font(bold=True)
+        sheet['A1'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        sheet['A1'].fill = PatternFill(fill_type='solid', start_color='ff8327', end_color='ff8327')
+        
+        for filename in files_list:
+            with open(filename, 'r', encoding="utf-8") as f:
+                file_content = f.read()
+            
+            extracted = Extract(file_content, before, after, mini, maxi)
+            
+            if len(extracted):
+                sheet['A'+str(row)].value = filename
+                sheet['A'+str(row)].font = Font(bold=True)
+                sheet['A'+str(row)].alignment = Alignment(vertical='center', wrap_text=True)
+                sheet['A'+str(row)].fill = PatternFill(fill_type='solid', start_color='D112D1', end_color='D112D1')
                 row += 1
-    
-    extracted_xlsx.save(extracted_text_database_directory)
+                
+                for item in extracted:
+                    sheet['A'+str(row)].font = Font(bold=False)
+                    sheet['A'+str(row)].value = item
+                    row += 1
+        
+        extracted_xlsx.save(extracted_text_database_directory)
     QMessageBox.about(EnteringWindow, "!!تهانيّ", "انتهى الاستخراج.")
