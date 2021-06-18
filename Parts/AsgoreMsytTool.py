@@ -1,9 +1,8 @@
-import re, openpyxl, keyboard
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QGridLayout, QPushButton, QFileDialog, QMessageBox, QWidget, QHBoxLayout, QLabel, QComboBox
+from PyQt5.QtGui import QFont
 from sys import argv, exit
 from os import path
-from PyQt5.QtCore import QRect
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QFileDialog, QMessageBox
+import re, openpyxl, keyboard, csv
 
 app = QApplication(argv)
 
@@ -14,41 +13,151 @@ label_font = QFont()
 label_font.setPointSize(14)
 
 MsytWindow = QMainWindow()
-MsytWindow.setFixedSize(346, 326)
+container = QWidget()
+MsytWindow.resize(346, 326)
 
-msyt_text = QTextEdit(MsytWindow)
-msyt_text.setGeometry(QRect(13, 13, 321, 123))
-msyt_text.setFont(textbox_font)
-sheet_text = QTextEdit(MsytWindow)
-sheet_text.setGeometry(QRect(13, 193, 321, 123))
-sheet_text.setFont(textbox_font)
+layout = QGridLayout()
+container.setLayout(layout)
+MsytWindow.setCentralWidget(container)
 
-text_button = QPushButton(MsytWindow)
-text_button.setGeometry(QRect(260, 145, 70, 40))
-text_button.setText("فتح قاعدة\nبيانات نص")
-next_button = QPushButton(MsytWindow)
-next_button.setGeometry(QRect(302, 5, 20, 20))
-next_button.setText(">")
-back_button = QPushButton(MsytWindow)
-back_button.setGeometry(QRect(322, 5, 20, 20))
-back_button.setText("<")
-open_button = QPushButton(MsytWindow)
-open_button.setGeometry(QRect(180, 145, 70, 40))
+fileTypeComboBoxOptions = [
+    "ملف زيلدا نفس البرية msyt.",
+    "ملف نص مستخرج من الكروبتار"
+]
+fileTypeComboBox = QComboBox()
+fileTypeComboBox.addItems(fileTypeComboBoxOptions)
+
+msytBox = QTextEdit()
+msytBox.setFont(textbox_font)
+translationBox = QTextEdit()
+translationBox.setFont(textbox_font)
+
+minilayout = QHBoxLayout()
+text_button = QPushButton()
+text_button.setText("جدول نصوص")
+open_button = QPushButton()
 open_button.setText("فتح ملف")
-save_button = QPushButton(MsytWindow)
-save_button.setGeometry(QRect(100, 145, 70, 40))
+save_button = QPushButton()
 save_button.setText("حفظ الملف")
 
-per = QLabel(MsytWindow)
-per.setGeometry(QRect(13, 145, 90, 40))
+minilayout2 = QHBoxLayout()
+next_button = QPushButton()
+next_button.setText(">")
+back_button = QPushButton()
+back_button.setText("<")
+
+per = QLabel()
 per.setFont(label_font)
 
+layout.addWidget(fileTypeComboBox, 0, 0)
+layout.addLayout(minilayout2, 1, 0)
+layout.addWidget(msytBox, 2, 0)
+layout.addLayout(minilayout, 3, 0)
+layout.addWidget(translationBox, 4, 0)
+minilayout.addWidget(per)
+minilayout.addWidget(open_button)
+minilayout.addWidget(save_button)
+minilayout.addWidget(text_button)
+minilayout2.addWidget(back_button)
+minilayout2.addWidget(next_button)
+
 text_button.clicked.connect(lambda: openTextDataBase())
-back_button.clicked.connect(lambda: script(False))
-next_button.clicked.connect(lambda: script(True))
-save_button.clicked.connect(lambda: save())
-open_button.clicked.connect(lambda: openNewFile())
-keyboard.on_press_key("F3", lambda _: typeC())
+back_button.clicked.connect(lambda: handleText(False))
+next_button.clicked.connect(lambda: handleText(True))
+save_button.clicked.connect(lambda: saveFile())
+open_button.clicked.connect(lambda: openFile())
+keyboard.on_press_key("F5", lambda _: typeCommand())
+
+# ---------
+file_content, text_list, trans_list, sentences_num, database = '', '', '', '', ''
+before, after = '', ''
+dataBaseDirectory = r'OtherFiles/Tables/TextTable.xlsx'
+endcommand = '<END>'
+
+def fileType():
+    index = fileTypeComboBox.currentIndex()
+    if index == 0: return 'msyt'
+    if index == 1: return 'txt'
+
+def typeCommand():
+    c = 0
+    if '＞' in msytBox.toPlainText():
+        while '＜c'+str(c)+'＞' not in msytBox.toPlainText(): c += 1
+        for i in range(msytBox.toPlainText().count('＞')):
+            if '＜c'+str(c+i)+'＞' not in translationBox.toPlainText() and '＜c'+str(c+i)+'＞' in msytBox.toPlainText():
+                keyboard.write('＜c'+str(c+i)+'＞')
+                break
+
+def openTextDataBase(Directory = ''):
+    global dataBaseDirectory, database
+    if not Directory:
+        Directory, _ = QFileDialog.getOpenFileName(MsytWindow, 'جداول إكسل', '' , '*.xlsx *.csv')
+
+    if Directory and path.exists(Directory):
+        dataBaseDirectory = Directory
+        if dataBaseDirectory.endswith('.xlsx'):
+            database = openpyxl.load_workbook(Directory)
+        elif dataBaseDirectory.endswith('.csv'):
+            file = open(Directory, 'r', encoding="utf-8")
+            database = csv.DictReader(file)
+
+def openFile():
+    global file_content, before, after
+    type = fileType()
+    _open, _ = QFileDialog.getOpenFileName(MsytWindow, 'ملف', '' , '*.'+type)
+    if not _open * (_open != '/') * (_open != '') * (path.exists(_open)): return
+    file_content = open(_open, 'r', encoding='utf-8').read()
+    
+    index = fileTypeComboBox.currentIndex()
+    if index == 0:
+        Msyt()
+        before, after = '\n', '\n'
+    if index == 1:
+        Kruptar()
+        before, after = '', endcommand
+    
+    msytBox.setPlainText(text_list[0])
+    translationBox.setPlainText(text_list[0])
+    
+def saveFile():
+    global file_content, trans_list
+    type = fileType()
+    _save, _ = QFileDialog.getSaveFileName(MsytWindow, 'ملف', '' , '*.'+type)
+    if not _save * (_save != '/') * (_save != ''): return
+    
+    file_content = file_content.replace(before+trans_list[handleText.current_item]+after, before+translationBox.toPlainText()+after)
+    trans_list[handleText.current_item] = translationBox.toPlainText()
+    
+    index = fileTypeComboBox.currentIndex()
+    if index == 0: file_content = TxtToMsyt(file_content)
+    if index == 1: pass
+    
+    open(_save, 'w', encoding='utf-8').write(file_content)
+    QMessageBox.about(MsytWindow, "!!تهانينا", "تم حفظ الملف.")
+
+def Kruptar():
+    global text_list, trans_list, sentences_num
+    text_list = file_content.split(endcommand)
+    del text_list[-1]
+    trans_list = list(text_list)
+    sentences_num = len(text_list)-1
+    
+    openTextDataBase(dataBaseDirectory)
+    
+def Msyt():
+    global file_content, text_list, trans_list, sentences_num
+    file_content = MsytToTxt(file_content)
+    msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", file_content.replace('\n', '\uffff'))#for regex
+    for i in range(len(msyt_content_list)): msyt_content_list[i] = msyt_content_list[i].replace('\uffff', '\n')
+    sentences_num = msyt_content_list[0].count('\n')
+
+    t = '\n' + msyt_content_list[0]
+    text_list = t.split('\n')
+    del text_list[0]
+    trans_list = list(text_list)
+
+    openTextDataBase(dataBaseDirectory)
+    QMessageBox.about(MsytWindow, "!!", "تفحص نافذة الأوامر")
 
 def MsytToTxt(file_content):
     new_file_text, new_file_commands, new_file_dump = '', '', ''
@@ -99,7 +208,7 @@ def TxtToMsyt(file_content):
         line = line.replace('\n', '\n      - text: ').replace('＞', '＞      - text: ')
         line = line.replace('＞      - text: ＜', '＞＜').replace('＞      - text: \n', '＞\n')
         line = line.replace('＞      - text: ', '＞\n      - text: ').replace('＜', '\n＜')
-        line = line.replace('""', '').replace('\n', r'\n')
+        line = line.replace('""', '')
         TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('\t\t[-----------]', line, 1)
     
     list(map(edit_line, text_list))
@@ -114,92 +223,76 @@ def TxtToMsyt(file_content):
     TxtToMsyt.new_file_content = TxtToMsyt.new_file_content.replace('}\n\n{\n', '')
     return TxtToMsyt.new_file_content
 
-def script(boolen = True):
+def handleText(boolen = True):
+    global file_content
+    if not sentences_num: return
+    
     if boolen:
-        if script.current_item == centences_num:
-            script.current_item = 0
-            per.setText(f"{centences_num} \ {script.current_item}")
-        else:
-            script.current_item += 1
-            per.setText(f"{centences_num} \ {script.current_item}")
+        handleText.current_item += 1
+        handleText.current_item = handleText.current_item % (sentences_num +1)
+        per.setText(f"{sentences_num} \ {handleText.current_item}")
     else:
-        if script.current_item == 0:
-            script.current_item = centences_num
-            per.setText(f"{centences_num} \ {script.current_item}")
+        if handleText.current_item == 0:
+            handleText.current_item = sentences_num
+            per.setText(f"{sentences_num} \ {handleText.current_item}")
         else:
-            script.current_item -= 1
-            per.setText(f"{centences_num} \ {script.current_item}")
-   
-    if not centences_num: return
-    global Text_content
-    if sheet_text.toPlainText():
-        Text_content = Text_content.replace('\n'+text_list[script.current_item-1]+'\n', '\n'+sheet_text.toPlainText()+'\n')  #لسبب ما لم يعمل التجميد والعكس هنا
-        text_list[script.current_item-1] = sheet_text.toPlainText()
+            handleText.current_item -= 1
+            per.setText(f"{sentences_num} \ {handleText.current_item}")
     
-    msyt_text.setPlainText(text_list[script.current_item])
-    sheet_text.setPlainText('')
+    if boolen:
+        index = handleText.current_item -1
+        if index == -1:
+            index = sentences_num
+    else:
+        index = handleText.current_item +1
+        index = index % (sentences_num +1)
+    
+    file_content = file_content.replace(before+trans_list[index]+after, before+translationBox.toPlainText()+after)
+    trans_list[index] = translationBox.toPlainText()
+    
+    msytBox.setPlainText(text_list[handleText.current_item])
+    translationBox.setPlainText(trans_list[handleText.current_item])
 
-    r = False
-    if path.exists(dataBaseDirectory):
-        _list = re.split('＜(.*?)＞', text_list[script.current_item])
-        for item in range(len(_list)):
-            for sheet in text_xlsx.sheetnames:
-                text_table = text_xlsx.get_sheet_by_name(sheet)
-                if not item % 2 and _list[item]:
-                    for cell in range(2, len(text_table['A'])+1):
-                        if text_table['A'+str(cell)].value == _list[item]:
-                            sheet_text.setPlainText(sheet_text.toPlainText() + text_table['B'+str(cell)].value)
-                            r = True
-                            break
-                    if r:
-                        r = False
-                        break
-
-script.current_item = 0
-Text_content, text_list, centences_num, file_path, text_xlsx = '', '', '', '', ''
-dataBaseDirectory = r'OtherFiles/TextTable.xlsx'
-
-def typeC():
-    c = 0
-    if '＞' in msyt_text.toPlainText():
-        while '＜c'+str(c)+'＞' not in msyt_text.toPlainText(): c += 1
-        for i in range(msyt_text.toPlainText().count('＞')):
-            if '＜c'+str(c+i)+'＞' not in sheet_text.toPlainText() and '＜c'+str(c+i)+'＞' in msyt_text.toPlainText():
-                keyboard.write('＜c'+str(c+i)+'＞')
+    if not path.exists(dataBaseDirectory): return
+    _list = re.split('＜(.*?)＞', trans_list[handleText.current_item])
+    for item in range(len(_list)):
+        if item % 2 or not _list[item]: continue
+        
+        if dataBaseDirectory.endswith('.xlsx'):
+            r = False
+            for sheet in database.sheetnames:
+                text_table = database.get_sheet_by_name(sheet)
+                for cell in range(2, len(text_table['A'])+1):
+                    if text_table['A'+str(cell)].value != _list[item]: continue
+                    if translationBox.toPlainText() == trans_list[handleText.current_item]:
+                        translationBox.setPlainText('')
+                    translationBox.setPlainText(translationBox.toPlainText() + text_table['B'+str(cell)].value)
+                    r = True
+                    break
+                if r: break
+        
+        elif dataBaseDirectory.endswith('.csv'):
+            for row in database:
+                item0, item1 = row[list(row)[0]], row[list(row)[1]]
+                if isinstance(item0, list):
+                    text = item0[0]
+                    translation = item1[1]
+                elif isinstance(item1, list):
+                    text = item0
+                    translation = item1[0]
+                else:
+                    text = item0
+                    translation = item1
+                
+                if not text: break
+                if not translation: translation = ''
+                if text != _list[item]: continue
+                if translationBox.toPlainText() == trans_list[handleText.current_item]:
+                    translationBox.setPlainText('')
+                translationBox.setPlainText(translationBox.toPlainText() + translation)
                 break
-
-def openTextDataBase(Directory = ''):
-    global dataBaseDirectory, text_xlsx
-    if not Directory:
-        Directory, _ = QFileDialog.getOpenFileName(MsytWindow, 'جداول إكسل', '' , '*.xlsx')
-
-    if Directory != '' and path.exists(Directory):
-        dataBaseDirectory = Directory
-        text_xlsx = openpyxl.load_workbook(Directory)
-
-def openNewFile():
-    global Text_content, text_list, centences_num, file_path
-    file_path, _ = QFileDialog.getOpenFileName(MsytWindow, 'Zelda .msyt file', '' , '*.msyt')
-    if not file_path != '' or not path.exists(file_path): return
-    file_content = open(file_path, 'r', encoding='utf-8').read()
-    QMessageBox.about(MsytWindow, "!!", "تفحص نافذة الأوامر")
-    
-    Text_content = MsytToTxt(file_content)
-    msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", Text_content.replace('\n', '\uffff'))#for regex
-    for i in range(len(msyt_content_list)): msyt_content_list[i] = msyt_content_list[i].replace('\uffff', '\n')
-    centences_num = msyt_content_list[0].count('\n')
-
-    t = '\n' + msyt_content_list[0]
-    text_list = t.split('\n')
-    del text_list[0]
-
-    openTextDataBase(dataBaseDirectory)
-    script()
-    script(False)
-
-def save():
-    if file_path: open(file_path, 'w', encoding='utf-8').write(TxtToMsyt(Text_content))
-    QMessageBox.about(MsytWindow, "!!تهانينا", "تم حفظ الملف.")
+            openTextDataBase(dataBaseDirectory)
+handleText.current_item = 0
 
 if __name__ == '__main__':
     MsytWindow.show()

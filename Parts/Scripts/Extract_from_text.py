@@ -1,5 +1,16 @@
 import re
 
+def minimax(text):
+    if mini and len(text) < mini: return
+    if maxi and len(text) > maxi: return
+    return text
+    
+def in_letters(text):
+    for char in text:
+        if char not in English_Letters and char not in Symbols:
+            return
+    return text
+
 def Extract(text, before = '', after = '', mini = False, maxi = False):
     if not before or not after: return
     mini, maxi = int(mini), int(maxi)
@@ -10,16 +21,6 @@ def Extract(text, before = '', after = '', mini = False, maxi = False):
     
     text = text.replace('\n', u'\uffff' * 8)#الريجيكس يعاني مشاكل مع عودات السطر
     
-    def minimax(text):
-        if mini and len(text) < mini: return
-        if maxi and len(text) > maxi: return
-        return text
-    
-    def in_letters(text):
-        for char in text:
-            if char not in English_Letters and char not in Symbols:
-                return
-        return text
     
     if before == after:
         extracted_list = text.split(before)

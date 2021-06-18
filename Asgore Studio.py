@@ -26,7 +26,7 @@ class MotherWindow(QMainWindow):
         elif check("محوّل النصوص"): self.newChild(CMainWindow, CMainContainer, 'محوّل النصوص')
         elif check("المدخل والمستخرج"): self.newChild(EnteringWindow, EnteringContainer, 'المدخل والمستخرج')
         elif check("خيارات التحويل"): self.newChild(OptionsWindow, OptionsContainer, 'خيارات التحويل')
-        elif check("محرّر msyt."): self.newChild(MsytWindow, MsytContainer, 'محرّر msyt.')
+        elif check("محرّر الملفات"): self.newChild(MsytWindow, MsytContainer, 'محرّر الملفات')
         elif check("مجرب الخطوط"): self.newChild(FitAdvancedWindow, FitAdvancedContainer, 'مجرب الخطوط')
         elif check("إعدادات مجرب الخطوط"): self.newChild(FitAdvancedOptionsWindow, FitAdvancedOptionsContainer, 'إعدادات مجرب الخطوط')
         elif check("منشئ الخطوط الموحدة الحجم"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط الموحدة الحجم')
@@ -51,7 +51,7 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("محوّل النصوص")
         self.tools.addAction("المدخل والمستخرج")
         self.tools.addAction("خيارات التحويل")
-        self.tools.addAction("محرّر msyt.")
+        self.tools.addAction("محرّر الملفات")
         self.tools.addAction("مجرب الخطوط")
         self.tools.addAction("إعدادات مجرب الخطوط")
         self.tools.addAction("منشئ الخطوط الموحدة الحجم")
@@ -68,7 +68,7 @@ importantInfo = ('- للكتابة بالبايتات في الحقول الصغ
                 '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
                 '- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n'
                 '- ترتيب وحذف السطور يعمل لكل صفحة على حدة.\n'
-                '- اضغط F3 في محرّر msyt. لإضافة <c>.\n'
+                '- اضغط F5 في محرّر الملفات لإضافة <c>.\n'
                 '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n'
                 "اضغط ctrl+s لالتقاط صورة لمربع الحوار في مجرب الخطوط")
 
