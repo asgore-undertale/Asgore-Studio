@@ -59,12 +59,12 @@ letters_Table = {'''  '<initial>' '<medial>' '<final>' '<isolated>' '''
                     #"ْ"  : ['ﹾ', 'ﹿ', 'ﹾ', 'ﹾ'],
     }
 
+harakat = 'َﹰﹱﹲﹴﹶﹷﹸﹹﹺﹻﹼﹽﹾﹿًٌٍَُِّْ'
+list1 = 'ئبتثجحخسشصضطظعغفقكلمنهيپچڤـ'
+list2 = 'آأؤإاةدذرزوى'
+
 def Un_Freeze(text, case = True):
     if case:
-        harakat = 'ًٌٍَُِّْ'
-        list1 = 'ئبتثجحخسشصضطظعغفقكلمنهيپچڤـ'
-        list2 = 'آأؤإاةدذرزوى'
-
         reshaped_text = ''
         textlist = list(' '+text+' ') #هذه الخطوة ضرورية ليعمل الكود بشكل صحيح
 

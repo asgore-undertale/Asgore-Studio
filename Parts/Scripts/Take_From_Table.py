@@ -208,5 +208,8 @@ def Take_From_Table(ate_file):
             chars_table['ﭬ'] = cols[1]
         else:
             chars_table[cols[0]] = cols[4]
-
-    return chars_table
+    
+    newCharsTable = {}
+    for k in sorted(chars_table, key=len, reverse=True):
+        newCharsTable[k] = chars_table[k]
+    return newCharsTable

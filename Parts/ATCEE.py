@@ -1,6 +1,6 @@
 #استيراد المكتبات
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QVBoxLayout, QComboBox
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
 import openpyxl, re, csv
@@ -29,7 +29,7 @@ def pos_y(line_num, Height = checkbox_size[1], Between_every_y = 15):
     return (Between_every_y+checkbox_size[1]) * line_num + (Between_every_y-Height//2) + (Between_every_y//2)
 
 OptionsWindow = QMainWindow()
-OptionsWindow.setFixedSize(OptionsWindow_Width, 410)
+OptionsWindow.setFixedSize(OptionsWindow_Width, 390)
 
 DDL_check = QCheckBox("حذف الأسطر المكررة", OptionsWindow)
 DDL_check.setGeometry(QtCore.QRect(0, pos_y(0), checkbox_size[0], checkbox_size[1]))
@@ -64,9 +64,19 @@ Ext_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 CB_check = QCheckBox("تحويل البايتات", OptionsWindow)
 CB_check.setGeometry(QtCore.QRect(0, pos_y(10), checkbox_size[0], checkbox_size[1]))
 CB_check.setLayoutDirection(QtCore.Qt.RightToLeft)
-DH_check = QCheckBox("حذف الحركات المتتالية", OptionsWindow)
-DH_check.setGeometry(QtCore.QRect(0, pos_y(11), checkbox_size[0], checkbox_size[1]))
-DH_check.setLayoutDirection(QtCore.Qt.RightToLeft)
+HarakatLabel = QLabel(OptionsWindow)
+HarakatLabel.setGeometry(QtCore.QRect(240, 350, 150, 26))
+HarakatLabel.setText("الحركات:")
+HarakatOptions = [
+    "اتركها كما هي",
+    "احذفها",
+    "أبقي الأولى في حالة التتالي",
+    "أعدها حرفاً للوراء",
+    "حولها لشكلها مع التطويلة"
+]
+HarakatComboBox = QComboBox(OptionsWindow)
+HarakatComboBox.setGeometry(QtCore.QRect(195, 350, 145, 26))
+HarakatComboBox.addItems(HarakatOptions)
 
 start_command = QTextEdit(OptionsWindow)
 start_command.setGeometry(QtCore.QRect(10, 10, 70, 26))
@@ -124,7 +134,7 @@ Slash_check.setGeometry(QtCore.QRect(35, 305, 140, 26))
 Slash_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 
 UC_database_button = QPushButton(OptionsWindow)
-UC_database_button.setGeometry(QtCore.QRect(20, 340, 93, 56))
+UC_database_button.setGeometry(QtCore.QRect(20, 340, 80, 40))
 UC_database_button.setText("قاعدة بيانات\nالتحويل")
 ##
 
@@ -140,7 +150,7 @@ CMainWindow.setCentralWidget(container)
 
 enteredBox = QTextEdit()
 resultBox = QTextEdit()
-enteredBox.setPlainText('تجربة التحويل')
+enteredBox.setPlainText('تجربةُ التّحويلِ')
 enteredBox.setFont(textbox_font)
 resultBox.setFont(textbox_font)
 
@@ -385,7 +395,9 @@ def splitByLinesAndConvert(text):
     
     for p in range(len(text_pages_lines_list)):
         for l in range(len(text_pages_lines_list[p])):
-            if DH_check.isChecked(): text_pages_lines_list[p][l] = handle_harakat(text_pages_lines_list[p][l])#Delete Harakat
+            
+            HarakatOptionindex = HarakatComboBox.currentIndex()
+            if HarakatOptionindex: text_pages_lines_list[p][l] = handle_harakat(text_pages_lines_list[p][l], HarakatOptionindex)#Handle Harakat
             if RA_check.isChecked() or C_check.isChecked(): text_pages_lines_list[p][l] = Un_Freeze(text_pages_lines_list[p][l])#Freeze Arabic
             if C_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, True)#Convert
             if UC_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, False)#Unconvert
