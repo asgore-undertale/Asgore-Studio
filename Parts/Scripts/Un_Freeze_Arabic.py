@@ -88,8 +88,7 @@ def Un_Freeze(text, case = True):
                 after = 0
 
             if textlist[i] not in letters_Table: #إن لم يكن في الجدول
-                if textlist[i] == 'ء': new_text = u"\ufe80" # وضعت الهمزة هنا لأنها لم تعمل في الجدول لسبب ما
-                else: new_text = textlist[i] # إن لم يكن في الجدول اترك الحرف كما هو
+                new_text = textlist[i] # إن لم يكن في الجدول اترك الحرف كما هو
             else:
                 #إن كان في الجدول فحدد شكله
                 if before == 0 and after == 1: #أول الكلمة

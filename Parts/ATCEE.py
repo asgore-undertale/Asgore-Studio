@@ -129,9 +129,9 @@ converted_byte_label = QLabel(OptionsWindow)
 converted_byte_label.setGeometry(QtCore.QRect(85, 274, 95, 26))
 converted_byte_label.setText("صيغة البايت المحول:")
 
-Slash_check = QCheckBox(r"مراعاة: n, \t, \r, \a\ ", OptionsWindow)
-Slash_check.setGeometry(QtCore.QRect(35, 305, 140, 26))
-Slash_check.setLayoutDirection(QtCore.Qt.RightToLeft)
+EnglishOnlyCheck = QCheckBox(r"استخراج الانكليزية فقط", OptionsWindow)
+EnglishOnlyCheck.setGeometry(QtCore.QRect(35, 305, 140, 26))
+EnglishOnlyCheck.setLayoutDirection(QtCore.Qt.RightToLeft)
 
 UC_database_button = QPushButton(OptionsWindow)
 UC_database_button.setGeometry(QtCore.QRect(20, 335, 85, 45))
@@ -297,9 +297,6 @@ def byteInCell(text):
     if not '[b]' in text: return text
     return bytearray.fromhex(text.replace('[b]', '')).decode()
 
-def slashInCell(text):
-    return text.replace(r'\n', '\n').replace(r'\t', '\t').replace(r'\r', '\r').replace(r'\a', '\a')
-
 def cell():
     cell._start_command = byteInCell(start_command.toPlainText())
     cell._end_command = byteInCell(end_command.toPlainText())
@@ -309,15 +306,6 @@ def cell():
     cell._after_text_convert = byteInCell(after_text_convert.toPlainText())
     cell._converted_byte = byteInCell(converted_byte.toPlainText())
 
-    if Slash_check.isChecked():
-        cell._start_command = slashInCell(cell._start_command)
-        cell._end_command = slashInCell(cell._end_command)
-        cell._pageCommand = slashInCell(cell._pageCommand)
-        cell._lineCommand = slashInCell(cell._lineCommand)
-        cell._before_text_convert = slashInCell(cell._before_text_convert)
-        cell._after_text_convert = slashInCell(cell._after_text_convert)
-        cell._converted_byte = slashInCell(cell._converted_byte)
-
 def open_def(num):
     if num == 0:
         fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول النص', '' , '*.xlsx *.csv')
@@ -326,7 +314,7 @@ def open_def(num):
             text_database_directory = fileName
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 1:
-        fileName, _ = QFileDialog.getOpenFileName(OptionsWindow, 'جدول التحويل', '' , '*.act')
+        fileName, _ = QFileDialog.getOpenFileName(OptionsWindow, 'جدول التحويل', '' , '*.act *.zts')
         if path.exists(fileName) and fileName != '/':
             global converting_database_directory, convert_database
             converting_database_directory = fileName
@@ -410,29 +398,22 @@ def splitByLinesAndConvert(text):
 
 def convert(text):
     ##إلغاء العملية في حال تحقق إحدى هذه الشروط
-    if not text: return text
+    if not text: return ''
     if (C_check.isChecked() or UC_check.isChecked()) and not path.exists(converting_database_directory):
         QMessageBox.about(CMainWindow, "!!خطأ", "قاعدة بيانات التحويل غير موجودة")
     
     cell()
     
     if Ext_check.isChecked():#Extract from text
-        if cell._before_text_convert == '' or cell._after_text_convert == '':
+        if not cell._before_text_convert or not cell._after_text_convert:
             QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
             return
         
         mini = byteInCell(min_text_convert.toPlainText())
         maxi = byteInCell(max_text_convert.toPlainText())
-        if mini: mini = int(mini)
-        else: mini = 0
-        if maxi: maxi = int(maxi)
-        else: maxi = 0
         
-        if mini > maxi:
-            QMessageBox.about(EnteringWindow, "!!خطأ", "لا يمكن أن يكون قصر النصوص أطول من طولها.")
-            return
-        
-        text = Extract(text, cell._before_text_convert, cell._after_text_convert, mini, maxi)
+        text = Extract(text, cell._before_text_convert, cell._after_text_convert, mini, maxi, EnglishOnlyCheck.isChecked())
+        if not text: return ''
         text = '\n'.join(text)
     
     text = splitByComs(text) #الكثير من التحويلات في هذا الفاتغشن
@@ -588,15 +569,6 @@ def extract():
     
     mini = byteInCell(min_text_convert.toPlainText())
     maxi = byteInCell(max_text_convert.toPlainText())
-    if mini: mini = int(mini)
-    else: mini = 0
-    if maxi: maxi = int(maxi)
-    else: maxi = 0
-    
-    if mini > maxi:
-        QMessageBox.about(EnteringWindow, "!!خطأ", "لا يمكن أن يكون قصر النصوص أطول من طولها.")
-        return
-    
     
     if extracted_text_database_directory.endswith('.csv'):
         database = open(extracted_text_database_directory, 'w', encoding="utf-8")

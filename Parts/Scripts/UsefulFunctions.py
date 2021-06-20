@@ -15,3 +15,9 @@ def hexToString(hexstring):
 
 def stringToHex(string):
     return string.encode('utf-8').hex()
+
+def sortDictByKeyLengh(Dict):
+    newDict = {}
+    for k in sorted(Dict, key=len, reverse=True):
+        newDict[k] = Dict[k]
+    return newDict

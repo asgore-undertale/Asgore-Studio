@@ -1,26 +1,31 @@
 import re
 
+EnglishLetters = ' !"'+"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+
 def minimax(text):
     if mini and len(text) < mini: return
     if maxi and len(text) > maxi: return
     return text
     
-def in_letters(text):
+def inEnglish(text):
     for char in text:
-        if char not in English_Letters and char not in Symbols:
+        if char not in EnglishLetters:
             return
     return text
 
-def Extract(text, before = '', after = '', mini = False, maxi = False):
+def Extract(text, before, after, mini = False, maxi = False, onlyEnglish = False):
     if not before or not after: return
-    mini, maxi = int(mini), int(maxi)
+    try:
+        mini = int(mini)
+        maxi = int(maxi)
+    except:
+        mini = False
+        maxi = False
     if mini > maxi: return
     
     # المتغيرات
     commands_chars = '.[]{}*+?()^'
-    
     text = text.replace('\n', u'\uffff' * 8)#الريجيكس يعاني مشاكل مع عودات السطر
-    
     
     if before == after:
         extracted_list = text.split(before)
@@ -36,8 +41,12 @@ def Extract(text, before = '', after = '', mini = False, maxi = False):
     
     extracted_list = [x.replace(u'\uffff' * 8, '\n') for x in extracted_list]
     
+    if onlyEnglish:
+        extracted_list = list(map(inEnglish, extracted_list))
+        extracted_list = list(filter(lambda a: a, extracted_list))
+    
     if mini or maxi:
         extracted_list = list(map(minimax, extracted_list))
-        extracted_list = list(filter(lambda a: a, extracted_list))#list() for python 2.x
+        extracted_list = list(filter(lambda a: a, extracted_list))
     
     return extracted_list
