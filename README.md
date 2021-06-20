@@ -1,6 +1,5 @@
 # Asgore-Studio
-ستحتاج لتحميل بايثون والمكتبات:
-openpyxl, pyqt5, keyboard, pillow, pygame
+لا تنسى تفقد ملف المتطلبات
 
 
 ![1442-09-05_19_57_35-](https://user-images.githubusercontent.com/52295461/115253214-d5aa2100-a134-11eb-99c2-6eb7f63c549d.png)
