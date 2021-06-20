@@ -42,5 +42,5 @@ def ZtsToAct(tableContent):
     string1, string2 = lines[0], lines[1]
     table = '\nVERSION="1.0"\nSEPARATOR="█"\n#####################\nالحرف█أول█وسط█آخر█منفصل'
 
-    for i, j in zip(string1, string2): table += f'\n{i}████{j}'
+    for i, j in zip(string1, string2): table += f'\n{j}████{i}'
     return sortCharsConvertingTable(table)

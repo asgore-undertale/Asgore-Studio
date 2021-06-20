@@ -134,7 +134,7 @@ Slash_check.setGeometry(QtCore.QRect(35, 305, 140, 26))
 Slash_check.setLayoutDirection(QtCore.Qt.RightToLeft)
 
 UC_database_button = QPushButton(OptionsWindow)
-UC_database_button.setGeometry(QtCore.QRect(20, 340, 80, 40))
+UC_database_button.setGeometry(QtCore.QRect(20, 335, 85, 45))
 UC_database_button.setText("قاعدة بيانات\nالتحويل")
 ##
 

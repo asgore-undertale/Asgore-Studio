@@ -1,4 +1,4 @@
-letters_Table = {'''  '<initial>' '<medial>' '<final>' '<isolated>' '''
+letters_Table = {#<initial><medial><final><isolated>
                     "ء" : ['ﺀ', 'ﺀ', 'ﺀ', 'ﺀ'], #Xإن محيت الهمزة من هنا فستحدث مشكلة
                     "آ" : ['ﺁ', 'ﺂ', 'ﺂ', 'ﺁ'],
                     "أ" : ['ﺃ', 'ﺄ', 'ﺄ', 'ﺃ'],

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QGridLayout, QPushButton, QFileDialog, QMessageBox, QWidget, QHBoxLayout, QLabel, QComboBox
 from PyQt5.QtGui import QFont
+from Parts.ATCEE import convert
 from sys import argv, exit
 from os import path
 import re, openpyxl, keyboard, csv
@@ -48,6 +49,11 @@ back_button.setText("<")
 per = QLabel()
 per.setFont(label_font)
 
+Convertbutton = QPushButton()
+Convertbutton.setText("تحويل الترجمة")
+ConvertAllbutton = QPushButton()
+ConvertAllbutton.setText("تحويل كل الترجمات")
+
 minilayout3 = QHBoxLayout()
 endCommandCell = QTextEdit()
 endCommandCell.setFixedSize(120, 26)
@@ -60,7 +66,9 @@ layout.addLayout(minilayout2, 1, 0)
 layout.addWidget(msytBox, 2, 0)
 layout.addLayout(minilayout, 3, 0)
 layout.addWidget(translationBox, 4, 0)
-layout.addLayout(minilayout3, 5, 0)
+layout.addWidget(Convertbutton, 5, 0)
+layout.addWidget(ConvertAllbutton, 6, 0)
+layout.addLayout(minilayout3, 7, 0)
 minilayout.addWidget(open_button)
 minilayout.addWidget(save_button)
 minilayout.addWidget(text_button)
@@ -75,6 +83,8 @@ back_button.clicked.connect(lambda: handleText(False))
 next_button.clicked.connect(lambda: handleText(True))
 save_button.clicked.connect(lambda: saveFile())
 open_button.clicked.connect(lambda: openFile())
+Convertbutton.clicked.connect(lambda: Convert())
+ConvertAllbutton.clicked.connect(lambda: ConvertAll())
 keyboard.on_press_key("F5", lambda _: typeCommand())
 
 # ---------
@@ -95,6 +105,13 @@ def typeCommand():
             if '＜c'+str(c+i)+'＞' not in translationBox.toPlainText() and '＜c'+str(c+i)+'＞' in msytBox.toPlainText():
                 keyboard.write('＜c'+str(c+i)+'＞')
                 break
+
+def Convert():
+    translationBox.setPlainText(convert(translationBox.toPlainText()))
+
+def ConvertAll():
+    for t in range(len(trans_list)):
+        trans_list[t] = convert(trans_list[t])
 
 def openTextDataBase(Directory = ''):
     global dataBaseDirectory, database
