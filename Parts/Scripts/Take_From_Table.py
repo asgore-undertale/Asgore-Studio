@@ -1,3 +1,4 @@
+from Parts.Scripts.fixTables import *
 from Parts.Scripts.UsefulFunctions import sortDictByKeyLengh
 
 def Take_From_Table(filePath):
@@ -7,18 +8,16 @@ def Take_From_Table(filePath):
         return TakeFromZTS(filePath)
 
 def TakeFromZTS(ztsPath):
-    charsTable = {}
-    
     lines = open(ztsPath, 'r', encoding="utf-8").read().split('\n')
     string1, string2 = lines[0], lines[1]
+    charsTable = {}
     
     for i, j in zip(string1, string2): charsTable[j] = i
-    
-    return charsTable
+    return fixCharmap(charsTable)
 
-def TakeFromACT(atePath):
+def TakeFromACT(actPath):
     charsTable = {}
-    rows = open(atePath, 'r', encoding="utf-8").read().split('\n')
+    rows = open(actPath, 'r', encoding="utf-8").read().split('\n')
     
     VERSION = float(rows[1][9:-1])
     SEPARATOR = rows[2][11:-1]
@@ -227,4 +226,4 @@ def TakeFromACT(atePath):
         else:
             charsTable[cols[0]] = cols[4]
     
-    return sortDictByKeyLengh(charsTable)
+    return sortDictByKeyLengh(fixCharmap(charsTable))

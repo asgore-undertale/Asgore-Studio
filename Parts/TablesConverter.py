@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QMessageBox, QRadioButton
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.ConvertTables import *
+from Parts.Scripts.Take_From_Table import TakeFromZTS
 from os import path
 from sys import exit, argv
 
@@ -21,7 +22,7 @@ def convertTable():
     
     elif ZtsToActRadio.isChecked():
         openDirectory, saveDirectory = openFile('zts'), saveFile('act')
-        open(saveDirectory, 'w', encoding='utf-8').write(ZtsToAct(open(openDirectory, 'r', encoding='utf-8').read()))
+        open(saveDirectory, 'w', encoding='utf-8').write(charmapToAct(TakeFromZTS(openDirectory)))
 
     else: return
     QMessageBox.about(TablesConverterWindow, "!!تم", "!!تم")

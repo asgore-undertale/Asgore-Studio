@@ -344,25 +344,26 @@ def open_def(num):
             output_folder = folder
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار المجلد.")
 
+commands_chars = '.[]{}*+?()^'
+def getPattern(startCom, endCom):
+    for char in commands_chars:
+        startCom = startCom.replace(char, '\\'+char)
+        endCom = endCom.replace(char, '\\'+char)
+    pattern = startCom + "(.*?)" + endCom
+    return pattern
+
 def splitByComs(text):
     if cell._start_command and cell._end_command:
         if cell._start_command == cell._end_command:
             text_list = text.split(cell._start_command)
         else:
-            commands_chars = '.[]{}*+?()^'
-            re_start_command = cell._start_command
-            re_end_command = cell._end_command
-            for char in commands_chars:
-                re_start_command = re_start_command.replace(char, '\\'+char)
-                re_end_command = re_end_command.replace(char, '\\'+char)
-            pattern = re_start_command + "(.*?)" + re_end_command
-            text_list = re.split(pattern, text)
+            text_list = re.split(getPattern(cell._start_command, cell._end_command), text)
         
-        for _ in range(len(text_list)):
-            if _%2:
-                text_list[_] = cell._start_command + text_list[_] + cell._end_command
-            else:
-                text_list[_] = splitByLinesAndConvert(text_list[_])
+        for i in range(len(text_list)):
+            if i%2: text_list[i] = cell._start_command + text_list[i] + cell._end_command
+            else: text_list[i] = splitByLinesAndConvert(text_list[i])
+                
+        if RT_check.isChecked() or RAO_check.isChecked(): text_list = text_list[::-1]
         text = ''.join(text_list)
     else:
         text = splitByLinesAndConvert(text)
@@ -388,8 +389,8 @@ def splitByLinesAndConvert(text):
             if HarakatOptionindex: text = handle_harakat(text, HarakatOptionindex)#Handle Harakat
             if RA_check.isChecked() or C_check.isChecked(): text = Un_Freeze(text)#Freeze Arabic
             if C_check.isChecked(): text = Convert(text, convert_database, True)#Convert
-            if RT_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand) #Reverse whole text
-            if RAO_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand, False) #‫Reverse Arabic only
+            if RT_check.isChecked(): text = Reverse(text) #Reverse whole text
+            if RAO_check.isChecked(): text = Reverse(text, False) #‫Reverse Arabic only
             if UC_check.isChecked(): text = Convert(text, convert_database, False)#Unconvert
             if UA_check.isChecked() or UC_check.isChecked(): text = Un_Freeze(text, False)#UnFreeze Arabic
             if CB_check.isChecked(): text = convert_bytes(text, cell._converted_byte)#Convert bytes

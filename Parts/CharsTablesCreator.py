@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessa
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
-from Parts.Scripts.sortConvertingTables import sortCharsConvertingTable
+from Parts.Scripts.fixTables import fixACT
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 from Parts.Scripts.UsefulFunctions import intToHex, hexToString
@@ -28,7 +28,7 @@ def saveACT(save_loc : str):
             if not Table.item(row, col).text(): continue
             content += f'{Table.item(row, col).text()}{_SEPARATOR_*4}{hexToString(intToHex(row)[1]+intToHex(col)[1])}\n'
     
-    content = sortCharsConvertingTable(delete_trash(content, _SEPARATOR_))
+    content = fixACT(delete_trash(content, _SEPARATOR_))
     content = deleteEmptyLines(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)
@@ -47,7 +47,7 @@ def saveCSV(save_loc : str):
             convert = hexToString(intToHex(row)[1]+intToHex(col)[1]).replace(delimiter, f'"{delimiter}"')
             content += f'{char}{_SEPARATOR_*4}{convert}\n'
     
-    content = sortCharsConvertingTable(delete_trash(content, _SEPARATOR_)).replace(_SEPARATOR_, delimiter)
+    content = fixACT(delete_trash(content, _SEPARATOR_)).replace(_SEPARATOR_, delimiter)
     content = deleteEmptyLines(content)
     
     open(save_loc, 'w', encoding="utf-8").write(content)

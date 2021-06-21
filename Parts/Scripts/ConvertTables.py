@@ -1,24 +1,5 @@
+from Parts.Scripts.fixTables import *
 import re
-from Parts.Scripts.sortConvertingTables import sortCharsConvertingTable
-
-#The Legend of Zelda: A Link to the Past
-#width = '666666663666766666676777766666666635637666656667777664666666663764468666668887777488888884888888884'
-#chars_list, x_list, y_list, width_list, height_list = [], [], [], [], []
-#for line in font_content.split('\n'):
-#    if line:
-#        l = line.split('=')
-#        chars_list.append(l[1])
-#        num_in_line = l[0]
-#        x = (int(num_in_line, 16) % 16) * 8
-#        y = (int(num_in_line, 16) // 16) * 16
-#        x_list.append(x)
-#        y_list.append(y)
-#        width_list.append(width[int(num_in_line, 16)])
-#        height_list.append(16)
-#xoffset_list = '0' * len(chars_list)
-#yoffset_list = '0' * len(chars_list)
-#xadvance_list = '0' * len(chars_list)
-################
 
 def XmlToAft(tableContent):
     chars_list = re.findall('<char id="(.*?)"', tableContent)
@@ -36,11 +17,16 @@ def XmlToAft(tableContent):
     
     return table
 
+def charmapToZts(charmap):
+    line1, line2 = '', ''
+    for k, v in fixCharmap(charmap).items():
+        if len(k) != 1 or not len(v) != 1: continue
+        line1 += v
+        line2 += k
+    return f'{line1}\n{line2}'
 
-def ZtsToAct(tableContent):
-    lines = tableContent.split('\n')
-    string1, string2 = lines[0], lines[1]
+def charmapToAct(charmap):
     table = '\nVERSION="1.0"\nSEPARATOR="█"\n#####################\nالحرف█أول█وسط█آخر█منفصل'
-
-    for i, j in zip(string1, string2): table += f'\n{j}████{i}'
-    return sortCharsConvertingTable(table)
+    for k, v in fixCharmap(charmap).items():
+        table += f'\n{k}████{v}'
+    return fixACT(table)
