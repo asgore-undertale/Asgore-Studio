@@ -383,14 +383,17 @@ def splitByLinesAndConvert(text):
     
     for p in range(len(text_pages_lines_list)):
         for l in range(len(text_pages_lines_list[p])):
-            
+            text = text_pages_lines_list[p][l]
             HarakatOptionindex = HarakatComboBox.currentIndex()
-            if HarakatOptionindex: text_pages_lines_list[p][l] = handle_harakat(text_pages_lines_list[p][l], HarakatOptionindex)#Handle Harakat
-            if RA_check.isChecked() or C_check.isChecked(): text_pages_lines_list[p][l] = Un_Freeze(text_pages_lines_list[p][l])#Freeze Arabic
-            if C_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, True)#Convert
-            if UC_check.isChecked(): text_pages_lines_list[p][l] = Convert(text_pages_lines_list[p][l], convert_database, False)#Unconvert
-            if UA_check.isChecked() or UC_check.isChecked(): text_pages_lines_list[p][l] = Un_Freeze(text_pages_lines_list[p][l], False)#UnFreeze Arabic
-            if CB_check.isChecked(): text_pages_lines_list[p][l] = convert_bytes(text_pages_lines_list[p][l], cell._converted_byte)#Convert bytes
+            if HarakatOptionindex: text = handle_harakat(text, HarakatOptionindex)#Handle Harakat
+            if RA_check.isChecked() or C_check.isChecked(): text = Un_Freeze(text)#Freeze Arabic
+            if C_check.isChecked(): text = Convert(text, convert_database, True)#Convert
+            if RT_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand) #Reverse whole text
+            if RAO_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand, False) #‫Reverse Arabic only
+            if UC_check.isChecked(): text = Convert(text, convert_database, False)#Unconvert
+            if UA_check.isChecked() or UC_check.isChecked(): text = Un_Freeze(text, False)#UnFreeze Arabic
+            if CB_check.isChecked(): text = convert_bytes(text, cell._converted_byte)#Convert bytes
+            text_pages_lines_list[p][l] = text
         text_pages_lines_list[p] = cell._lineCommand.join(text_pages_lines_list[p])
     text = cell._pageCommand.join(text_pages_lines_list)
     
@@ -418,8 +421,6 @@ def convert(text):
     
     text = splitByComs(text) #الكثير من التحويلات في هذا الفاتغشن
     
-    if RT_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand) #Reverse whole text
-    if RAO_check.isChecked(): text = Reverse(text, cell._start_command, cell._end_command, cell._pageCommand, cell._lineCommand, False) #‫Reverse Arabic only
     return text
 
 def convertFiles():
