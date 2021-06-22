@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QMessageBox, QRadioButton, QComboBox, QLabel
 from PyQt5.QtCore import QRect, Qt
-from Parts.Scripts.ConvertTables import *
+from Parts.Scripts.CharmapToTable import *
 from Parts.Scripts.Take_From_Table import *
 from os import path
 from sys import exit, argv
@@ -16,12 +16,7 @@ def saveFile(type : str):
     return _save
     
 def convertTable():
-    if XmlToaftRadio.isChecked():
-        openDirectory, saveDirectory = openFile('fnt'), saveFile('aft')
-        if not openDirectory or not saveDirectory: return
-        open(saveDirectory, 'w', encoding='utf-8').write(XmlToAft(open(openDirectory, 'r', encoding='utf-8').read()))
-
-    else:
+    try:
         From = fromComboBox.currentText()
         To = toComboBox.currentText()
         openDirectory, saveDirectory = openFile(From), saveFile(To)
@@ -29,13 +24,16 @@ def convertTable():
         
         if From == 'act': charmap = TakeFromACT(openDirectory)
         if From == 'zts': charmap = TakeFromZTS(openDirectory)
+        if From == 'fnt': charmap = TakeFromFNT(openDirectory)
         
         if To == 'act': table = charmapToACT(charmap)
         if To == 'zts': table = charmapToZTS(charmap)
+        if To == 'aft': table = charmapToAFT(charmap)
         
+        if not table: return
         open(saveDirectory, 'w', encoding='utf-8').write(table)
-        
-    QMessageBox.about(TablesConverterWindow, "!!تم", "!!تم")
+        QMessageBox.about(TablesConverterWindow, "!!تم", "!!تم")
+    except: pass
 
 
 app = QApplication(argv)
@@ -66,15 +64,17 @@ toLabel.setText("إلى:")
 
 fromComboBoxOptions = [
     "act",
+    "fnt",
     "zts"
 ]
 toComboBoxOptions = [
     "act",
+    "aft",
     "zts"
 ]
 fromComboBox = QComboBox(TablesConverterWindow)
 fromComboBox.addItems(fromComboBoxOptions)
 fromComboBox.setGeometry(QRect(comboLineWidth-35, 40, 40, 25))
 toComboBox = QComboBox(TablesConverterWindow)
-toComboBox.addItems(fromComboBoxOptions)
+toComboBox.addItems(toComboBoxOptions)
 toComboBox.setGeometry(QRect(comboLineWidth-110, 40, 40, 25))

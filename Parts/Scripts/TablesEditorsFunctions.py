@@ -10,12 +10,12 @@ _CSVDELIMITER_ = ','
 def check_version(ver : int):
     if ver > _VERSION_: return True
 
-def open_file(type : str, window):
-    _open, _ = QFileDialog.getOpenFileName(window, 'جدول حروف', '' , '*.'+type)
+def open_file(type : str, window, text = 'جدول حروف'):
+    _open, _ = QFileDialog.getOpenFileName(window, text, '' , '*.'+type)
     return _open * (_open != '/') * (_open != '') * (path.exists(_open))
 
-def save_file(type : str, window):
-    _save, _ = QFileDialog.getSaveFileName(window, 'جدول حروف', '' , '*.'+type)
+def save_file(type : str, window, text = 'جدول حروف'):
+    _save, _ = QFileDialog.getSaveFileName(window, text, '' , '*.'+type)
     return _save * (_save != '/') * (_save != '')
 
 def deleteEmptyLines(table : str):

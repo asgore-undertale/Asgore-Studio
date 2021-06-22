@@ -1,22 +1,65 @@
-from Parts.Scripts.fixTables import *
+from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 from Parts.Scripts.UsefulFunctions import sortDictByKeyLengh
+from Parts.Scripts.FixTables import *
+from os import path
+import pygame, re
 
-def Take_From_Table(filePath):
-    if filePath.endswith('.act'):
-        return TakeFromACT(filePath)
-    if filePath.endswith('.zts'):
-        return TakeFromZTS(filePath)
+def Take_From_Table(filePath, chars = '', fontSize = 16):
+    if not path.exists(filePath): return
+    if filePath.endswith('.act'): return TakeFromACT(filePath)
+    if filePath.endswith('.zts'): return TakeFromZTS(filePath)
+    if filePath.endswith('.ttf'): return TakeFromTTF(filePath, chars, fontSize)
+    if filePath.endswith('.aft'): return TakeFromAFT(filePath)
+    if filePath.endswith('.fnt'): return TakeFromFNT(filePath)
+
+def TakeFromFNT(fntPath):
+    with open(fntPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    chars_list = re.findall('<char id="(.*?)"', fontContent)
+    x_list = re.findall('x="(.*?)"', fontContent)
+    y_list = re.findall('y="(.*?)"', fontContent)
+    width_list = re.findall('width="(.*?)"', fontContent)
+    height_list = re.findall('height="(.*?)"', fontContent)
+    xoffset_list = re.findall('xoffset="(.*?)"', fontContent)
+    yoffset_list = re.findall('yoffset="(.*?)"', fontContent)
+    xadvance_list = re.findall('xadvance="(.*?)"', fontContent)
+    
+    charmap = {}
+    for c, x, y, w, h, xoff, yoff, xad in zip(chars_list, x_list, y_list, width_list, height_list, xoffset_list, yoffset_list, xadvance_list):
+        charmap[chr(int(c))] = (x, y, w, h, xoff, yoff, xad)
+    return charmap
+
+def TakeFromAFT(aftPath):
+    with open(aftPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    rows = fontContent.split('\n')
+    
+    # VERSION = float(rows[1][9:-1])
+    SEPARATOR = rows[2][11:-1]
+    
+    for r in range(5, len(rows)):
+        if not rows[r]: continue
+        cols = rows[r].split(SEPARATOR)
+        charmap[cols[0]] = (int(cols[1]), int(cols[2]), int(cols[3]), int(cols[4]), int(cols[5]), int(cols[6]), int(cols[7]))
+    return fixCharmap(charmap)
+
+def TakeFromTTF(ttfPath, chars, fontSize):
+    dialogue_font = pygame.font.Font(ttfPath, fontSize)
+    for char in Un_Freeze(chars):
+        try:
+            dialogue = dialogue_font.render(char, True, (0,0,0))
+            charmap[char] = (0, 0, dialogue.get_size()[0], dialogue.get_size()[1], 0, 0, 0)
+        except: pass
+    return fixCharmap(charmap)
 
 def TakeFromZTS(ztsPath):
     lines = open(ztsPath, 'r', encoding="utf-8").read().split('\n')
     string1, string2 = lines[0], lines[1]
-    charsTable = {}
+    charmap = {}
     
-    for i, j in zip(string1, string2): charsTable[j] = i
-    return fixCharmap(charsTable)
+    for i, j in zip(string1, string2): charmap[j] = i
+    return fixCharmap(charmap)
 
 def TakeFromACT(actPath):
-    charsTable = {}
+    charmap = {}
     rows = open(actPath, 'r', encoding="utf-8").read().split('\n')
     
     VERSION = float(rows[1][9:-1])
@@ -28,202 +71,202 @@ def TakeFromACT(actPath):
         cols = rows[row].split(SEPARATOR)
         
         if   cols[0] == 'ً':
-            charsTable['ﹰ'] = cols[4]
+            charmap['ﹰ'] = cols[4]
         elif cols[0] == 'َ':
-            charsTable['ﹶ'] = cols[4]
+            charmap['ﹶ'] = cols[4]
         elif cols[0] == 'ٌ':
-            charsTable['ﹲ'] = cols[4]
+            charmap['ﹲ'] = cols[4]
         elif cols[0] == 'ُ':
-            charsTable['ﹸ'] = cols[4]
+            charmap['ﹸ'] = cols[4]
         elif cols[0] == 'ٍ':
-            charsTable['ﹴ'] = cols[4]
+            charmap['ﹴ'] = cols[4]
         elif cols[0] == 'ِ':
-            charsTable['ﹺ'] = cols[4]
+            charmap['ﹺ'] = cols[4]
         elif cols[0] == 'ّ':
-            charsTable['ﹼ'] = cols[4]
+            charmap['ﹼ'] = cols[4]
         elif cols[0] == 'ْ':
-            charsTable['ﹾ'] = cols[4]
+            charmap['ﹾ'] = cols[4]
         elif cols[0] == 'ء':
-            charsTable['ﺀ'] = cols[4]
+            charmap['ﺀ'] = cols[4]
         elif cols[0] == 'آ':
-            charsTable['ﺁ'] = cols[4]
-            charsTable['ﺂ'] = cols[3]
+            charmap['ﺁ'] = cols[4]
+            charmap['ﺂ'] = cols[3]
         elif cols[0] == 'أ':
-            charsTable['ﺃ'] = cols[4]
-            charsTable['ﺄ'] = cols[3]
+            charmap['ﺃ'] = cols[4]
+            charmap['ﺄ'] = cols[3]
         elif cols[0] == 'ؤ':
-            charsTable['ﺅ'] = cols[4]
-            charsTable['ﺆ'] = cols[3]
+            charmap['ﺅ'] = cols[4]
+            charmap['ﺆ'] = cols[3]
         elif cols[0] == 'إ':
-            charsTable['ﺇ'] = cols[4]
-            charsTable['ﺈ'] = cols[3]
+            charmap['ﺇ'] = cols[4]
+            charmap['ﺈ'] = cols[3]
         elif cols[0] == 'ئ':
-            charsTable['ﺉ'] = cols[4]
-            charsTable['ﺊ'] = cols[3]
-            charsTable['ﺌ'] = cols[2]
-            charsTable['ﺋ'] = cols[1]
+            charmap['ﺉ'] = cols[4]
+            charmap['ﺊ'] = cols[3]
+            charmap['ﺌ'] = cols[2]
+            charmap['ﺋ'] = cols[1]
         elif cols[0] == 'ا':
-            charsTable['ﺍ'] = cols[4]
-            charsTable['ﺎ'] = cols[3]
+            charmap['ﺍ'] = cols[4]
+            charmap['ﺎ'] = cols[3]
         elif cols[0] == 'ب':
-            charsTable['ﺏ'] = cols[4]
-            charsTable['ﺐ'] = cols[3]
-            charsTable['ﺒ'] = cols[2]
-            charsTable['ﺑ'] = cols[1]
+            charmap['ﺏ'] = cols[4]
+            charmap['ﺐ'] = cols[3]
+            charmap['ﺒ'] = cols[2]
+            charmap['ﺑ'] = cols[1]
         elif cols[0] == 'ة':
-            charsTable['ﺓ'] = cols[4]
-            charsTable['ﺔ'] = cols[3]
+            charmap['ﺓ'] = cols[4]
+            charmap['ﺔ'] = cols[3]
         elif cols[0] == 'ت':
-            charsTable['ﺕ'] = cols[4]
-            charsTable['ﺖ'] = cols[3]
-            charsTable['ﺘ'] = cols[2]
-            charsTable['ﺗ'] = cols[1]
+            charmap['ﺕ'] = cols[4]
+            charmap['ﺖ'] = cols[3]
+            charmap['ﺘ'] = cols[2]
+            charmap['ﺗ'] = cols[1]
         elif cols[0] == 'ث':
-            charsTable['ﺙ'] = cols[4]
-            charsTable['ﺚ'] = cols[3]
-            charsTable['ﺜ'] = cols[2]
-            charsTable['ﺛ'] = cols[1]
+            charmap['ﺙ'] = cols[4]
+            charmap['ﺚ'] = cols[3]
+            charmap['ﺜ'] = cols[2]
+            charmap['ﺛ'] = cols[1]
         elif cols[0] == 'ج':
-            charsTable['ﺝ'] = cols[4]
-            charsTable['ﺞ'] = cols[3]
-            charsTable['ﺠ'] = cols[2]
-            charsTable['ﺟ'] = cols[1]
+            charmap['ﺝ'] = cols[4]
+            charmap['ﺞ'] = cols[3]
+            charmap['ﺠ'] = cols[2]
+            charmap['ﺟ'] = cols[1]
         elif cols[0] == 'ح':
-            charsTable['ﺡ'] = cols[4]
-            charsTable['ﺢ'] = cols[3]
-            charsTable['ﺤ'] = cols[2]
-            charsTable['ﺣ'] = cols[1]
+            charmap['ﺡ'] = cols[4]
+            charmap['ﺢ'] = cols[3]
+            charmap['ﺤ'] = cols[2]
+            charmap['ﺣ'] = cols[1]
         elif cols[0] == 'خ':
-            charsTable['ﺥ'] = cols[4]
-            charsTable['ﺦ'] = cols[3]
-            charsTable['ﺨ'] = cols[2]
-            charsTable['ﺧ'] = cols[1]
+            charmap['ﺥ'] = cols[4]
+            charmap['ﺦ'] = cols[3]
+            charmap['ﺨ'] = cols[2]
+            charmap['ﺧ'] = cols[1]
         elif cols[0] == 'د':
-            charsTable['ﺩ'] = cols[4]
-            charsTable['ﺪ'] = cols[3]
+            charmap['ﺩ'] = cols[4]
+            charmap['ﺪ'] = cols[3]
         elif cols[0] == 'ذ':
-            charsTable['ﺫ'] = cols[4]
-            charsTable['ﺬ'] = cols[3]
+            charmap['ﺫ'] = cols[4]
+            charmap['ﺬ'] = cols[3]
         elif cols[0] == 'ر':
-            charsTable['ﺭ'] = cols[4]
-            charsTable['ﺮ'] = cols[3]
+            charmap['ﺭ'] = cols[4]
+            charmap['ﺮ'] = cols[3]
         elif cols[0] == 'ز':
-            charsTable['ﺯ'] = cols[4]
-            charsTable['ﺰ'] = cols[3]
+            charmap['ﺯ'] = cols[4]
+            charmap['ﺰ'] = cols[3]
         elif cols[0] == 'س':
-            charsTable['ﺱ'] = cols[4]
-            charsTable['ﺲ'] = cols[3]
-            charsTable['ﺴ'] = cols[2]
-            charsTable['ﺳ'] = cols[1]
+            charmap['ﺱ'] = cols[4]
+            charmap['ﺲ'] = cols[3]
+            charmap['ﺴ'] = cols[2]
+            charmap['ﺳ'] = cols[1]
         elif cols[0] == 'ش':
-            charsTable['ﺵ'] = cols[4]
-            charsTable['ﺶ'] = cols[3]
-            charsTable['ﺸ'] = cols[2]
-            charsTable['ﺷ'] = cols[1]
+            charmap['ﺵ'] = cols[4]
+            charmap['ﺶ'] = cols[3]
+            charmap['ﺸ'] = cols[2]
+            charmap['ﺷ'] = cols[1]
         elif cols[0] == 'ص':
-            charsTable['ﺹ'] = cols[4]
-            charsTable['ﺺ'] = cols[3]
-            charsTable['ﺼ'] = cols[2]
-            charsTable['ﺻ'] = cols[1]
+            charmap['ﺹ'] = cols[4]
+            charmap['ﺺ'] = cols[3]
+            charmap['ﺼ'] = cols[2]
+            charmap['ﺻ'] = cols[1]
         elif cols[0] == 'ض':
-            charsTable['ﺽ'] = cols[4]
-            charsTable['ﺾ'] = cols[3]
-            charsTable['ﻀ'] = cols[2]
-            charsTable['ﺿ'] = cols[1]
+            charmap['ﺽ'] = cols[4]
+            charmap['ﺾ'] = cols[3]
+            charmap['ﻀ'] = cols[2]
+            charmap['ﺿ'] = cols[1]
         elif cols[0] == 'ط':
-            charsTable['ﻁ'] = cols[4]
-            charsTable['ﻂ'] = cols[3]
-            charsTable['ﻄ'] = cols[2]
-            charsTable['ﻃ'] = cols[1]
+            charmap['ﻁ'] = cols[4]
+            charmap['ﻂ'] = cols[3]
+            charmap['ﻄ'] = cols[2]
+            charmap['ﻃ'] = cols[1]
         elif cols[0] == 'ظ':
-            charsTable['ﻅ'] = cols[4]
-            charsTable['ﻆ'] = cols[3]
-            charsTable['ﻈ'] = cols[2]
-            charsTable['ﻇ'] = cols[1]
+            charmap['ﻅ'] = cols[4]
+            charmap['ﻆ'] = cols[3]
+            charmap['ﻈ'] = cols[2]
+            charmap['ﻇ'] = cols[1]
         elif cols[0] == 'ع':
-            charsTable['ﻉ'] = cols[4]
-            charsTable['ﻊ'] = cols[3]
-            charsTable['ﻋ'] = cols[2]
-            charsTable['ﻌ'] = cols[1]
+            charmap['ﻉ'] = cols[4]
+            charmap['ﻊ'] = cols[3]
+            charmap['ﻋ'] = cols[2]
+            charmap['ﻌ'] = cols[1]
         elif cols[0] == 'غ':
-            charsTable['ﻍ'] = cols[4]
-            charsTable['ﻎ'] = cols[3]
-            charsTable['ﻐ'] = cols[2]
-            charsTable['ﻏ'] = cols[1]
+            charmap['ﻍ'] = cols[4]
+            charmap['ﻎ'] = cols[3]
+            charmap['ﻐ'] = cols[2]
+            charmap['ﻏ'] = cols[1]
         elif cols[0] == 'ف':
-            charsTable['ﻑ'] = cols[4]
-            charsTable['ﻒ'] = cols[3]
-            charsTable['ﻔ'] = cols[2]
-            charsTable['ﻓ'] = cols[1]
+            charmap['ﻑ'] = cols[4]
+            charmap['ﻒ'] = cols[3]
+            charmap['ﻔ'] = cols[2]
+            charmap['ﻓ'] = cols[1]
         elif cols[0] == 'ق':
-            charsTable['ﻕ'] = cols[4]
-            charsTable['ﻖ'] = cols[3]
-            charsTable['ﻘ'] = cols[2]
-            charsTable['ﻗ'] = cols[1]
+            charmap['ﻕ'] = cols[4]
+            charmap['ﻖ'] = cols[3]
+            charmap['ﻘ'] = cols[2]
+            charmap['ﻗ'] = cols[1]
         elif cols[0] == 'ك':
-            charsTable['ﻙ'] = cols[4]
-            charsTable['ﻚ'] = cols[3]
-            charsTable['ﻜ'] = cols[2]
-            charsTable['ﻛ'] = cols[1]
+            charmap['ﻙ'] = cols[4]
+            charmap['ﻚ'] = cols[3]
+            charmap['ﻜ'] = cols[2]
+            charmap['ﻛ'] = cols[1]
         elif cols[0] == 'ل':
-            charsTable['ﻝ'] = cols[4]
-            charsTable['ﻞ'] = cols[3]
-            charsTable['ﻠ'] = cols[2]
-            charsTable['ﻟ'] = cols[1]
+            charmap['ﻝ'] = cols[4]
+            charmap['ﻞ'] = cols[3]
+            charmap['ﻠ'] = cols[2]
+            charmap['ﻟ'] = cols[1]
         elif cols[0] == 'م':
-            charsTable['ﻡ'] = cols[4]
-            charsTable['ﻢ'] = cols[3]
-            charsTable['ﻤ'] = cols[2]
-            charsTable['ﻣ'] = cols[1]
+            charmap['ﻡ'] = cols[4]
+            charmap['ﻢ'] = cols[3]
+            charmap['ﻤ'] = cols[2]
+            charmap['ﻣ'] = cols[1]
         elif cols[0] == 'ن':
-            charsTable['ﻥ'] = cols[4]
-            charsTable['ﻦ'] = cols[3]
-            charsTable['ﻨ'] = cols[2]
-            charsTable['ﻧ'] = cols[1]
+            charmap['ﻥ'] = cols[4]
+            charmap['ﻦ'] = cols[3]
+            charmap['ﻨ'] = cols[2]
+            charmap['ﻧ'] = cols[1]
         elif cols[0] == 'ه':
-            charsTable['ﻩ'] = cols[4]
-            charsTable['ﻪ'] = cols[3]
-            charsTable['ﻬ'] = cols[2]
-            charsTable['ﻫ'] = cols[1]
+            charmap['ﻩ'] = cols[4]
+            charmap['ﻪ'] = cols[3]
+            charmap['ﻬ'] = cols[2]
+            charmap['ﻫ'] = cols[1]
         elif cols[0] == 'و':
-            charsTable['ﻭ'] = cols[4]
-            charsTable['ﻮ'] = cols[3]
+            charmap['ﻭ'] = cols[4]
+            charmap['ﻮ'] = cols[3]
         elif cols[0] == 'ى':
-            charsTable['ﻯ'] = cols[4]
-            charsTable['ﻰ'] = cols[3]
+            charmap['ﻯ'] = cols[4]
+            charmap['ﻰ'] = cols[3]
         elif cols[0] == 'ي':
-            charsTable['ﻱ'] = cols[4]
-            charsTable['ﻲ'] = cols[3]
-            charsTable['ﻴ'] = cols[2]
-            charsTable['ﻳ'] = cols[1]
+            charmap['ﻱ'] = cols[4]
+            charmap['ﻲ'] = cols[3]
+            charmap['ﻴ'] = cols[2]
+            charmap['ﻳ'] = cols[1]
         elif cols[0] == 'لآ':
-            charsTable['ﻵ'] = cols[4]
-            charsTable['ﻶ'] = cols[3]
+            charmap['ﻵ'] = cols[4]
+            charmap['ﻶ'] = cols[3]
         elif cols[0] == 'لأ':
-            charsTable['ﻷ'] = cols[4]
-            charsTable['ﻸ'] = cols[3]
+            charmap['ﻷ'] = cols[4]
+            charmap['ﻸ'] = cols[3]
         elif cols[0] == 'لإ':
-            charsTable['ﻹ'] = cols[4]
-            charsTable['ﻺ'] = cols[3]
+            charmap['ﻹ'] = cols[4]
+            charmap['ﻺ'] = cols[3]
         elif cols[0] == 'لا':
-            charsTable['ﻻ'] = cols[4]
-            charsTable['ﻼ'] = cols[3]
+            charmap['ﻻ'] = cols[4]
+            charmap['ﻼ'] = cols[3]
         elif cols[0] == 'پ':
-            charsTable['ﭖ'] = cols[4]
-            charsTable['ﭗ'] = cols[3]
-            charsTable['ﭙ'] = cols[2]
-            charsTable['ﭘ'] = cols[1]
+            charmap['ﭖ'] = cols[4]
+            charmap['ﭗ'] = cols[3]
+            charmap['ﭙ'] = cols[2]
+            charmap['ﭘ'] = cols[1]
         elif cols[0] == 'چ':
-            charsTable['ﭺ'] = cols[4]
-            charsTable['ﭻ'] = cols[3]
-            charsTable['ﭽ'] = cols[2]
-            charsTable['ﭼ'] = cols[1]
+            charmap['ﭺ'] = cols[4]
+            charmap['ﭻ'] = cols[3]
+            charmap['ﭽ'] = cols[2]
+            charmap['ﭼ'] = cols[1]
         elif cols[0] == 'ڤ':
-            charsTable['ﭪ'] = cols[4]
-            charsTable['ﭫ'] = cols[3]
-            charsTable['ﭭ'] = cols[2]
-            charsTable['ﭬ'] = cols[1]
+            charmap['ﭪ'] = cols[4]
+            charmap['ﭫ'] = cols[3]
+            charmap['ﭭ'] = cols[2]
+            charmap['ﭬ'] = cols[1]
         else:
-            charsTable[cols[0]] = cols[4]
+            charmap[cols[0]] = cols[4]
     
-    return sortDictByKeyLengh(fixCharmap(charsTable))
+    return sortDictByKeyLengh(fixCharmap(charmap))

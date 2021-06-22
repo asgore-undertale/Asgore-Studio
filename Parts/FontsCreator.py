@@ -1,14 +1,17 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QFileDialog, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QLabel, QMessageBox, QCheckBox
 from PyQt5.QtCore import QRect, Qt
+from Parts.Scripts.TablesEditorsFunctions import save_file
 from Parts.Scripts.CreateFontTable import CreateFontTable
-from Parts.Scripts.drawFontTable import drawFontTable
+from Parts.Scripts.DrawFontTable import drawFontTable
 from sys import argv, exit
+from os import path
 
 def save():
+    ttfPath = TtfPathCell.toPlainText().replace('file:///', '')
     if fromRightCheck.isChecked(): fromRight = True
     else: fromRight = False
-    if smoothCheck.isChecked(): smooth = 0
-    else: smooth = 1
+    if smoothCheck.isChecked(): isSmooth = 0
+    else: isSmooth = 1
     if TtfSizeCell.toPlainText(): ttfSize = int(float(TtfSizeCell.toPlainText()))
     else: ttfSize = 28
     if beforeFirstColCell.toPlainText(): beforeFirstCol = int(float(beforeFirstColCell.toPlainText()))
@@ -27,20 +30,19 @@ def save():
     else: charsPerRow = 0
     
     tableContent = CreateFontTable(beforeFirstCol, beforeFirstRow, BetweenCharsX, BetweenCharsY, Width, Height, charsPerRow, charsCell.toPlainText())
-    
-    _file, _ = QFileDialog.getSaveFileName(FontsCreatorWindow, 'جدول الخط', '' , '*.aft')
-    if _file == '/' or not _file: return
+    _file = save_file('aft', FontsCreatorWindow, text = 'ملف الخط')
+    if not _file: return
     open(_file, 'w', encoding="utf-8").write(tableContent)
     
-    if TtfNameCell.toPlainText():
-        _file2, _ = QFileDialog.getSaveFileName(FontsCreatorWindow, 'صورة الخط', '' , '*.png')
-        if _file2 == '/' or not _file2: return
+    if path.exists(ttfPath):
+        _file2 = save_file('png', FontsCreatorWindow, text = 'صورة الخط')
+        if not _file2: return
         open(_file2, 'w', encoding="utf-8").write(tableContent)
         
         charsPerCol = len(charsCell.toPlainText()) // charsPerRow
         if len(charsCell.toPlainText()) % charsPerRow: charsPerCol += 1
         imgSize = (beforeFirstCol + BetweenCharsX * (charsPerRow - 1) + Width * charsPerRow , beforeFirstRow + BetweenCharsY * (charsPerCol - 1) + Height * charsPerCol)
-        drawFontTable(_file, charsCell.toPlainText(), Width, Height, imgSize, TtfNameCell.toPlainText(), ttfSize, fromRight, smooth, _file2)
+        drawFontTable(_file, charsCell.toPlainText(), Width, Height, imgSize, ttfPath, ttfSize, fromRight, isSmooth, _file2)
     
     QMessageBox.about(FontsCreatorWindow, "!!تهانينا", "تم حفظ الخط.")
 
@@ -48,18 +50,18 @@ def save():
 app = QApplication(argv)
 
 FontsCreatorWindow = QMainWindow()
-FontsCreatorWindow.setFixedSize(380, 460)
+FontsCreatorWindow.setFixedSize(360, 460)
 
-labelsWidth, labelsHeight = 200, 26
+labelsWidth, labelsHeight = 180, 26
 
 def y(num, height = 26, per = 10, first = 20):
     return first + (num * height) + ((num - 1) * per)
 
-TtfNameCell = QTextEdit(FontsCreatorWindow)
-TtfNameCell.setGeometry(QRect(10, y(0), 180, 26))
+TtfPathCell = QTextEdit(FontsCreatorWindow)
+TtfPathCell.setGeometry(QRect(10, y(0), 180, 26))
 TtfNameLabel = QLabel(FontsCreatorWindow)
 TtfNameLabel.setGeometry(QRect(170, y(0), labelsWidth, labelsHeight))
-TtfNameLabel.setText("اسم خط ttf:")
+TtfNameLabel.setText("مسار خط ttf:")
 TtfSizeCell = QTextEdit(FontsCreatorWindow)
 TtfSizeCell.setGeometry(QRect(10, y(1), 180, 26))
 TtfSizeLabel = QLabel(FontsCreatorWindow)
@@ -100,17 +102,18 @@ BetweenCharsYCell.setGeometry(QRect(10, y(8), 180, 26))
 BetweenCharsYLabel = QLabel(FontsCreatorWindow)
 BetweenCharsYLabel.setGeometry(QRect(170, y(8), labelsWidth, labelsHeight))
 BetweenCharsYLabel.setText("المسافة بين كل حرف عمودياً:")
-fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", FontsCreatorWindow)
-fromRightCheck.setGeometry(QRect(10, y(9), 180, 26))
-fromRightCheck.setLayoutDirection(Qt.RightToLeft)
-smoothCheck = QCheckBox("نعومة الخط", FontsCreatorWindow)
-smoothCheck.setGeometry(QRect(190, y(9), 180, 26))
-smoothCheck.setLayoutDirection(Qt.RightToLeft)
 charsCell = QTextEdit(FontsCreatorWindow)
 charsCell.setGeometry(QRect(10, y(10), 180, 80))
 charsLabel = QLabel(FontsCreatorWindow)
 charsLabel.setGeometry(QRect(170, y(10), labelsWidth, labelsHeight))
-charsLabel.setText("الحروف (بالترتيب من اليسار لليمين):")
+charsLabel.setText("الحروف بالترتيب:")
+
+fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", FontsCreatorWindow)
+fromRightCheck.setGeometry(QRect(10, y(9), 180, 26))
+fromRightCheck.setLayoutDirection(Qt.RightToLeft)
+smoothCheck = QCheckBox("نعومة الخط", FontsCreatorWindow)
+smoothCheck.setGeometry(QRect(170, y(9), 180, 26))
+smoothCheck.setLayoutDirection(Qt.RightToLeft)
 
 save_button = QPushButton(FontsCreatorWindow)
 save_button.setGeometry(QRect(260, 410, 70, 40))

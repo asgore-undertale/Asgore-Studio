@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessa
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
-from Parts.Scripts.fixTables import fixACT
+from Parts.Scripts.FixTables import fixACT
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 from Parts.Scripts.UsefulFunctions import intToHex, hexToString

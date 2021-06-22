@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QFileDialog, QMessageBox, QComboBox, QWidget, QGridLayout
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.LineOffset import *
-from Parts.Scripts.CharmapCreator import CreateCharmap
+from Parts.Scripts.Take_From_Table import Take_From_Table
 from Parts.Scripts.Fit_in_box import fit
 from Parts.Scripts.EmbedPygameInPyqt5 import embed
 from os import path
@@ -91,7 +91,7 @@ def fit_advance(text = '', fontSize = 16, box_width = 10, box_height = 10, px_pe
         return
     
     border_thick = 10
-    charmap = CreateCharmap(fnt_directory, text, fontSize, FileDirectory.split('.')[-1])
+    charmap = Take_From_Table(fnt_directory, text, fontSize)
     
     lines_num = int(box_height / (fontSize * 2 + px_per_line) * 2)
     fitted_text = fit(text, charmap, box_width, lines_num, newline, newpage, before_command, after_command)
