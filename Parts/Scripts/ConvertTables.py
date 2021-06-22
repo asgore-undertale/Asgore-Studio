@@ -19,8 +19,8 @@ def XmlToAft(tableContent):
 
 def charmapToZTS(charmap):
     line1, line2 = '', ''
+    charmap = sameItemsLengh(charmap, 1)
     for k, v in fixCharmap(charmap).items():
-        if len(k) + len(v) != 2: continue
         line1 += v
         line2 += k
     return f'{line1}\n{line2}'

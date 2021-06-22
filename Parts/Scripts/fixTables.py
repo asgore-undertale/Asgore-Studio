@@ -209,7 +209,7 @@ def fixACT(tableContent):
         
     return newTable
 
-def fillEmptyCells(Charmap, chars):
+def fillEmptyCells(Charmap : dict, chars : tuple):
     if chars[0] in Charmap and chars[1] in Charmap and chars[2] in Charmap and chars[3] in Charmap: return Charmap
     
     if chars[1] not in Charmap and chars[0] in Charmap: Charmap[chars[1]] = Charmap[chars[0]]
@@ -232,49 +232,58 @@ def fillEmptyCells(Charmap, chars):
     
     return Charmap
 
-def fixCharmap(Charmap):
-    Charmap = fillEmptyCells(Charmap, ['ﺁ', 'ﺂ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺃ', 'ﺄ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺅ', 'ﺆ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺇ', 'ﺈ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺉ', 'ﺊ', 'ﺌ', 'ﺋ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺍ', 'ﺎ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺏ', 'ﺐ', 'ﺒ', 'ﺑ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺓ', 'ﺔ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺕ', 'ﺖ', 'ﺘ', 'ﺗ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺙ', 'ﺚ', 'ﺜ', 'ﺛ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺝ', 'ﺞ', 'ﺠ', 'ﺟ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺡ', 'ﺢ', 'ﺤ', 'ﺣ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺥ', 'ﺦ', 'ﺨ', 'ﺧ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺩ', 'ﺪ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺫ', 'ﺬ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺭ', 'ﺮ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺯ', 'ﺰ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﺱ', 'ﺲ', 'ﺴ', 'ﺳ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺵ', 'ﺶ', 'ﺸ', 'ﺷ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺹ', 'ﺺ', 'ﺼ', 'ﺻ'])
-    Charmap = fillEmptyCells(Charmap, ['ﺽ', 'ﺾ', 'ﻀ', 'ﺿ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻁ', 'ﻂ', 'ﻄ', 'ﻃ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻅ', 'ﻆ', 'ﻈ', 'ﻇ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻉ', 'ﻊ', 'ﻌ', 'ﻋ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻍ', 'ﻎ', 'ﻐ', 'ﻏ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻑ', 'ﻒ', 'ﻔ', 'ﻓ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻕ', 'ﻖ', 'ﻘ', 'ﻗ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻙ', 'ﻚ', 'ﻜ', 'ﻛ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻝ', 'ﻞ', 'ﻠ', 'ﻟ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻡ', 'ﻢ', 'ﻤ', 'ﻣ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻥ', 'ﻦ', 'ﻨ', 'ﻧ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻩ', 'ﻪ', 'ﻬ', 'ﻫ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻭ', 'ﻮ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﻯ', 'ﻰ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﻱ', 'ﻲ', 'ﻴ', 'ﻳ'])
-    Charmap = fillEmptyCells(Charmap, ['ﻵ', 'ﻶ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﻷ', 'ﻸ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﻹ', 'ﻺ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﻻ', 'ﻼ', '', ''])
-    Charmap = fillEmptyCells(Charmap, ['ﭖ', 'ﭗ', 'ﭙ', 'ﭘ'])
-    Charmap = fillEmptyCells(Charmap, ['ﭺ', 'ﭻ', 'ﭽ', 'ﭼ'])
-    Charmap = fillEmptyCells(Charmap, ['ﭪ', 'ﭫ', 'ﭭ', 'ﭬ'])
+def fixCharmap(Charmap : dict):
+    Charmap = fillEmptyCells(Charmap, ('ﺁ', 'ﺂ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺃ', 'ﺄ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺅ', 'ﺆ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺇ', 'ﺈ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺉ', 'ﺊ', 'ﺌ', 'ﺋ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺍ', 'ﺎ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺏ', 'ﺐ', 'ﺒ', 'ﺑ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺓ', 'ﺔ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺕ', 'ﺖ', 'ﺘ', 'ﺗ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺙ', 'ﺚ', 'ﺜ', 'ﺛ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺝ', 'ﺞ', 'ﺠ', 'ﺟ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺡ', 'ﺢ', 'ﺤ', 'ﺣ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺥ', 'ﺦ', 'ﺨ', 'ﺧ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺩ', 'ﺪ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺫ', 'ﺬ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺭ', 'ﺮ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺯ', 'ﺰ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﺱ', 'ﺲ', 'ﺴ', 'ﺳ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺵ', 'ﺶ', 'ﺸ', 'ﺷ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺹ', 'ﺺ', 'ﺼ', 'ﺻ'))
+    Charmap = fillEmptyCells(Charmap, ('ﺽ', 'ﺾ', 'ﻀ', 'ﺿ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻁ', 'ﻂ', 'ﻄ', 'ﻃ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻅ', 'ﻆ', 'ﻈ', 'ﻇ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻉ', 'ﻊ', 'ﻌ', 'ﻋ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻍ', 'ﻎ', 'ﻐ', 'ﻏ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻑ', 'ﻒ', 'ﻔ', 'ﻓ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻕ', 'ﻖ', 'ﻘ', 'ﻗ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻙ', 'ﻚ', 'ﻜ', 'ﻛ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻝ', 'ﻞ', 'ﻠ', 'ﻟ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻡ', 'ﻢ', 'ﻤ', 'ﻣ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻥ', 'ﻦ', 'ﻨ', 'ﻧ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻩ', 'ﻪ', 'ﻬ', 'ﻫ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻭ', 'ﻮ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﻯ', 'ﻰ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﻱ', 'ﻲ', 'ﻴ', 'ﻳ'))
+    Charmap = fillEmptyCells(Charmap, ('ﻵ', 'ﻶ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﻷ', 'ﻸ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﻹ', 'ﻺ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﻻ', 'ﻼ', '', ''))
+    Charmap = fillEmptyCells(Charmap, ('ﭖ', 'ﭗ', 'ﭙ', 'ﭘ'))
+    Charmap = fillEmptyCells(Charmap, ('ﭺ', 'ﭻ', 'ﭽ', 'ﭼ'))
+    Charmap = fillEmptyCells(Charmap, ('ﭪ', 'ﭫ', 'ﭭ', 'ﭬ'))
+    Charmap.pop('', None)
+    return Charmap
+
+def sameItemsLengh(Charmap : dict, lengh : int):
+    remove = []
+    for k, v in Charmap.items():
+        if len(k) != len(v) != lengh:
+            remove.append(k)
+    for k in remove: Charmap.pop(k, None)
     return Charmap
 
 def fixFontTable(table):

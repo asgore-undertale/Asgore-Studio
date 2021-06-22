@@ -18,12 +18,14 @@ def saveFile(type : str):
 def convertTable():
     if XmlToaftRadio.isChecked():
         openDirectory, saveDirectory = openFile('fnt'), saveFile('aft')
+        if not openDirectory or not saveDirectory: return
         open(saveDirectory, 'w', encoding='utf-8').write(XmlToAft(open(openDirectory, 'r', encoding='utf-8').read()))
 
     else:
         From = fromComboBox.currentText()
         To = toComboBox.currentText()
         openDirectory, saveDirectory = openFile(From), saveFile(To)
+        if not openDirectory or not saveDirectory: return
         
         if From == 'act': charmap = TakeFromACT(openDirectory)
         if From == 'zts': charmap = TakeFromZTS(openDirectory)
