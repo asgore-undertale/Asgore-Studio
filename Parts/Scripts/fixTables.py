@@ -196,13 +196,17 @@ def fixACT(tableContent):
             newTable += line + '\n'
             continue
         
-        items = line.split('█')
+        items = line.split(_SEPARATOR_)
         check(items[0], items[4])
     
     for k, v in charmap.items():
-        if not ''.join(v): continue
-        newTable += k + '█' + '█'.join(v) + '\n'
-    
+        if not k: continue
+        if ''.join(v):
+            newTable += k + _SEPARATOR_ + _SEPARATOR_.join(v) + '\n'
+        else:
+            if not k in tableContent: continue
+            newTable += k + '\n'
+        
     return newTable
 
 def fillEmptyCells(Charmap, chars):

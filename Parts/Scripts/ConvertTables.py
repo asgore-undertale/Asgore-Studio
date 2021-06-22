@@ -17,15 +17,15 @@ def XmlToAft(tableContent):
     
     return table
 
-def charmapToZts(charmap):
+def charmapToZTS(charmap):
     line1, line2 = '', ''
     for k, v in fixCharmap(charmap).items():
-        if len(k) != 1 or not len(v) != 1: continue
+        if len(k) + len(v) != 2: continue
         line1 += v
         line2 += k
     return f'{line1}\n{line2}'
 
-def charmapToAct(charmap):
+def charmapToACT(charmap):
     table = '\nVERSION="1.0"\nSEPARATOR="█"\n#####################\nالحرف█أول█وسط█آخر█منفصل'
     for k, v in fixCharmap(charmap).items():
         table += f'\n{k}████{v}'

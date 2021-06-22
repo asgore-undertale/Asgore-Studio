@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QMessageBox, QRadioButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QMessageBox, QRadioButton, QComboBox, QLabel
 from PyQt5.QtCore import QRect, Qt
 from Parts.Scripts.ConvertTables import *
-from Parts.Scripts.Take_From_Table import TakeFromZTS
+from Parts.Scripts.Take_From_Table import *
 from os import path
 from sys import exit, argv
 
@@ -19,12 +19,20 @@ def convertTable():
     if XmlToaftRadio.isChecked():
         openDirectory, saveDirectory = openFile('fnt'), saveFile('aft')
         open(saveDirectory, 'w', encoding='utf-8').write(XmlToAft(open(openDirectory, 'r', encoding='utf-8').read()))
-    
-    elif ZtsToActRadio.isChecked():
-        openDirectory, saveDirectory = openFile('zts'), saveFile('act')
-        open(saveDirectory, 'w', encoding='utf-8').write(charmapToAct(TakeFromZTS(openDirectory)))
 
-    else: return
+    else:
+        From = fromComboBox.currentText()
+        To = toComboBox.currentText()
+        openDirectory, saveDirectory = openFile(From), saveFile(To)
+        
+        if From == 'act': charmap = TakeFromACT(openDirectory)
+        if From == 'zts': charmap = TakeFromZTS(openDirectory)
+        
+        if To == 'act': table = charmapToACT(charmap)
+        if To == 'zts': table = charmapToZTS(charmap)
+        
+        open(saveDirectory, 'w', encoding='utf-8').write(table)
+        
     QMessageBox.about(TablesConverterWindow, "!!تم", "!!تم")
 
 
@@ -34,17 +42,37 @@ windowWidth = 300
 radioWidth = windowWidth - 20
 
 TablesConverterWindow = QMainWindow()
-TablesConverterWindow.setFixedSize(windowWidth, 120)
+TablesConverterWindow.setFixedSize(windowWidth, 130)
 
-tableButton = QPushButton(TablesConverterWindow)
-tableButton.setGeometry(QRect(20, 70, 100, 40))
-tableButton.setText("اختر جدول\nوحوّله")
-
-tableButton.clicked.connect(lambda: convertTable())
+convertButton = QPushButton(TablesConverterWindow)
+convertButton.setGeometry(QRect(100, 80, 90, 40))
+convertButton.setText("اختر جدول\nوحوّله")
+convertButton.clicked.connect(lambda: convertTable())
 
 XmlToaftRadio = QRadioButton("تحويل جدول BMFont Xml إلى جداول خطوط آسغور aft", TablesConverterWindow)
 XmlToaftRadio.setGeometry(QRect(10, 10, radioWidth, 26))
 XmlToaftRadio.setLayoutDirection(Qt.RightToLeft)
-ZtsToActRadio = QRadioButton("تحويل جدول zts إلى جداول تحويل آسغور Act", TablesConverterWindow)
-ZtsToActRadio.setGeometry(QRect(10, 30, radioWidth, 26))
-ZtsToActRadio.setLayoutDirection(Qt.RightToLeft)
+
+comboLineWidth = 240
+
+fromLabel = QLabel(TablesConverterWindow)
+fromLabel.setGeometry(QRect(comboLineWidth, 40, 40, 25))
+fromLabel.setText("تحويل:")
+toLabel = QLabel(TablesConverterWindow)
+toLabel.setGeometry(QRect(comboLineWidth-75, 40, 30, 25))
+toLabel.setText("إلى:")
+
+fromComboBoxOptions = [
+    "act",
+    "zts"
+]
+toComboBoxOptions = [
+    "act",
+    "zts"
+]
+fromComboBox = QComboBox(TablesConverterWindow)
+fromComboBox.addItems(fromComboBoxOptions)
+fromComboBox.setGeometry(QRect(comboLineWidth-35, 40, 40, 25))
+toComboBox = QComboBox(TablesConverterWindow)
+toComboBox.addItems(fromComboBoxOptions)
+toComboBox.setGeometry(QRect(comboLineWidth-110, 40, 40, 25))
