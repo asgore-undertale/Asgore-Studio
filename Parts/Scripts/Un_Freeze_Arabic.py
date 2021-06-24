@@ -63,7 +63,7 @@ harakat = 'َﹰﹱﹲﹴﹶﹷﹸﹹﹺﹻﹼﹽﹾﹿًٌٍَُِّْ'
 list1 = 'ئبتثجحخسشصضطظعغفقكلمنهيپچڤـ'
 list2 = 'آأؤإاةدذرزوى'
 
-def Un_Freeze(text, case = True):
+def Un_Freeze(text, case = True, mergLA = True):
     if case:
         reshaped_text = ''
         textlist = list(' '+text+' ') #هذه الخطوة ضرورية ليعمل الكود بشكل صحيح
@@ -104,14 +104,16 @@ def Un_Freeze(text, case = True):
             new_text = ''   #ارجع قيمة المتغير الذي يأخذ قيمة الحرف عدما كي لا تتراكم الأحرف فيه
 
         #لاستبدال الألف واللام المنفصلين بحرف متصل
-        reshaped_text = reshaped_text.replace('ﻟﺂ', 'ﻵ')
-        reshaped_text = reshaped_text.replace('ﻠﺂ', 'ﻶ')
-        reshaped_text = reshaped_text.replace('ﻟﺄ', 'ﻷ')
-        reshaped_text = reshaped_text.replace('ﻠﺄ', 'ﻸ')
-        reshaped_text = reshaped_text.replace('ﻟﺈ', 'ﻹ')
-        reshaped_text = reshaped_text.replace('ﻠﺈ', 'ﻺ')
-        reshaped_text = reshaped_text.replace('ﻟﺎ', 'ﻻ')
-        reshaped_text = reshaped_text.replace('ﻠﺎ', 'ﻼ')
+        if mergLA:
+            reshaped_text = reshaped_text.replace('ﻟﺂ', 'ﻵ')
+            reshaped_text = reshaped_text.replace('ﻠﺂ', 'ﻶ')
+            reshaped_text = reshaped_text.replace('ﻟﺄ', 'ﻷ')
+            reshaped_text = reshaped_text.replace('ﻠﺄ', 'ﻸ')
+            reshaped_text = reshaped_text.replace('ﻟﺈ', 'ﻹ')
+            reshaped_text = reshaped_text.replace('ﻠﺈ', 'ﻺ')
+            reshaped_text = reshaped_text.replace('ﻟﺎ', 'ﻻ')
+            reshaped_text = reshaped_text.replace('ﻠﺎ', 'ﻼ')
+        
         text = reshaped_text
     else:
         for char in text:

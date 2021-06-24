@@ -70,20 +70,23 @@ def returnMostPrevalent(text):
         elif num < counter: sample, num = k, counter # and sample in available
     return sample, num
 
-def AnalyzeText(text):
+def analyzeText(text, num):
     if not text: return
     if maxSampleLength < 2: return
-    t = ''
-    t += f'-------------------\nطول النص = {len(text)} \nالنص: {text} \n\n'
+    _, i = '', 0
     
+    _ += f'الطول الأصلي\t\t{len(text)}\n'
     text = Un_Freeze(text)
-    t += f'طول النص بعد التجميد: {len(text)}\n'
+    _ += f'بعد التجميد\t\t{len(text)}\n\nالمجموعات البصرية وعدد ورودها:\n'
+    
     while True:
+        if i == num: break
         k, count = returnMostPrevalent(text)
         if not k: break
         
+        i += 1
         text = text.replace(k, Samples[k])
-        t += f'({Samples[k]}).count = {count}, طول النص: {len(text)}\n'
+        _ += f'[{Samples[k]}]   [{count}]\tصار الطول   {len(text)} (-{count})\n'
     
-    t += f'\nطول النص الجديد = {len(text)} \nالنص الجديد:\n {text}\n' #
-    return text, t
+    _ += f'\nالطول بعد الاختزال\t{len(text)}'
+    return text, _
