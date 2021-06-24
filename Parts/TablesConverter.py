@@ -19,7 +19,8 @@ def convertTable():
     try:
         From = fromComboBox.currentText()
         To = toComboBox.currentText()
-        openDirectory, saveDirectory = openFile(From), saveFile(To)
+        openDirectory = openFile(From)
+        if openDirectory: saveDirectory = saveFile(To)
         if not openDirectory or not saveDirectory: return
         
         if From == 'act': charmap = TakeFromACT(openDirectory)
@@ -38,29 +39,16 @@ def convertTable():
 
 app = QApplication(argv)
 
-windowWidth = 300
-radioWidth = windowWidth - 20
-
 TablesConverterWindow = QMainWindow()
-TablesConverterWindow.setFixedSize(windowWidth, 130)
+TablesConverterWindow.setFixedSize(300, 100)
 
 convertButton = QPushButton(TablesConverterWindow)
-convertButton.setGeometry(QRect(100, 80, 90, 40))
+convertButton.setGeometry(QRect(100, 50, 90, 40))
 convertButton.setText("اختر جدول\nوحوّله")
 convertButton.clicked.connect(lambda: convertTable())
 
-XmlToaftRadio = QRadioButton("تحويل جدول BMFont Xml إلى جداول خطوط آسغور aft", TablesConverterWindow)
-XmlToaftRadio.setGeometry(QRect(10, 10, radioWidth, 26))
-XmlToaftRadio.setLayoutDirection(Qt.RightToLeft)
-
 comboLineWidth = 240
-
-fromLabel = QLabel(TablesConverterWindow)
-fromLabel.setGeometry(QRect(comboLineWidth, 40, 40, 25))
-fromLabel.setText("تحويل:")
-toLabel = QLabel(TablesConverterWindow)
-toLabel.setGeometry(QRect(comboLineWidth-75, 40, 30, 25))
-toLabel.setText("إلى:")
+y = 10
 
 fromComboBoxOptions = [
     "act",
@@ -74,7 +62,14 @@ toComboBoxOptions = [
 ]
 fromComboBox = QComboBox(TablesConverterWindow)
 fromComboBox.addItems(fromComboBoxOptions)
-fromComboBox.setGeometry(QRect(comboLineWidth-35, 40, 40, 25))
+fromComboBox.setGeometry(QRect(comboLineWidth-35, y, 40, 25))
 toComboBox = QComboBox(TablesConverterWindow)
 toComboBox.addItems(toComboBoxOptions)
-toComboBox.setGeometry(QRect(comboLineWidth-110, 40, 40, 25))
+toComboBox.setGeometry(QRect(comboLineWidth-110, y, 40, 25))
+
+fromLabel = QLabel(TablesConverterWindow)
+fromLabel.setGeometry(QRect(comboLineWidth, y, 40, 25))
+fromLabel.setText("تحويل:")
+toLabel = QLabel(TablesConverterWindow)
+toLabel.setGeometry(QRect(comboLineWidth-75, y, 30, 25))
+toLabel.setText("إلى:")

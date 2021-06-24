@@ -1,6 +1,7 @@
 #استيراد المكتبات
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QVBoxLayout, QComboBox
+from PyQt5.QtWidgets import *
+# QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QComboBox
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
 import openpyxl, re, csv
@@ -72,6 +73,7 @@ HarakatOptions = [
     "احذفها",
     "أبقي الأولى في حالة التتالي",
     "أعدها حرفاً للوراء",
+    "قدمها حرفاً للأمام",
     "حولها لشكلها مع التطويلة"
 ]
 HarakatComboBox = QComboBox(OptionsWindow)
@@ -138,18 +140,17 @@ UC_database_button.setGeometry(QtCore.QRect(20, 335, 85, 45))
 UC_database_button.setText("قاعدة بيانات\nالتحويل")
 ##
 
-
 #النافذة الرئيسية
 CMainWindow = QMainWindow()
 container = QWidget()
-CMainWindow.resize(685, 290)
+CMainWindow.resize(300, 500)
 
 layout = QGridLayout()
 container.setLayout(layout)
 CMainWindow.setCentralWidget(container)
 
-enteredBox = QTextEdit()
-resultBox = QTextEdit()
+enteredBox = QTextEdit(CMainWindow)
+resultBox = QTextEdit(CMainWindow)
 enteredBox.setPlainText('تجربةُ التّحويلِ')
 enteredBox.setFont(textbox_font)
 resultBox.setFont(textbox_font)
@@ -159,23 +160,22 @@ resultLabel = QLabel()
 enteredLabel.setText("   النص الداخل:")
 resultLabel.setText("   النص الناتج:")
 
-minilayout = QVBoxLayout()
+minilayout = QHBoxLayout()
 convertButton = QPushButton()
 openFileButton = QPushButton()
 ConvertFilesButton = QPushButton()
-convertButton.setText("تحويل")
+convertButton.setText("تحويل\nالنص")
 openFileButton.setText("فتح ملف\nنص")
 ConvertFilesButton.setText("فتح مجلد\nوتحويل ملفاته")
 
 layout.addWidget(enteredLabel, 0, 0)
 layout.addWidget(enteredBox, 1, 0)
-layout.addWidget(resultLabel, 0, 2)
-layout.addWidget(resultBox, 1, 2)
-layout.addLayout(minilayout, 1, 1)
+layout.addWidget(resultLabel, 2, 0)
+layout.addWidget(resultBox, 3, 0)
+layout.addLayout(minilayout, 4, 0)
 minilayout.addWidget(convertButton)
 minilayout.addWidget(openFileButton)
 minilayout.addWidget(ConvertFilesButton)
-
 
 #نافذة الإدخال
 EnteringWindow = QMainWindow()
@@ -309,37 +309,37 @@ def cell():
 def open_def(num):
     if num == 0:
         fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول النص', '' , '*.xlsx *.csv')
-        if path.exists(fileName) and fileName != '/':
+        if path.exists(fileName) and fileName != '/' and fileName:
             global text_database_directory
             text_database_directory = fileName
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 1:
         fileName, _ = QFileDialog.getOpenFileName(OptionsWindow, 'جدول التحويل', '' , '*.act *.zts')
-        if path.exists(fileName) and fileName != '/':
+        if path.exists(fileName) and fileName != '/' and fileName:
             global converting_database_directory, convert_database
             converting_database_directory = fileName
             convert_database = Take_From_Table(fileName)
             QMessageBox.about(OptionsWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 3:
         fileName, _ = QFileDialog.getOpenFileName(EnteringWindow, 'جدول الاستخراج', '' , '*.xlsx *.csv')
-        if path.exists(fileName) and fileName != '/':
+        if path.exists(fileName) and fileName != '/' and fileName:
             global extracted_text_database_directory
             extracted_text_database_directory = fileName
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار الجدول.")
     elif num == 4:
         fileName, _ = QFileDialog.getOpenFileName(CMainWindow, 'ملف نص', '' , '*')
-        if path.exists(fileName) and fileName != '/':
+        if path.exists(fileName) and fileName != '/' and fileName:
             enteredBox.setPlainText(open(fileName, 'r', encoding='utf-8').read())
             QMessageBox.about(CMainWindow, "!!تهانيّ", "تم اختيار ملف النص.")
     elif num == 5:
         folder = str(QFileDialog.getExistingDirectory(EnteringWindow, "Select Directory"))+'/'
-        if path.exists(folder) and folder != '/':
+        if path.exists(folder) and folder != '/' and fileName:
             global input_folder
             input_folder = folder
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار المجلد.")
     elif num == 6:
         folder = str(QFileDialog.getExistingDirectory(EnteringWindow, "Select Directory"))+'/'
-        if path.exists(folder) and folder != '/':
+        if path.exists(folder) and folder != '/' and fileName:
             global output_folder
             output_folder = folder
             QMessageBox.about(EnteringWindow, "!!تهانيّ", "تم اختيار المجلد.")
@@ -426,6 +426,7 @@ def convert(text):
 
 def convertFiles():
     folder = str(QFileDialog.getExistingDirectory(CMainWindow, "اختر مجلداً"))+'/'
+    if not folder * (folder != '/') * (folder != '') * (path.exists(folder)): return
     files = dir_list(folder)
     
     for file in files:

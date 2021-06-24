@@ -32,6 +32,7 @@ class MotherWindow(QMainWindow):
         elif check("منشئ الخطوط الموحدة الحجم"): self.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط الموحدة الحجم')
         elif check("منشئ جداول الحروف"): self.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
         elif check("محوّل الجداول"): self.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
+        elif check("مختزل النصوص"): self.newChild(AnalyzeWindow, AnalyzeContainer, 'مختزل النصوص')
     
     def createBars(self):
         self.bar = self.menuBar()
@@ -57,6 +58,7 @@ class MotherWindow(QMainWindow):
         self.tools.addAction("منشئ الخطوط الموحدة الحجم")
         self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("محوّل الجداول")
+        self.tools.addAction("مختزل النصوص")
 
     def newChild(self, widget, container, name):
         if container not in self.mdiArea.subWindowList():
@@ -75,11 +77,12 @@ importantInfo = ('- للكتابة بالبايتات في الحقول الصغ
 if __name__ == '__main__':
     from Parts.AsgoreTablesEditor import TableEditorWindow
     from Parts.ATCEE import OptionsWindow, CMainWindow, EnteringWindow
-    from Parts.AsgoreMsytTool import MsytWindow
+    from Parts.AsgoreFilesEditor import MsytWindow
     from Parts.FitInBoxAdvanced import FitAdvancedWindow, FitAdvancedOptionsWindow
     from Parts.FontsCreator import FontsCreatorWindow
     from Parts.TablesConverter import TablesConverterWindow
     from Parts.CharsTablesCreator import CharsTablesCreatorWindow
+    from Parts.TextAnalyzer import AnalyzeWindow
     from sys import argv
 
     app = QApplication(argv)
@@ -104,6 +107,8 @@ if __name__ == '__main__':
     TablesConverterContainer.setWidget(TablesConverterWindow)
     CharsTablesCreatorContainer = QMdiSubWindow()
     CharsTablesCreatorContainer.setWidget(CharsTablesCreatorWindow)
+    AnalyzeContainer = QMdiSubWindow()
+    AnalyzeContainer.setWidget(AnalyzeWindow)
 
     main = MotherWindow()
     main.show()
