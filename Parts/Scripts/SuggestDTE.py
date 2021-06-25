@@ -1,9 +1,9 @@
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 
-def makeDTE(text):
+def makeDTE(text, chars):
     dteList = []
-    for char in text:
-        for _char in text:
+    for char in chars:
+        for _char in chars:
             dte = f'{char}{_char}'
             count = text.count(dte)
             if not count: continue
@@ -14,10 +14,10 @@ def makeDTE(text):
 def suggestDTE(text, resultsNum):
     dteList, _ = [], ''
     text = Un_Freeze(text, True, False)
-    text = "".join(dict.fromkeys(text))
+    chars = "".join(dict.fromkeys(text))
     _ += f'المجموعات البصرية المقترحة وعدد ورودها:\n'
     
-    dteList = sorted(makeDTE(text), key=lambda x: x[1], reverse=True)
+    dteList = sorted(makeDTE(text, chars), key=lambda x: x[1], reverse=True)
     dteList = dteList[0:resultsNum]
     
     for dte in dteList:

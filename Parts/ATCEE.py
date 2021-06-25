@@ -1,10 +1,9 @@
 #استيراد المكتبات
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import *
-# QMainWindow, QTextEdit, QCheckBox, QPushButton, QLabel, QMenuBar, QAction, QFileDialog, QRadioButton, QMenu, QMessageBox, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QComboBox
 from os import path, listdir, mkdir, makedirs, walk
 from openpyxl.styles import PatternFill, Alignment, Font
-import openpyxl, re, csv
+import openpyxl, re, csv, pyautogui, pyperclip, keyboard, time
 
 ##استيراد السكربتات
 from Parts.Scripts.Delete_Duplicated_lines import DDL
@@ -280,6 +279,8 @@ convert_enter_button.clicked.connect(lambda: enter())
 input_from_folder.clicked.connect(lambda: open_def(5))
 output_from_folder.clicked.connect(lambda: open_def(6))
 
+keyboard.on_press_key("F4", lambda _: convertAdvanced())
+
 
 #المتغيرات
 converting_database_directory = r'OtherFiles/Tables/CharsConvertingTable.act'
@@ -435,6 +436,14 @@ def convertFiles():
         open(file, 'w', encoding='utf-8').write(str(convert(content)))
     
     QMessageBox.about(EnteringWindow, "!!تهانينا", "انتهى تحويل الملفات.")
+
+def convertAdvanced():
+    # if not CMainWindow.isActiveWindow(): return
+    pyperclip.copy('')
+    pyautogui.hotkey('ctrl', 'c')
+    time.sleep(.01)  # ctrl-c is usually very fast but your program may execute faster
+    pyperclip.copy(convert(pyperclip.paste()))
+    pyautogui.hotkey('ctrl', 'v')
 
 def checkToEnter(text, translation):
     if not text and not translation: return True

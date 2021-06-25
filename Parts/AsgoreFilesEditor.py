@@ -85,7 +85,7 @@ save_button.clicked.connect(lambda: saveFile())
 open_button.clicked.connect(lambda: openFile())
 Convertbutton.clicked.connect(lambda: Convert())
 ConvertAllbutton.clicked.connect(lambda: ConvertAll())
-keyboard.on_press_key("F5", lambda _: typeCommand())
+keyboard.on_press_key("F3", lambda _: typeCommand())
 
 # ---------
 file_content, text_list, trans_list, sentences_num, database = '', '', '', '', ''
@@ -98,13 +98,17 @@ def fileType():
     if index == 1: return 'txt'
 
 def typeCommand():
+    if not MsytWindow.isActiveWindow(): return
     c = 0
-    if '＞' in msytBox.toPlainText():
-        while '＜c'+str(c)+'＞' not in msytBox.toPlainText(): c += 1
-        for i in range(msytBox.toPlainText().count('＞')):
-            if '＜c'+str(c+i)+'＞' not in translationBox.toPlainText() and '＜c'+str(c+i)+'＞' in msytBox.toPlainText():
-                keyboard.write('＜c'+str(c+i)+'＞')
-                break
+    msytText = msytBox.toPlainText()
+    if '＞' not in msytText or '＜' not in msytText: return
+    while '＜c'+str(c)+'＞' not in msytText:
+        if c == 50: return
+        c += 1
+    for i in range(msytText.count('＞')):
+        if '＜c'+str(c+i)+'＞' not in translationBox.toPlainText() and '＜c'+str(c+i)+'＞' in msytText:
+            keyboard.write('＜c'+str(c+i)+'＞')
+            break
 
 def Convert():
     translationBox.setPlainText(convert(translationBox.toPlainText()))

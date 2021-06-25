@@ -132,8 +132,10 @@ def pygameCheck(display):
         if event.type is pygame.QUIT: pygame.display.set_mode((1, 1), flags = pygame.HIDDEN)
         elif event.type == pygame.KEYDOWN:
             all_keys = pygame.key.get_pressed()
-            if all_keys[pygame.K_LCTRL] and all_keys[pygame.K_s]:
-                    pygame.image.save(display, save_file('png', FitAdvancedWindow))
+            if not all_keys[pygame.K_LCTRL] or not all_keys[pygame.K_s]: continue
+            path = save_file('png', FitAdvancedWindow)
+            if not path: continue
+            pygame.image.save(display, path)
 
 def openFont(Directory = ''):
     global pngDirectory, FileDirectory

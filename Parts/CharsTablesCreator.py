@@ -1,12 +1,13 @@
-from sys import argv, exit
-from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessageBox, QHeaderView, QMainWindow, QLabel, QAction, QTextEdit
+from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QMessageBox, QHeaderView, QMainWindow, QLabel, QAction, QTextEdit, QMdiArea
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect, Qt
+
 from Parts.Scripts.Un_Freeze_Arabic import Un_Freeze
 from Parts.Scripts.FixTables import fixACT
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TablesEditorsFunctions import _VERSION_, _SEPARATOR_
 from Parts.Scripts.UsefulFunctions import intToHex, hexToString
+from sys import argv, exit
 import keyboard
 
 app = QApplication(argv)
@@ -60,6 +61,7 @@ def setChars(startSpot, Chars):
         Table.setItem(row, col, QTableWidgetItem(Chars[i]))
 
 def writeChar():
+    if not CharsTablesCreatorWindow.isActiveWindow(): return
     global userChars
     checkUserChars()
     keyboard.write(userChars[writeChar.char])
@@ -69,6 +71,7 @@ def writeChar():
 writeChar.char = 0
 
 def previousChar():
+    if not CharsTablesCreatorWindow.isActiveWindow(): return
     global userChars
     checkUserChars()
     if not writeChar.char: writeChar.char = len(userChars)
@@ -76,6 +79,7 @@ def previousChar():
     nextChar.setText(f"الحرف التالي: {userChars[writeChar.char]}")
 
 def resetCharCounter():
+    if not CharsTablesCreatorWindow.isActiveWindow(): return
     global userChars
     writeChar.char = 0
     nextChar.setText(f"الحرف التالي: {userChars[writeChar.char]}")
@@ -140,7 +144,7 @@ charsLabel.setText("الحروف المراد إدخالها:")
 bar.triggered[QAction].connect(windowTrig)
 keyboard.on_press_key("F3", lambda _: writeChar())
 keyboard.on_press_key("F4", lambda _: previousChar())
-keyboard.on_press_key("F5", lambda _: resetCharCounter())
+# keyboard.on_press_key("F5", lambda _: resetCharCounter())
 
 Table.setHorizontalHeaderLabels(list(nums))
 Table.setVerticalHeaderLabels(list(nums))
