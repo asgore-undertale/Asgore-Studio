@@ -13,6 +13,10 @@ def saveFont():
     ttfPath = openTtf.ttfPath
     if not chars or not ttfPath: return
     
+    Width = tryTakeNum(FontsCreatorWindow.WidthCell.toPlainText(), 32)
+    Height = tryTakeNum(FontsCreatorWindow.HeightCell.toPlainText(), 32)
+    if not Width or not Height: return
+    
     fromRight = FontsCreatorWindow.fromRightCheck.isChecked()
     isSmooth = FontsCreatorWindow.smoothCheck.isChecked() * 1
     ttfSize = tryTakeNum(FontsCreatorWindow.TtfSizeCell.toPlainText(), 28)
@@ -20,8 +24,6 @@ def saveFont():
     beforeFirstRow = tryTakeNum(FontsCreatorWindow.beforeFirstRowCell.toPlainText())
     BetweenCharsX = tryTakeNum(FontsCreatorWindow.BetweenCharsXCell.toPlainText())
     BetweenCharsY = tryTakeNum(FontsCreatorWindow.BetweenCharsYCell.toPlainText())
-    Width = tryTakeNum(FontsCreatorWindow.WidthCell.toPlainText(), 32)
-    Height = tryTakeNum(FontsCreatorWindow.HeightCell.toPlainText(), 32)
     charsPerRow = tryTakeNum(FontsCreatorWindow.charsPerRowCell.toPlainText(), 8)
     if not charsPerRow: charsPerRow = 1
     

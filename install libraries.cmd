@@ -3,3 +3,4 @@ pip install openpyxl
 pip install pillow
 pip install pygame
 pip install keyboard
+pip install pyautogui

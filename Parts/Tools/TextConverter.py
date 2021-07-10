@@ -66,7 +66,7 @@ def convert(text):
         
         mini = byteInCell(TextConverterOptionsWindow.miniText.toPlainText())
         maxi = byteInCell(TextConverterOptionsWindow.maxText.toPlainText())
-        text = Extract(text, cell._beforeText, cell._afterText, mini, maxi, TextConverterOptionsWindow.EnglishOnlyCheck.isChecked())
+        text = Extract(text, cell._beforeText, cell._afterText, True, mini, maxi, TextConverterOptionsWindow.EnglishOnlyCheck.isChecked())
         text = '\n'.join(text)
         if not text: return
     
@@ -80,7 +80,7 @@ def convert(text):
         linesList = Split(textPagesList[p], cell._lineCommand)
         
         for l in range(len(linesList)):
-            linesList[l] = splitByCommandsAndDo(
+            linesList[l] = splitByBeforeAfterAndDo(
                 linesList[l], cell._startCommand, cell._endCommand , lastConvertingStep,
                 TextConverterOptionsWindow.RT_check.isChecked() or TextConverterOptionsWindow.RAO_check.isChecked()
                 )

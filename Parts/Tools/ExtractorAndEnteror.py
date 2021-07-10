@@ -171,7 +171,7 @@ def extract():
                 with open(filename, 'rb') as f:
                     fileContent = f.read()
                 
-                extracted = Extract(fileContent, before, after, mini, maxi)
+                extracted = Extract(fileContent, before, after, True, mini, maxi)
                 if len(extracted):
                     content += f'<-- {filename} -->\n'
                     for item in extracted:
@@ -193,7 +193,7 @@ def extract():
             with open(filename, 'rb') as f:
                 fileContent = f.read()
             
-            extracted = Extract(fileContent, before, after, mini, maxi)
+            extracted = Extract(fileContent, before, after, True, mini, maxi)
             if len(extracted):
                 putInXlsx(filename, sheet, 'A'+str(row), True, True, 'D112D1')
                 row += 1

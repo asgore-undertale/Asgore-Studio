@@ -14,7 +14,7 @@ def inEnglish(text):
             return
     return text
 
-def Extract(text, before, after, mini = False, maxi = False, onlyEnglish = False):
+def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = False, onlyEnglish = False):
     if not before or not after: return
     try: mini = int(mini)
     except: mini = False
@@ -39,7 +39,10 @@ def Extract(text, before, after, mini = False, maxi = False, onlyEnglish = False
     else:
         extracted_list = re.findall(getRegexPattern(before, after), text)
     
-    extracted_list = [(before+x+after).replace(_UnusedChar, _EnterChar) for x in extracted_list]
+    if addBeforeAfter:
+        extracted_list = [(before+x+after).replace(_UnusedChar, _EnterChar) for x in extracted_list]
+    else:
+        extracted_list = [x.replace(_UnusedChar, _EnterChar) for x in extracted_list]
     
     if onlyEnglish:
         extracted_list = list(map(inEnglish, extracted_list))

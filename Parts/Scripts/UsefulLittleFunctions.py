@@ -53,7 +53,7 @@ def checkForCommand(command : str, text : str, currentIndex : int):
         return True
     except: pass
 
-def splitTextByCommands(commands : tuple, text : str):
+def splitTextBySoperators(soperators : tuple, text : str):
     sentence, sentences, passTimes = '', [], 0
     try:
         for i in range(len(text)):
@@ -75,12 +75,6 @@ def splitTextByCommands(commands : tuple, text : str):
         return sentences
     
     except: sentences
-
-def sentencesToText(sentences : list, newLine : str, newPage : str, linesNum : int):
-    text = ''
-    for s in range(len(sentences)):
-        text += ((newPage * (not s % linesNum)) + (newLine * (s % linesNum > 0))) * (s > 0) + sentences[s]
-    return text
 
 commandsChars = '\\.[]{}*+?()^'
 def fixBeforAfterCommands(beforeCom, afterCom):
@@ -118,7 +112,7 @@ def DeleteDuplicatedLines(text, lineCom = '\n'):
 def dirList(path):
     return [root+'/'+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
 
-def splitByCommandsAndDo(text, beforeCom, afterCom, function, reverse = False):
+def splitByBeforeAfterAndDo(text, beforeCom, afterCom, function, reverse = False):
     if beforeCom and afterCom:
         if beforeCom == afterCom:
             textList = text.replace(afterCom, beforeCom, text.count(beforeCom)).split(beforeCom)

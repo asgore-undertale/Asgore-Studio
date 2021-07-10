@@ -84,19 +84,16 @@ def Freeze(text, case = True, mergLA = True):
             else: after = 0
 
             if textlist[i] not in letters_Table:
-                new_text = textlist[i]
+                reshaped_text += textlist[i]
             else:
                 if before == 0 and after == 1: #أول الكلمة
-                    new_text = letters_Table[textlist[i]][0]
+                    reshaped_text += letters_Table[textlist[i]][0]
                 elif before == 1 and after == 1: #وسط الكلمة
-                    new_text = letters_Table[textlist[i]][1]
+                    reshaped_text += letters_Table[textlist[i]][1]
                 elif before == 1 and after == 0: #آخر الكلمة
-                    new_text = letters_Table[textlist[i]][2]
+                    reshaped_text += letters_Table[textlist[i]][2]
                 elif before == 0 and after == 0: #منفصل
-                    new_text = letters_Table[textlist[i]][3]
-
-            reshaped_text += str(new_text)
-            new_text = ''
+                    reshaped_text += letters_Table[textlist[i]][3]
 
         if mergLA:
             LaList = [

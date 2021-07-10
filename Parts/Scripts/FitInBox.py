@@ -1,4 +1,4 @@
-from Parts.Scripts.UsefulLittleFunctions import splitTextByCommands, getRegexPattern
+from Parts.Scripts.UsefulLittleFunctions import getRegexPattern, Split
 from Parts.Scripts.FreezeArabic import Freeze
 import re
 
@@ -59,35 +59,33 @@ def fit(text : str, charmap : dict, boxWidth : int, linesNum : int, newLine : st
     fit.boxWidth, fit.linesNum, fit.newLine, fit.newPage = boxWidth, linesNum, newLine, newPage
     fit.charmap = charmap
     
-    sentences = splitTextByCommands((newPage, newLine), text)
-    
-    for s in range(len(sentences)):
-        if s:
-            if not s % (linesNum): fit.newtext += newPage
-            else: fit.newtext += newLine
-        
-        sentence = splitTo(sentences[s], True, beforeCom, afterCom)
-        for p in range(len(sentence)):
-            if not sentence[p]: continue
-            if p % 2:
-                sentence[p] = beforeCom + sentence[p] + afterCom
-                fit.newtext += sentence[p]
-                if sentence[p] == newPage: x, y = 0, 0
-                elif sentence[p] == newLine: x, y = 0, increase_y(y)
-                continue
-            
-            sentence[p] = Freeze(sentence[p])
-            words_list = splitTo(sentence[p], False)
-            
-            for word in words_list:
-                if not word: continue
-                wordWidth = getTextWidth(word)
-                if x + wordWidth > boxWidth and wordWidth < boxWidth:
-                    word, x, y = checkWord(word, x, y, False)
-                elif x + wordWidth > boxWidth:
-                    word, x, y = checkWord(word, x, y, True)
-                else:
-                    word, x, y = checkWord(word, x, y, True)
-                fit.newtext += word
+    pages = Split(text, newPage)
+    for p in range(len(pages)):
+        sentences = Split(pages[p], newLine)
+        for s in range(len(sentences)):
+            if p and not s: fit.newtext += newPage
+            if s: fit.newtext += newLine
+            parts = splitTo(sentences[s], True, beforeCom, afterCom)
+            for c in range(len(parts)):
+                if not parts[c]: continue
+                if c % 2:
+                    fit.newtext += beforeCom + parts[c] + afterCom
+                    if parts[c] == newPage: x, y = 0, 0
+                    elif parts[c] == newLine: x, y = 0, increase_y(y)
+                    continue
+                
+                parts[c] = Freeze(parts[c])
+                wordsList = splitTo(parts[c], False)
+                
+                for word in wordsList:
+                    if not word: continue
+                    wordWidth = getTextWidth(word)
+                    if x + wordWidth > boxWidth and wordWidth < boxWidth:
+                        word, x, y = checkWord(word, x, y, False)
+                    elif x + wordWidth > boxWidth:
+                        word, x, y = checkWord(word, x, y, True)
+                    else:
+                        word, x, y = checkWord(word, x, y, True)
+                    fit.newtext += word
     
     return fit.newtext

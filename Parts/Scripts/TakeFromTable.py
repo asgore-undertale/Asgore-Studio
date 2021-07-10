@@ -15,14 +15,24 @@ def TakeFromTable(filePath, chars = '', fontSize = 16):
 
 def TakeFromFNT(fntPath):
     with open(fntPath, 'r', encoding='utf-8') as f: fontContent = f.read()
-    chars_list = re.findall('<char id="(.*?)"', fontContent)
-    x_list = re.findall('x="(.*?)"', fontContent)
-    y_list = re.findall('y="(.*?)"', fontContent)
-    width_list = re.findall('width="(.*?)"', fontContent)
-    height_list = re.findall('height="(.*?)"', fontContent)
-    xoffset_list = re.findall('xoffset="(.*?)"', fontContent)
-    yoffset_list = re.findall('yoffset="(.*?)"', fontContent)
-    xadvance_list = re.findall('xadvance="(.*?)"', fontContent)
+    
+    if '<?xml version="1.0"?>' in fontContent:
+        find = ['<char id="(.*?)"', 'x="(.*?)"', 'y="(.*?)"', 'width="(.*?)"', 'height="(.*?)"', 'xoffset="(.*?)"',
+            'yoffset="(.*?)"', 'xadvance="(.*?)"'
+            ]
+    else:
+        find = ['\nchar id=(.*?) ', ' x=(.*?) ', ' y=(.*?) ', ' width=(.*?) ', ' height=(.*?) ', ' xoffset=(.*?) ',
+            ' yoffset=(.*?) ', ' xadvance=(.*?) '
+            ]
+    
+    chars_list = re.findall(find[0], fontContent)
+    x_list = re.findall(find[1], fontContent)
+    y_list = re.findall(find[2], fontContent)
+    width_list = re.findall(find[3], fontContent)
+    height_list = re.findall(find[4], fontContent)
+    xoffset_list = re.findall(find[5], fontContent)
+    yoffset_list = re.findall(find[6], fontContent)
+    xadvance_list = re.findall(find[7], fontContent)
     
     charmap = {}
     tallest = 0
