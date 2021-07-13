@@ -85,7 +85,7 @@ def convert(text):
                 TextConverterOptionsWindow.RT_check.isChecked() or TextConverterOptionsWindow.RAO_check.isChecked()
                 )
         textPagesList[p] = cell._lineCommand.join(linesList)
-    text = cell._pageCommand.join(linesList)
+    text = cell._pageCommand.join(textPagesList)
     
     return text
 

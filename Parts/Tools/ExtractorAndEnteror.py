@@ -145,7 +145,13 @@ def enter(convertBool = True):
         
         savePath = filename.replace(inputFolder, outputFolder, 1)
         makedirs(path.dirname(savePath), exist_ok=True) # للتأكد من عدم حصول أي مشكلة بسبب عبث المستخدم لأن العملية تأخذ وقتاً
-        open(savePath, 'wb').write(fileContent)
+        with open(savePath, 'wb') as f:
+            f.write(fileContent)
+        if textList:
+            content = ''
+            for item in textList:
+                content += str(item) + '\n'
+            StudioWindow.AddReportWindow('لم يتم إيجاده', content)
     
     QMessageBox.about(EnteringWindow, "!!تهانيّ", "انتهى الإدخال.")
 
@@ -176,10 +182,12 @@ def extract():
                     content += f'<-- {filename} -->\n'
                     for item in extracted:
                         item = item.decode(encoding='utf8', errors='replace')
-                        if _CSV_DELIMITER_ in item: item = f'"{item}"'
+                        if _CSV_DELIMITER_ in item:
+                            item = f'"{item}"'.replace('\n', '"\n"').replace('\r', '"\r"')
+                            item = f'"{item}"'.replace('"\r""\n"', '"\r\n"').replace('"\n""\r"', '"\n\r"')
                         content += item + '\n'
                 
-            database.write(content) # content
+            database.write(content)
         
     elif extractedTextTablePath.endswith('.xlsx'):
         extracted_xlsx = openpyxl.load_workbook(extractedTextTablePath)
@@ -206,7 +214,7 @@ def extract():
     QMessageBox.about(EnteringWindow, "!!تهانيّ", "انتهى الاستخراج.")
 
 app = QApplication(argv)
-from Parts.Windows import EnteringWindow, TextConverterOptionsWindow
+from Parts.Windows import EnteringWindow, TextConverterOptionsWindow, StudioWindow
 
 EnteringWindow.textTableButton.clicked.connect(lambda: openTextTable())
 EnteringWindow.extractTableButton.clicked.connect(lambda: openExtractedTextTable())

@@ -14,7 +14,7 @@ def makeDTE(text, chars):
 def suggestDTE(text, resultsNum):
     dteList, log = [], ''
     text = Freeze(text, True, False)
-    chars = "".join(dict.fromkeys(text.replace('\n', '')))
+    chars = "".join(dict.fromkeys(text.replace('\n', '').replace('\r', '')))
     log += f'المجموعات البصرية المقترحة وعدد ورودها:\n'
     
     dteList = sorted(makeDTE(text, chars), key=lambda x: x[1], reverse=True)

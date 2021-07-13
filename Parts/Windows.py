@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.01v")
+        self.setWindowTitle("Asgore Studio 2.02v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -61,6 +61,17 @@ class StudioMotherWindow(QMainWindow):
             container.setWindowTitle(title)
             self.mdiArea.addSubWindow(container)
         widget.show()
+
+    def AddReportWindow(self, title, reportText):
+        ReportWindow = QMdiSubWindow()
+        ReportWindow.setWindowTitle(title)
+        
+        text = QTextEdit(ReportWindow)
+        text.setPlainText(reportText)
+        ReportWindow.setWidget(text)
+        
+        self.mdiArea.addSubWindow(ReportWindow)
+        ReportWindow.show()
 
 StudioWindow = StudioMotherWindow()
 
@@ -405,7 +416,7 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         boxHeightLabel.setText("ارتفاع المربع:")
         self.pixelsPerCell = QTextEdit(self)
         self.pixelsPerCell.setGeometry(QRect(240, self.y(3), 70, 26))
-        self.pixelsPerCell.setText("1")
+        self.pixelsPerCell.setText("3")
         pixelsPerLabel = QLabel(self)
         pixelsPerLabel.setGeometry(QRect(320, self.y(3), labelsWidth, labelsHeight))
         pixelsPerLabel.setText("البيكسلات بين كل سطر:")
