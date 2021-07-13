@@ -32,11 +32,12 @@ def typeCommand():
             break
 
 def Convert():
-    FilesEditorWindow.translationBox.setPlainText(convert(FilesEditorWindow.translationBox.toPlainText()))
+    FilesEditorWindow.translationBox.setPlainText(convert(FilesEditorWindow.translationBox.toPlainText(), False))
 
 def ConvertAll():
     for t in range(len(trans_list)):
-        trans_list[t] = convert(trans_list[t])
+        trans_list[t] = convert(trans_list[t], False)
+    Convert()
 
 def openTextDataBase():
     global dataBaseDirectory, database

@@ -56,7 +56,7 @@ def prepareToEnter():
 def prepareTextAndTranslation(text, translation, convertBool):
     if not text: return
     if not translation: translation = ''
-    if convertBool: translation = convert(translation)
+    if convertBool: translation = convert(translation, False)
     
     if EnteringWindow.tooLongCheck.isChecked():
         if len(translation.encode().hex()) > len(text.encode().hex()): return

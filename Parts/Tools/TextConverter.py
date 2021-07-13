@@ -51,7 +51,7 @@ def lastConvertingStep(text):
     if TextConverterOptionsWindow.CB_check.isChecked(): text = convertBytes(text, cell._convertedByte)#Convert bytes
     return text
 
-def convert(text):
+def convert(text, thisTool = True):
     if not text: return
     if (TextConverterOptionsWindow.C_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked()) and not path.exists(convertingTablePath):
         QMessageBox.about(TextConverter, "!!خطأ", "قاعدة بيانات التحويل غير موجودة")
@@ -86,6 +86,9 @@ def convert(text):
                 )
         textPagesList[p] = cell._lineCommand.join(linesList)
     text = cell._pageCommand.join(textPagesList)
+    
+    if thisTool and TextConverterOptionsWindow.AutoCopyCheck.isChecked():
+        pyperclip.copy(text)
     
     return text
 
