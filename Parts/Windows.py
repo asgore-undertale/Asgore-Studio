@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.004v")
+        self.setWindowTitle("Asgore Studio 2.005v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -633,7 +633,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.UC_check = QCheckBox("إلغاء تحويل النص", self)
         self.UC_check.setGeometry(QRect(0, self.y(6, checkbox_size[1]), checkbox_size[0], checkbox_size[1]))
         self.UC_check.setLayoutDirection(Qt.RightToLeft)
-        self.RT_check = QCheckBox("عكس النص", self)
+        self.RT_check = QCheckBox("عكس النص كاملاً", self)
         self.RT_check.setGeometry(QRect(0, self.y(7, checkbox_size[1]), checkbox_size[0], checkbox_size[1]))
         self.RT_check.setLayoutDirection(Qt.RightToLeft)
         self.RAO_check = QCheckBox("عكس العربية في النص", self)
@@ -793,8 +793,8 @@ class EnteringMotherWindow(QMainWindow):
         
         OffsetOptions = [
             "النص أول الجملة واملأ بعده فراغات",
-            "النص وسط الجملة واملأ قبله وبعده فراغات",
-            "النص آخر الجملة واملأ قبله فراغات"
+            "النص آخر الجملة واملأ قبله فراغات",
+            "النص وسط الجملة واملأ قبله وبعده فراغات"
         ]
         self.Offset = QComboBox()
         self.Offset.addItems(OffsetOptions)

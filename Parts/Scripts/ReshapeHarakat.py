@@ -1,3 +1,5 @@
+from Parts.Vars import Harakat, CharsConnectBoth, CharsConnectBefore
+
 letters_Table = {
                     "ً"  : ['ﹰ', 'ﹱ', 'ﹰ', 'ﹰ'],
                     "ﹰ"  : ['ﹰ', 'ﹱ', 'ﹰ', 'ﹰ'],
@@ -15,42 +17,35 @@ letters_Table = {
                     "ﹾ"  : ['ﹾ', 'ﹾ', 'ﹾ', 'ﹾ'],
     }
 
-harakat = 'َﹰﹱﹲﹴﹶﹷﹸﹹﹺﹻﹼﹽﹾﹿًٌٍَُِّْ'
-list1 = 'ئبتثجحخسشصضطظعغفقكلمنهيپچڤـ'
-list2 = 'آأؤإاةدذرزوى'
-
 def Reshape(text):
     reshaped_text = ''
     textlist = list(' '+text+' ')
 
     for i in range(1, len(textlist)-1):
         aroundbefore = 1
-        while textlist[i-aroundbefore] in harakat: aroundbefore += 1
-        if (textlist[i] in list1 or textlist[i] in list2 or textlist[i] in harakat) and (textlist[i-aroundbefore] in list1):
+        while textlist[i-aroundbefore] in Harakat: aroundbefore += 1
+        if (textlist[i] in CharsConnectBoth or textlist[i] in CharsConnectBefore or textlist[i] in Harakat) and (textlist[i-aroundbefore] in CharsConnectBoth):
             before = 1
         else:
             before = 0
         
         aroundafter = 1
-        while textlist[i+aroundafter] in harakat: aroundafter += 1
-        if (textlist[i] in list1 or textlist[i] in harakat) and (textlist[i+aroundafter] in list1 or textlist[i+aroundafter] in list2):
+        while textlist[i+aroundafter] in Harakat: aroundafter += 1
+        if (textlist[i] in CharsConnectBoth or textlist[i] in Harakat) and (textlist[i+aroundafter] in CharsConnectBoth or textlist[i+aroundafter] in CharsConnectBefore):
             after = 1
         else:
             after = 0
         
         if textlist[i] not in letters_Table:
-            new_text = textlist[i]
+            reshaped_text += textlist[i]
         else:
             if before == 0 and after == 1: #أول الكلمة
-                new_text = letters_Table[textlist[i]][0]
+                reshaped_text += letters_Table[textlist[i]][0]
             elif before == 1 and after == 1: #وسط الكلمة
-                new_text = letters_Table[textlist[i]][1]
+                reshaped_text += letters_Table[textlist[i]][1]
             elif before == 1 and after == 0: #آخر الكلمة
-                new_text = letters_Table[textlist[i]][2]
+                reshaped_text += letters_Table[textlist[i]][2]
             elif before == 0 and after == 0: #منفصل
-                new_text = letters_Table[textlist[i]][3]
-        
-        reshaped_text += str(new_text)
-        new_text = ''
+                reshaped_text += letters_Table[textlist[i]][3]
     
     return reshaped_text

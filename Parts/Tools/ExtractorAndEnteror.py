@@ -135,8 +135,7 @@ def enter(convertBool = True):
             
             if EnteringWindow.translationOffsetCheck.isChecked():
                 spacesNum = (len(text.encode().hex()) - len(translation.encode().hex())) // 2
-                translation = OffsetTextWithSpaces(translation, spacesNum, EnteringWindow.Offset.currentIndex())
-                print(spacesNum, translation, EnteringWindow.Offset.currentIndex())
+                translation = OffsetTextWithSpaces(translation, 0, EnteringWindow.Offset.currentIndex(), spacesNum)
             
             if byteText not in fileContent: continue
             fileContent = fileContent.replace(byteText, translation.encode(), 1)

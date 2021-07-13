@@ -1,7 +1,6 @@
 from Parts.Scripts.UsefulLittleFunctions import getRegexPattern
+from Parts.Vars import ASCII
 import re
-
-EnglishLetters = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
 
 def minimax(text):
     if mini and len(text) < mini: return
@@ -10,7 +9,7 @@ def minimax(text):
     
 def inEnglish(text):
     for char in text:
-        if char not in EnglishLetters:
+        if char not in ASCII:
             return
     return text
 

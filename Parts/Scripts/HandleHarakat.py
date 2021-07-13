@@ -1,16 +1,16 @@
 from Parts.Scripts.ReshapeHarakat import Reshape
+from Parts.Vars import Harakat
 
-harakat = 'َﹰﹱﹲﹴﹶﹷﹸﹹﹺﹻﹼﹽﹾﹿًٌٍَُِّْ'
 
 def keepLast(text):
     new_text = ''
     text = ' ' + text
     for _ in range(1, len(text)):
-        if not text[_] in harakat or not text[_ - 1] in harakat: new_text += text[_]
+        if not text[_] in Harakat or not text[_ - 1] in Harakat: new_text += text[_]
     return new_text
 
 def delete(text):
-    for haraka in harakat:
+    for haraka in Harakat:
         text = text.replace(haraka, '')
     return text
 
@@ -18,16 +18,16 @@ def getBack(text):
     new_text = ''
     text = text + ' '
     for i in range(len(text)-1):
-        if text[i+1] in harakat: new_text += text[i+1]
-        if text[i] not in harakat: new_text += text[i]
+        if text[i+1] in Harakat: new_text += text[i+1]
+        if text[i] not in Harakat: new_text += text[i]
     return new_text
 
 def getForward(text):
     new_text = ''
     text = ' ' + text
     for i in range(len(text)-1):
-        if text[i+1] not in harakat: new_text += text[i+1]
-        if text[i] in harakat: new_text += text[i]
+        if text[i+1] not in Harakat: new_text += text[i+1]
+        if text[i] in Harakat: new_text += text[i]
     return new_text
 
 def handleHarakat(text, index):

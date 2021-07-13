@@ -137,3 +137,9 @@ def Split(text, splitter):
 def byteInCell(text, subject = '[b]'):
     if not subject in text: return text
     return hexToString(text.replace(subject, ''))
+
+bowsList = ['()', '[]', '{}', '<>']
+def swap(text, bowsList, unused_char = u'\uffff'):
+    for bow in bowsList:
+        text.replace(bow[0], unused_char).replace(bow[1], bow[0]).replace(unused_char, bow[1])
+    return

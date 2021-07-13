@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QAction, QTableWidgetItem
 from Parts.Scripts.FixTables import sortACT
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, openFile, saveFile
-from Parts.Vars import _ATE_VERSION_, _ATE_SEPARATOR_, _CSV_DELIMITER_
+from Parts.Vars import _ATE_VERSION_, _ATE_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII
 from sys import argv, exit
 import keyboard
 
@@ -97,19 +97,16 @@ from Parts.Windows import CharsTablesCreatorWindow
 
 
 ROWS, COLS = 16, 16
-defultChars = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
-userChars = 'ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼ'
 
-
-CharsTablesCreatorWindow.nextChar.setText(f"الحرف التالي: {userChars[0]}")
-CharsTablesCreatorWindow.charsCell.setText(userChars)
+CharsTablesCreatorWindow.nextChar.setText(f"الحرف التالي: {FreezedArabicChars[0]}")
+CharsTablesCreatorWindow.charsCell.setText(FreezedArabicChars)
 
 CharsTablesCreatorWindow.bar.triggered[QAction].connect(windowTrig)
 keyboard.add_hotkey("F3", lambda: writeChar())
 keyboard.add_hotkey("F4", lambda: previousChar())
 keyboard.add_hotkey("F5", lambda: resetCharCounter())
 
-setChars('20', defultChars)
+setChars('20', ASCII)
 
 if __name__ == '__main__':
     CharsTablesCreatorWindow.show()
