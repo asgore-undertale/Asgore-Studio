@@ -1,7 +1,7 @@
 import re
 
 bowslist = ['()', '[]', '{}', '<>']
-ArabicLetters = 'ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيپچڤ' + '؟،؛ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼﭬﭭﭫﭪﭼﭽﭻﭺﭘﭙﭗﭖ'
+ArabicLetters = ' ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيپچڤ' + '؟،؛ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼﭬﭭﭫﭪﭼﭽﭻﭺﭘﭙﭗﭖ'
 
 def swap(text, char1, char2, unused_char = u'\uffff'):
     return text.replace(char1, unused_char).replace(char2, char1).replace(unused_char, char2)
@@ -22,20 +22,20 @@ def swapSpacesOnEdges(text):
 def reverseArabic(text):
     container = ''
     for char in text:
-        if char in ArabicLetters:
+        if char not in ArabicLetters:
             container += char
         else:
             if not container: continue
             text = text.replace(container, container[::-1], 1)
             container = ''
     
-    return swapSpacesOnEdges(text)
+    return swapSpacesOnEdges(text[::-1])
 
 def Reverse(text, case = True):
     if case:
         for bow in bowslist:
             text = swap(text, bow[0], bow[1])
-            text = text[::-1]
+        text = text[::-1]
     else: text = reverseArabic(text)
     
     return text
