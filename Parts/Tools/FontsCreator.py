@@ -15,11 +15,11 @@ def saveFont():
     
     Width = tryTakeNum(FontsCreatorWindow.WidthCell.toPlainText(), 32)
     Height = tryTakeNum(FontsCreatorWindow.HeightCell.toPlainText(), 32)
-    if not Width or not Height: return
+    ttfSize = tryTakeNum(FontsCreatorWindow.TtfSizeCell.toPlainText(), 28)
+    if not Width or not Height or not ttfSize: return
     
     fromRight = FontsCreatorWindow.fromRightCheck.isChecked()
     isSmooth = FontsCreatorWindow.smoothCheck.isChecked() * 1
-    ttfSize = tryTakeNum(FontsCreatorWindow.TtfSizeCell.toPlainText(), 28)
     beforeFirstCol = tryTakeNum(FontsCreatorWindow.beforeFirstColCell.toPlainText())
     beforeFirstRow = tryTakeNum(FontsCreatorWindow.beforeFirstRowCell.toPlainText())
     BetweenCharsX = tryTakeNum(FontsCreatorWindow.BetweenCharsXCell.toPlainText())

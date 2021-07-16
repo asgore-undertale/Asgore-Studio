@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.007v")
+        self.setWindowTitle("Asgore Studio 2.008v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -23,13 +23,13 @@ class StudioMotherWindow(QMainWindow):
         self.createActions()
         
         self.importantInfo = ('- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n'
-                    '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
-                    '- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n'
-                    '- ترتيب وحذف السطور يعمل لكل صفحة على حدة.\n'
-                    '- اضغط F3 في محرّر الملفات لإضافة <c>.\n'
-                    '- اضغط ctrl+B لتحويل النص المحدد.\n'
-                    '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n' #
-                    "- اضغط ctrl+S لالتقاط صورة لمربع الحوار في مجرب الخطوط")
+            '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
+            '- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n'
+            '- ترتيب وحذف السطور يعمل لكل صفحة على حدة.\n'
+            '- اضغط F3 في محرّر الملفات لإضافة <c>.\n'
+            '- اضغط ctrl+B لتحويل النص المحدد.\n'
+            '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n' #
+            "- اضغط ctrl+S لالتقاط صورة لمربع الحوار في مجرب الخطوط")
     
     def createBars(self):
         self.bar = self.menuBar()
@@ -139,30 +139,49 @@ class TextAnalyzerMotherWindow(QMainWindow):
         enteredLabel.setText("   النص الداخل:")
         resultLabel.setText("   النص الناتج:")
 
-        buttonsLayout = QHBoxLayout()
+        buttonsLayout = QVBoxLayout()
+        self.saveLog = QPushButton()
         self.analyzeButton = QPushButton()
         self.openFileButton = QPushButton()
         self.suggestDteButton = QPushButton()
-        self.analyzeButton.setText("اختزال\nالنص")
-        self.openFileButton.setText("فتح ملف\nنص")
-        self.suggestDteButton.setText("اقتراح\nثنائيات")
+        self.saveLog.setText("حفظ الإحصاءات في ملف")
+        self.analyzeButton.setText("اختزال النص")
+        self.openFileButton.setText("فتح ملف نص")
+        self.suggestDteButton.setText("اقتراح حروف مدمجة")
 
-        varsLayout = QHBoxLayout()
+        varsLayout = QGridLayout()
         self.resultsNumCell = QTextEdit()
-        self.resultsNumCell.setFixedSize(80, 26)
+        self.resultsNumCell.setFixedSize(90, 26)
         self.resultsNumCell.setText("25")
         resultsNumLabel = QLabel()
         resultsNumLabel.setText("عدد النتائج:")
-
+        self.mergedCharLenCell = QTextEdit()
+        self.mergedCharLenCell.setFixedSize(90, 26)
+        self.mergedCharLenCell.setText("2")
+        mergedCharLenLabel = QLabel()
+        mergedCharLenLabel.setText("طول الحرف المدمج المقترح:")
+        self.ignoredCharsCell = QTextEdit()
+        self.ignoredCharsCell.setFixedSize(90, 26)
+        ignoredCharsLabel = QLabel()
+        ignoredCharsLabel.setText("الحروف المراد تجاهلها في الاقتراح:")
+        
+        self.ignoreDefault = QCheckBox(r'تجاهل: (n, \r\)')
+        
         layout.addLayout(boxesLayout, 0, 0)
         layout.addLayout(logLayout, 0, 1)
         layout.addLayout(varsLayout, 1, 0)
         layout.addLayout(buttonsLayout, 1, 1)
         buttonsLayout.addWidget(self.openFileButton)
+        buttonsLayout.addWidget(self.saveLog)
         buttonsLayout.addWidget(self.analyzeButton)
         buttonsLayout.addWidget(self.suggestDteButton)
-        varsLayout.addWidget(resultsNumLabel)
-        varsLayout.addWidget(self.resultsNumCell)
+        varsLayout.addWidget(resultsNumLabel, 0, 0)
+        varsLayout.addWidget(self.resultsNumCell, 0, 1)
+        varsLayout.addWidget(mergedCharLenLabel, 1, 0)
+        varsLayout.addWidget(self.mergedCharLenCell, 1, 1)
+        varsLayout.addWidget(ignoredCharsLabel, 2, 0)
+        varsLayout.addWidget(self.ignoredCharsCell, 2, 1)
+        varsLayout.addWidget(self.ignoreDefault, 3, 0)
         boxesLayout.addWidget(enteredLabel)
         boxesLayout.addWidget(self.enteredBox)
         boxesLayout.addWidget(resultLabel)
@@ -238,10 +257,8 @@ class FontsCreatorMotherWindow(QMainWindow):
 
         self.fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", self)
         self.fromRightCheck.setGeometry(QRect(30, self.y(10.5), 150, 26))
-        self.fromRightCheck.setLayoutDirection(Qt.RightToLeft)
         self.smoothCheck = QCheckBox("نعومة الخط", self)
         self.smoothCheck.setGeometry(QRect(190, self.y(10.5), 150, 26))
-        self.smoothCheck.setLayoutDirection(Qt.RightToLeft)
 
         self.saveButton = QPushButton(self)
         self.saveButton.setGeometry(QRect(180, self.y(11.5), 170, 30))
@@ -309,7 +326,6 @@ class CharsTablesCreatorMotherWindow(QMainWindow):
         self.Table.setColumnCount(16)
         self.Table.setRowCount(16)
         self.Table.setGeometry(QRect(0, 20, 516, 475))
-        self.Table.setLayoutDirection(Qt.LeftToRight)
 
         self.bar = self.menuBar()
         file = self.bar.addMenu("ملف")
@@ -475,13 +491,10 @@ class FontTesterOptionsMotherWindow(QMainWindow):
 
         self.fromRightCheck = QCheckBox("تدفق النص من اليمين", self)
         self.fromRightCheck.setGeometry(QRect(75, 250, 145, 26))
-        self.fromRightCheck.setLayoutDirection(Qt.RightToLeft)
         self.boxAnimationCheck = QCheckBox("أنميشن مربع الحوار", self)
         self.boxAnimationCheck.setGeometry(QRect(75, 275, 145, 26))
-        self.boxAnimationCheck.setLayoutDirection(Qt.RightToLeft)
         self.lineBoxCheck = QCheckBox("صناديق الأسطر", self)
         self.lineBoxCheck.setGeometry(QRect(75, 300, 145, 26))
-        self.lineBoxCheck.setLayoutDirection(Qt.RightToLeft)
         
 
     def y(self, num, height = 26, per = 10, first = 20):
@@ -618,27 +631,16 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         checksLayout = QVBoxLayout()
         self.DDL_check = QCheckBox("حذف الأسطر المكررة", self)
-        self.DDL_check.setLayoutDirection(Qt.RightToLeft)
         self.SSL_check = QCheckBox("ترتيب السطور من الأقصر للأطول", self)
-        self.SSL_check.setLayoutDirection(Qt.RightToLeft)
         self.SLS_check = QCheckBox("ترتيب السطور من الأطول للأقصر", self)
-        self.SLS_check.setLayoutDirection(Qt.RightToLeft)
         self.RA_check = QCheckBox("تجميد النص العربي", self)
-        self.RA_check.setLayoutDirection(Qt.RightToLeft)
         self.UA_check = QCheckBox("إلغاء تجميد النص العربي", self)
-        self.UA_check.setLayoutDirection(Qt.RightToLeft)
         self.C_check = QCheckBox("تحويل النص", self)
-        self.C_check.setLayoutDirection(Qt.RightToLeft)
         self.UC_check = QCheckBox("إلغاء تحويل النص", self)
-        self.UC_check.setLayoutDirection(Qt.RightToLeft)
         self.RT_check = QCheckBox("عكس النص كاملاً", self)
-        self.RT_check.setLayoutDirection(Qt.RightToLeft)
         self.RAO_check = QCheckBox("عكس العربية في النص", self)
-        self.RAO_check.setLayoutDirection(Qt.RightToLeft)
         self.Ext_check = QCheckBox("استخرج من النص", self)
-        self.Ext_check.setLayoutDirection(Qt.RightToLeft)
         self.CB_check = QCheckBox("تحويل البايتات", self)
-        self.CB_check.setLayoutDirection(Qt.RightToLeft)
         
         comboBoxLayout = QHBoxLayout()
         HarakatLabel = QLabel(self)
@@ -658,9 +660,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.HarakatComboBox.setFixedSize(160, 27)
 
         self.EnglishOnlyCheck = QCheckBox("استخراج الانكليزية فقط", self)
-        self.EnglishOnlyCheck.setLayoutDirection(Qt.RightToLeft)
         self.AutoCopyCheck = QCheckBox("النسخ تلقائية بعد التحويل", self)
-        self.AutoCopyCheck.setLayoutDirection(Qt.RightToLeft)
         
         
         containerLayout = QVBoxLayout()
@@ -812,11 +812,8 @@ class EnteringMotherWindow(QMainWindow):
         
         OptinsLayout = QVBoxLayout()
         self.databaseCheck = QCheckBox("استخدام قاعدة بيانات النصوص للإدخال.")
-        self.databaseCheck.setLayoutDirection(Qt.RightToLeft)
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
-        self.tooLongCheck.setLayoutDirection(Qt.RightToLeft)
         self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر: (بقيم الهيكس)")
-        self.translationOffsetCheck.setLayoutDirection(Qt.RightToLeft)
         
         OffsetOptions = [
             "النص أول الجملة واملأ بعده فراغات",

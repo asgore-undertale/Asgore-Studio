@@ -164,7 +164,7 @@ def drawBox(x, y, width, height, boxColor, boxAnimation, display):
 def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, beforeCom, afterCom, fromRight,
             lineBox, boxAnimation, lineOffset, offsetWith, offsetCom):
     
-    if not FontPath or not boxWidth or not boxHeight: return
+    if not FontPath or not boxWidth or not boxHeight or not fontSize: return
     
     charsinfo = {}
     charmap = TakeFromTable(FontPath, text, fontSize)
