@@ -1,27 +1,18 @@
 from Parts.Scripts.FreezeArabic import Freeze
 
-def makeDTE(text, chars):
-    dteList = []
-    for char in chars:
-        for _char in chars:
-            dte = char + _char
-            count = text.count(dte)
-            if not count: continue
-            
-            dteList.append([dte, str(count)])
-    return dteList
-
-def makeDTE2(text, dteList, chars):
-    dteList3 = []
+def makeDTE(text, dteList, chars):
+    if not dteList: dteList = chars
+    newDteList = []
+    
     for dte in dteList:
         for char in chars:
-            dte3 = dte[0] + char
-            count = text.count(dte3)
-            if not count: continue
+            newDte = dte[0] + char
+            count = text.count(newDte)
             
-            dteList3.append([dte3, str(count)])
+            if not count: continue
+            newDteList.append([newDte, str(count)])
     
-    return sorted(dteList3, key=lambda x: x[1], reverse=True)
+    return sorted(newDteList, key=lambda x: x[1], reverse=True)
 
 def suggestDTE(text, ignoredChars, mergedCharLen, resultsNum):
     if mergedCharLen < 2: return [], ''
@@ -31,9 +22,10 @@ def suggestDTE(text, ignoredChars, mergedCharLen, resultsNum):
     for char in ignoredChars: _text = _text.replace(char, '')
     chars = "".join(dict.fromkeys(_text))
     
-    dteList = makeDTE(text, chars)
-    for i in range(mergedCharLen - 2):
-        dteList = makeDTE2(text, dteList, chars)
+    dteList = []
+    for i in range(mergedCharLen - 1):
+        dteList = makeDTE(text, dteList, chars)
+        if not dteList: break
     dteList = dteList[0:resultsNum]
     
     log = 'المجموعات البصرية المقترحة وعدد ورودها:\n'

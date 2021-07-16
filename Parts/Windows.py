@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.008v")
+        self.setWindowTitle("Asgore Studio 2.009v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
