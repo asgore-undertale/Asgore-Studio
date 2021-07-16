@@ -23,6 +23,7 @@ def reverseArabic(text):
             if not container: continue
             text = text.replace(container, container[::-1], 1)
             container = ''
+    text = text.replace(container, container[::-1], 1)
     
     return swapSpacesOnEdges(text[::-1])
 
