@@ -115,7 +115,7 @@ def DeleteDuplicatedLines(text, lineCom = '\n'):
 def dirList(path):
     return [root+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
 
-def splitByBeforeAfterAndDo(text, beforeCom, afterCom, function, reverse = False):
+def splitByBeforeAfterComAndDo(text, beforeCom, afterCom, function, reverse = False):
     if beforeCom and afterCom:
         if beforeCom == afterCom:
             textList = text.replace(afterCom, beforeCom, text.count(beforeCom)).split(beforeCom)
@@ -143,3 +143,19 @@ def swap(text, bowsList, unused_char = u'\uffff'):
     for bow in bowsList:
         text.replace(bow[0], unused_char).replace(bow[1], bow[0]).replace(unused_char, bow[1])
     return
+
+def fixSlashes(text):
+    return text.replace(r'\n', '\n').replace(r'\r', '\r').replace(r'\t', '\t').replace(r'\0', '\0')
+
+def swapCharsOnEdges(text, char):
+    if len(text) < 2: return text
+    charsBefore, charsAfter = 0, 0
+    
+    while text[0] == char:
+        charsBefore += 1
+        text = text[1:len(text)]
+    while text[-1] == char:
+        charsAfter += 1
+        text = text[0:-1]
+    
+    return (charsBefore * char) + text + (charsAfter * char)

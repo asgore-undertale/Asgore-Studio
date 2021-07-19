@@ -14,7 +14,6 @@ from Parts.Scripts.TakeFromTable import TakeFromTable
 
 
 convertingTablePath = r'OtherFiles/Tables/CharsConvertingTable.act'
-
 if path.exists(convertingTablePath): convert_database = TakeFromTable(convertingTablePath)
 else: convert_database = {}
 
@@ -38,8 +37,17 @@ def cell():
     cell._beforeText    = byteInCell(TextConverterOptionsWindow.beforeText.toPlainText())
     cell._afterText     = byteInCell(TextConverterOptionsWindow.afterText.toPlainText())
     cell._convertedByte = byteInCell(TextConverterOptionsWindow.convertedByte.toPlainText())
+    
+    if not TextConverterOptionsWindow.FixSlashes.isChecked(): return
+    cell._startCommand  = fixSlashes(cell._startCommand)
+    cell._endCommand    = fixSlashes(cell._endCommand)
+    cell._pageCommand   = fixSlashes(cell._pageCommand)
+    cell._lineCommand   = fixSlashes(cell._lineCommand)
+    cell._beforeText    = fixSlashes(cell._beforeText)
+    cell._afterText     = fixSlashes(cell._afterText)
+    cell._convertedByte = fixSlashes(cell._convertedByte)
 
-def lastConvertingStep(text):
+def applyConverts(text):
     HarakatOptionindex = TextConverterOptionsWindow.HarakatComboBox.currentIndex()
     if HarakatOptionindex: text = handleHarakat(text, HarakatOptionindex)#Handle Harakat
     if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked(): text = Freeze(text)#Freeze Arabic
@@ -54,7 +62,7 @@ def lastConvertingStep(text):
 def convert(text, thisTool = True):
     if not text: return
     if (TextConverterOptionsWindow.C_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked()) and not path.exists(convertingTablePath):
-        QMessageBox.about(TextConverter, "!!خطأ", "قاعدة بيانات التحويل غير موجودة")
+        QMessageBox.about(TextConverter, "!!خطأ", "جدول التحويل غير موجودة")
         return
         
     cell()
@@ -70,22 +78,25 @@ def convert(text, thisTool = True):
         text = '\n'.join(text)
         if not text: return
     
-    textPagesList = Split(text, cell._pageCommand)
+    sentences = splitTextBySoperators(text, (cell._pageCommand, cell._lineCommand))
+    for s in range(len(sentences)):
+        if s % 2: continue
+        sentences[s] = splitByBeforeAfterComAndDo(
+            sentences[s], cell._startCommand, cell._endCommand , applyConverts,
+            TextConverterOptionsWindow.RT_check.isChecked() or TextConverterOptionsWindow.RAO_check.isChecked()
+            )
+    text = ''.join(sentences)
     
+    
+    textPagesList = Split(text, cell._pageCommand)
     for p in range(len(textPagesList)):
         if TextConverterOptionsWindow.DDL_check.isChecked(): textPagesList[p] = DeleteDuplicatedLines(textPagesList[p], cell._lineCommand) #Delete Duplicated lines
         if TextConverterOptionsWindow.SSL_check.isChecked(): textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand) #Sort short to long
         if TextConverterOptionsWindow.SLS_check.isChecked(): textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand, False) #Sort long to short
-    
-        linesList = Split(textPagesList[p], cell._lineCommand)
-        
-        for l in range(len(linesList)):
-            linesList[l] = splitByBeforeAfterAndDo(
-                linesList[l], cell._startCommand, cell._endCommand , lastConvertingStep,
-                TextConverterOptionsWindow.RT_check.isChecked() or TextConverterOptionsWindow.RAO_check.isChecked()
-                )
-        textPagesList[p] = cell._lineCommand.join(linesList)
+        if TextConverterOptionsWindow.RL_check.isChecked():  textPagesList[p] = cell._lineCommand.join(textPagesList[p].split(cell._lineCommand)[::-1]) #Reverse Lines
     text = cell._pageCommand.join(textPagesList)
+    if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
+    
     
     if thisTool and TextConverterOptionsWindow.AutoCopyCheck.isChecked():
         pyperclip.copy(text)
