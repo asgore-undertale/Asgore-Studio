@@ -11,7 +11,7 @@ from Parts.Windows import FontsCreatorWindow
 def saveFont():
     chars = FontsCreatorWindow.charsCell.toPlainText()
     ttfPath = openTtf.ttfPath
-    if not chars or not ttfPath: return
+    if not chars: return
     
     Width = tryTakeNum(FontsCreatorWindow.WidthCell.toPlainText(), 32)
     Height = tryTakeNum(FontsCreatorWindow.HeightCell.toPlainText(), 32)
@@ -19,7 +19,7 @@ def saveFont():
     if not Width or not Height or not ttfSize: return
     
     fromRight = FontsCreatorWindow.fromRightCheck.isChecked()
-    isSmooth = FontsCreatorWindow.smoothCheck.isChecked() * 1
+    isSmooth = (not FontsCreatorWindow.smoothCheck.isChecked()) * 1
     beforeFirstCol = tryTakeNum(FontsCreatorWindow.beforeFirstColCell.toPlainText())
     beforeFirstRow = tryTakeNum(FontsCreatorWindow.beforeFirstRowCell.toPlainText())
     BetweenCharsX = tryTakeNum(FontsCreatorWindow.BetweenCharsXCell.toPlainText())
@@ -37,6 +37,7 @@ def saveFont():
     with open(fontFileSavePath, 'w', encoding="utf-8") as f:
         f.write(tableContent)
     
+    if not ttfPath: return
     imgFileSavePath = saveFile(['png'], FontsCreatorWindow, 'صورة الخط')
     if not path.exists(ttfPath) or not imgFileSavePath: return
     
