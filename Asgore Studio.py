@@ -32,7 +32,7 @@ def windowTrig(action):
     elif action == "إعدادات مجرب الخطوط": StudioWindow.newChild(FontTesterOptionsWindow, FontTesterOptionsContainer, 'إعدادات مجرب الخطوط')
     elif action == "محرّر الملفات": StudioWindow.newChild(FilesEditorWindow, FilesEditorContainer, 'محرّر الملفات')
     elif action == "محوّل النصوص": StudioWindow.newChild(TextConverterWindow, TextConverterContainer, 'محوّل النصوص')
-    elif action == "خيارات التحويل": StudioWindow.newChild(TextConverterOptionsWindow, TextConverterOptionsContainer, 'خيارات التحويل')
+    elif action == "خيارات محوّل النصوص": StudioWindow.newChild(TextConverterOptionsWindow, TextConverterOptionsContainer, 'خيارات محوّل النصوص')
     elif action == "المدخل والمستخرج": StudioWindow.newChild(EnteringWindow, EnteringContainer, 'المدخل والمستخرج')
 
 from Parts.Tools.AsgoreTablesEditor import TableEditorWindow
@@ -70,5 +70,6 @@ EnteringContainer.setWidget(EnteringWindow)
 
 StudioWindow.bar.triggered[QAction].connect(windowTrig)
 
-StudioWindow.show()
-app.exec_()
+if __name__ == '__main__':
+    StudioWindow.show()
+    app.exec_()

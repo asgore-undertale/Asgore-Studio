@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.011v")
+        self.setWindowTitle("Asgore Studio 2.012v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -53,7 +53,7 @@ class StudioMotherWindow(QMainWindow):
         self.tools.addAction("إعدادات مجرب الخطوط")
         self.tools.addAction("محرّر الملفات")
         self.tools.addAction("محوّل النصوص")
-        self.tools.addAction("خيارات التحويل")
+        self.tools.addAction("خيارات محوّل النصوص")
         self.tools.addAction("المدخل والمستخرج")
 
     def newChild(self, widget, container, title):
@@ -620,21 +620,29 @@ class TextConverterOptionsMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        container = QWidget()
+        tab1 = QWidget()
+        tab2 = QWidget()
+        container = QTabWidget()
+        
+        container.addTab(tab1, 'التحويل')
+        container.addTab(tab2, 'الأسطر والصفحات')
 
         layout = QGridLayout()
-        container.setLayout(layout)
+        layout2 = QVBoxLayout()
+        tab1.setLayout(layout)
+        tab2.setLayout(layout2)
         self.setCentralWidget(container)
         
         OptionsWindow_Width = 400
         checkbox_size = [OptionsWindow_Width-5, 16]
         
-        checksLayout = QVBoxLayout()
         self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
         self.SSL_check = QCheckBox("ترتيب أسطر الصفحة من الأقصر للأطول")
         self.SLS_check = QCheckBox("ترتيب أسطر الصفحة من الأطول للأقصر")
         self.RP_check = QCheckBox("عكس ترتيب الصفحات")
         self.RL_check = QCheckBox("عكس ترتيب أسطر الصفحات")
+        
+        checksLayout = QVBoxLayout()
         self.RA_check = QCheckBox("تجميد النص العربي")
         self.UA_check = QCheckBox("إلغاء تجميد النص العربي")
         self.C_check = QCheckBox("تحويل النص")
@@ -734,11 +742,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         cellsLayout.addWidget(self.convertedByte, 8, 1)
         comboBoxLayout.addWidget(HarakatLabel)
         comboBoxLayout.addWidget(self.HarakatComboBox)
-        # checksLayout.addWidget(self.DDL_check)
-        # checksLayout.addWidget(self.SSL_check)
-        # checksLayout.addWidget(self.SLS_check)
-        # checksLayout.addWidget(self.RP_check)
-        # checksLayout.addWidget(self.RL_check)
         checksLayout.addWidget(self.RA_check)
         checksLayout.addWidget(self.UA_check)
         checksLayout.addWidget(self.C_check)
@@ -755,6 +758,12 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         containerLayout.addWidget(self.C_databaseButton)
         layout.addLayout(checksLayout, 0, 0)
         layout.addLayout(containerLayout, 0, 1)
+        
+        layout2.addWidget(self.DDL_check)
+        layout2.addWidget(self.SSL_check)
+        layout2.addWidget(self.SLS_check)
+        layout2.addWidget(self.RP_check)
+        layout2.addWidget(self.RL_check)
 
 TextConverterOptionsWindow = TextConverterOptionsMotherWindow()
 
