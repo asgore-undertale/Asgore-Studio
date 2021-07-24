@@ -15,12 +15,11 @@ replacing pygame will cause a problem with saving window... for some reason
 using arcade library will disable "keyboard library in the whole studio... for some reason
 '''
 
-def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, linesNum, pxPerLine, charmap, newLine, newPage, display,
+def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, display,
                 lineBox, fromRight, boxAnimation):
     if FontPath.endswith('.ttf'): dialogue_font = pygame.font.Font(FontPath, fontSize)
     
-    X, Y = borderThick, borderThick
-    if fromRight: X += boxWidth
+    X, Y = borderThick + (boxWidth * fromRight), borderThick
     _y, _x = Y, X
     
     PassTimes = 0
@@ -33,7 +32,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, linesNum, pxPerLi
     for s in range(len(sentences)):
         if s % 2:
             if sentences[s] == newPage:
-                waitForPress(display, True)
+                waitForPress(display)
                 drawBox(0, 0, boxWidth + borderThick * 2, boxHeight + borderThick * 2, BackgroundColor, boxAnimation, display)
                 _y = Y
             # elif sentences[s] == newLine:
@@ -47,7 +46,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, linesNum, pxPerLi
             
             try:
                 if checkForCommand('[^]', sentences[s], c):
-                    waitForPress(display, True)
+                    waitForPress(display)
                     PassTimes = 2
                 elif checkForCommand('[!]', sentences[s], c):
                     d = display.copy()
@@ -104,7 +103,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, linesNum, pxPerLi
             char = sentences[s][c]
             if FontPath.endswith('.ttf'):
                 dialogue = dialogue_font.render(char, True, TextColor)
-                char_width,  char_xadvance = dialogue.get_size()[0], 0
+                char_width, char_xadvance = dialogue.get_size()[0], 0
                 
                 if fromRight: _x -= char_width
                 display.blit(dialogue, (_x, _y))
@@ -204,14 +203,15 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     SetWindowPos = windll.user32.SetWindowPos
     SetWindowPos(pygame.display.get_wm_info()['window'], -1, 500, 500, 0, 0, 0x0001)
     
-    type_in_box(sentences, fontSize, per, boxWidth, boxHeight, linesNum, pxPerLine, charmap, newLine, newPage, textbox,
+    type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, textbox,
                 lineBox, fromRight, boxAnimation)
 
     while True: pygameCheck(textbox)
 
-def waitForPress(display, wait):
+def waitForPress(display):
     pressed = False
-    while wait:
+    while keyboard.is_pressed('enter'): pass
+    while True:
         pygameCheck(display)
         if keyboard.is_pressed('enter'): pressed = True
         else:
