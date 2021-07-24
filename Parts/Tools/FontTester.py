@@ -247,12 +247,12 @@ def loadFile():
         textList = Extract(fileContent, '      - text: ', '\n')
         fileContent = ''.join(fixMsytList(textList))
         
-        FontTesterOptionsWindow.fontSizeCell.toPlainText('16')
+        FontTesterOptionsWindow.fontSizeCell.setPlainText('16')
         FontTesterOptionsWindow.boxWidthCell.setPlainText('532')
-        FontTesterOptionsWindow.boxHeightCell.setPlainText('160')
+        FontTesterOptionsWindow.boxHeightCell.setPlainText('60')
         FontTesterOptionsWindow.pixelsPerCell.setPlainText('5')
         FontTesterOptionsWindow.newLineCell.setPlainText('\\n')
-        FontTesterOptionsWindow.newPageCell.setPlainText('\\n')
+        FontTesterOptionsWindow.newPageCell.setPlainText('\\n\\n\\n')
     
     FontTesterWindow.enteredTextBox.setPlainText(fileContent)
 
