@@ -15,10 +15,11 @@ def analyze():
 
 def suggest():
     resultsNum = tryTakeNum(TextAnalyzerWindow.resultsNumCell.toPlainText())
-    mergedCharLen = tryTakeNum(TextAnalyzerWindow.mergedCharLenCell.toPlainText())
+    mergedCharFromLen = tryTakeNum(TextAnalyzerWindow.mergedCharLenFromCell.toPlainText())
+    mergedCharToLen = tryTakeNum(TextAnalyzerWindow.mergedCharLenToCell.toPlainText())
     dteList, log = suggestDTE(TextAnalyzerWindow.enteredBox.toPlainText(),
-        TextAnalyzerWindow.ignoredCharsCell.toPlainText() + ('\n\r' * TextAnalyzerWindow.ignoreDefault.isChecked()),
-        mergedCharLen, resultsNum
+        TextAnalyzerWindow.ignoredCharsCell.toPlainText() + '\n\r',
+        (mergedCharFromLen, mergedCharToLen), resultsNum
         )
     TextAnalyzerWindow.logBox.setPlainText(log)
 
