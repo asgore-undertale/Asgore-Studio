@@ -8,7 +8,7 @@ from Parts.Scripts.FitInBox import fit
 from sys import argv, exit
 from time import sleep, time
 from PIL import Image
-from ctypes import windll
+from ctypes import windll, Structure, c_long, byref
 import keyboard, pygame, random
 '''
 replacing pygame will cause a problem with saving window... for some reason
@@ -200,13 +200,29 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     pygame.display.set_caption('Font Tester')
     textbox = pygame.display.set_mode(WindowSize)
     
-    SetWindowPos = windll.user32.SetWindowPos
-    SetWindowPos(pygame.display.get_wm_info()['window'], -1, 500, 500, 0, 0, 0x0001)
+    onTop(pygame.display.get_wm_info()['window'])
     
     type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, textbox,
                 lineBox, fromRight, boxAnimation)
 
     while True: pygameCheck(textbox)
+
+class RECT(Structure):
+    _fields_ = [
+    ('left',    c_long),
+    ('top',     c_long),
+    ('right',   c_long),
+    ('bottom',  c_long),
+    ]
+    def width(self):  return self.right  - self.left
+    def height(self): return self.bottom - self.top
+
+def onTop(window):
+    SetWindowPos = windll.user32.SetWindowPos
+    GetWindowRect = windll.user32.GetWindowRect
+    rc = RECT()
+    GetWindowRect(window, byref(rc))
+    SetWindowPos(window, -1, rc.left, rc.top, 0, 0, 0x0001)
 
 def waitForPress(display):
     pressed = False
@@ -248,7 +264,7 @@ def loadFile():
         fileContent = ''.join(fixMsytList(textList))
         
         FontTesterOptionsWindow.fontSizeCell.setPlainText('16')
-        FontTesterOptionsWindow.boxWidthCell.setPlainText('532')
+        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'{50 * 16}')
         FontTesterOptionsWindow.boxHeightCell.setPlainText('60')
         FontTesterOptionsWindow.pixelsPerCell.setPlainText('5')
         FontTesterOptionsWindow.newLineCell.setPlainText('\\n')

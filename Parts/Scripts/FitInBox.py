@@ -10,7 +10,7 @@ def increase_y(y : int, text : str, before = False):
 
 def handle_xy(x : int, y : int, textWidth : int, newtext : str):
     if x + textWidth > fit.boxWidth:
-        x += textWidth
+        x = textWidth
         y, newtext = increase_y(y, newtext)
     else: x += textWidth
     return x, y, newtext
@@ -28,13 +28,15 @@ def checkWord(word : str, x : int, y : int, case : bool, newword = ''):
         for char in word:
             if checkChar(char): continue
             newword += char
-            x, y, newword = handle_xy(x, y, fit.charmap[char][2] + fit.charmap[char][6], newword)
+        x, y, newword = handle_xy(x, y, getTextWidth(newword), newword)
     else:
         for char in word:
             if checkChar(char): continue
+            x += getTextWidth(char)
+            if x > fit.boxWidth:
+                y, newword = increase_y(y, newword, True)
+                x = getTextWidth(char)
             newword += char
-        x = getTextWidth(newword)
-        y, newword = increase_y(y, newword)
     return newword, x, y
 
 def getTextWidth(text : str, width = 0):
@@ -72,16 +74,15 @@ def fit(text : str, charmap : dict, boxWidth : int, linesNum : int, newLine : st
                 newtext += beforeCom + parts[c] + afterCom
                 continue
             
-            parts[c] = Freeze(parts[c])
-            wordsList = splitTo(parts[c], False)
+            wordsList = splitTo(Freeze(parts[c]), False)
             
             for word in wordsList:
                 if not word: continue
                 wordWidth = getTextWidth(word)
                 if x + wordWidth > boxWidth and wordWidth < boxWidth:
-                    word, x, y = checkWord(word, x, y, False)
-                elif x + wordWidth > boxWidth:
                     word, x, y = checkWord(word, x, y, True)
+                elif x + wordWidth > boxWidth:
+                    word, x, y = checkWord(word, x, y, False)
                 else:
                     word, x, y = checkWord(word, x, y, True)
                 newtext += word

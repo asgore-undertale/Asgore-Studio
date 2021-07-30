@@ -9,7 +9,7 @@ from Parts.Windows import TextAnalyzerWindow
 
 def analyze():
     resultsNum = tryTakeNum(TextAnalyzerWindow.resultsNumCell.toPlainText())
-    text, log = analyzeText(TextAnalyzerWindow.enteredBox.toPlainText(), resultsNum)
+    text, log = analyzeText(TextAnalyzerWindow.enteredBox.toPlainText(), TextAnalyzerWindow.ignoredDtesCell.toPlainText(), resultsNum)
     TextAnalyzerWindow.resultBox.setPlainText(text)
     TextAnalyzerWindow.logBox.setPlainText(log)
 

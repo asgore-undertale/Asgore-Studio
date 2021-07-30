@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.015v")
+        self.setWindowTitle("Asgore Studio 2.016v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -167,9 +167,13 @@ class TextAnalyzerMotherWindow(QMainWindow):
         mergedCharLenToLabel = QLabel()
         mergedCharLenToLabel.setText("لـ:")
         self.ignoredCharsCell = QTextEdit()
-        self.ignoredCharsCell.setFixedSize(255, 52)
+        self.ignoredCharsCell.setFixedSize(255, 30)
         ignoredCharsLabel = QLabel()
         ignoredCharsLabel.setText("الحروف المتجاهلة في الاقتراح:")
+        self.ignoredDtesCell = QTextEdit()
+        self.ignoredDtesCell.setFixedSize(255, 30)
+        ignoredDtesLabel = QLabel()
+        ignoredDtesLabel.setText("الاختزالات المتجاهلة:")
         
         layout.addLayout(boxesLayout, 0, 0)
         layout.addLayout(logLayout, 0, 1)
@@ -188,6 +192,8 @@ class TextAnalyzerMotherWindow(QMainWindow):
         varsLayout.addLayout(minivarsLayout, 1, 0)
         varsLayout.addWidget(ignoredCharsLabel, 2, 0)
         varsLayout.addWidget(self.ignoredCharsCell, 3, 0)
+        varsLayout.addWidget(ignoredDtesLabel, 4, 0)
+        varsLayout.addWidget(self.ignoredDtesCell, 5, 0)
         boxesLayout.addWidget(enteredLabel)
         boxesLayout.addWidget(self.enteredBox)
         boxesLayout.addWidget(resultLabel)
@@ -324,14 +330,6 @@ TablesConverterWindow = TablesConverterMotherWindow()
 class CharsTablesCreatorMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        
-        self.setFixedSize(517, 570)
-        self.setWindowTitle("CharsTablesCreator")
-
-        self.Table = QTableWidget(self)
-        self.Table.setColumnCount(16)
-        self.Table.setRowCount(16)
-        self.Table.setGeometry(QRect(0, 20, 516, 475))
 
         self.bar = self.menuBar()
         file = self.bar.addMenu("ملف")
@@ -343,27 +341,42 @@ class CharsTablesCreatorMotherWindow(QMainWindow):
         file.addAction("حفظ جدول الحروف كـ .act")
         file.addAction("حفظ جدول الحروف كـ .csv")
         self.bar.addAction("مسح محتوى الجدول")
-
-        self.nextChar = QLabel(self)
-        self.nextChar.setGeometry(QRect(5, 490, 90, 40))
-        self.nextChar.setFont(labelFont)
-
+        
+        container = QWidget()
+        
+        layout = QVBoxLayout()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
+        
+        self.Table = QTableWidget(self)
+        self.Table.setColumnCount(16)
+        self.Table.setRowCount(16)
+        self.Table.setGeometry(QRect(0, 20, 516, 475))
+        
+        charsLayout = QHBoxLayout()
         self.charsCell = QTextEdit(self)
-        self.charsCell.setGeometry(QRect(110, 500, 290, 66))
+        self.charsCell.setFixedSize(290, 66)
         charsLabel = QLabel(self)
-        charsLabel.setGeometry(QRect(380, 500, 130, 26))
         charsLabel.setText("الحروف المراد إدخالها:")
-
+        
+        self.nextChar = QLabel(self)
+        self.nextChar.setFont(labelFont)
+        self.nextChar.setText("الحرف التالي:")
+        
         NUMS = '0123456789ABCDEF'
         self.Table.setHorizontalHeaderLabels(list(NUMS))
         self.Table.setVerticalHeaderLabels(list(NUMS))
         
         for i in range(16):
             self.Table.setRowHeight(i, 28)
-            self.Table.setColumnWidth(i, 20)
+            self.Table.setColumnWidth(i, 18)
         
-        self.nextChar.setText("الحرف التالي:")
-
+        layout.addWidget(self.Table)
+        layout.addLayout(charsLayout)
+        charsLayout.addWidget(charsLabel)
+        charsLayout.addWidget(self.charsCell)
+        charsLayout.addWidget(self.nextChar)
+# https://www.youtube.com/watch?v=mnDT_0rMtsc
 CharsTablesCreatorWindow = CharsTablesCreatorMotherWindow()
 
 
@@ -396,7 +409,7 @@ class FontTesterMotherWindow(QMainWindow):
         self.startButton.setText("بدء")
         self.fontButton.setText("فتح خط")
         self.openButton.setText("فتح ملف")
-
+        
         layout.addWidget(enteredTextLabel, 0, 0)
         layout.addWidget(self.enteredTextBox, 1, 0)
         layout.addWidget(resultTextLabel, 2, 0)
