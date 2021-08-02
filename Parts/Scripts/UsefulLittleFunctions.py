@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QFileDialog
-from os import path, listdir, mkdir, makedirs, walk
+from os import path, walk
 import re
 
 def openFile(type : tuple, window, text = 'جدول حروف'):
@@ -113,7 +113,8 @@ def DeleteDuplicatedLines(text, lineCom = '\n'):
     return text
 
 def dirList(path):
-    return [root+'{}{}'.format('', f) for root, dirs, files in walk(path) for f in files]
+    if path[0] == '"' and path[-1] == '"': path = path[1:-1]
+    return [root+'\\{}'.format(f) for root, dirs, files in walk(path) for f in files]
 
 def splitByBeforeAfterComAndDo(text, beforeCom, afterCom, function, reverse = False):
     if beforeCom and afterCom:
