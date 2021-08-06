@@ -71,7 +71,7 @@ def ATEtoList(tablePath : str):
     rows = tablePath.split('\n')
     
     for row in range(len(rows)):
-        cells = rows[row].split(SEPARATOR)
+        cells = rows[row].split(_ATE_SEPARATOR_)
         tableList.append(cells)
     
     return tableList

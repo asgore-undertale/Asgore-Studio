@@ -6,6 +6,7 @@ from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.FitInBox import fit
 # from Parts.Scripts.EmbedPygameInPyqt5 import embed
 from sys import argv, exit
+from os import path
 from time import sleep, time
 from PIL import Image
 from ctypes import windll, Structure, c_long, byref
@@ -263,7 +264,10 @@ def loadFile():
         textList = Extract(fileContent, '      - text: ', '\n')
         fileContent = ''.join(fixMsytList(textList))
         
-        fontSize, linesNum, pixelsPerLine = 16, 3, 5
+        linesNum = 3
+        fontSize = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
+        pixelsPerLine = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
+        
         FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
         FontTesterOptionsWindow.boxWidthCell.setPlainText(f'{50 * fontSize}')
         FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
@@ -304,7 +308,8 @@ def start():
         lineBox, boxAnimation, offset, offsetWith, offsetCom
         )
 
-FontPath, ImgPath = '', ''
+FontPath = r'OtherFiles\Fonts\8×8 pixelFont\font.aft' * path.exists(r'OtherFiles\Fonts\8×8 pixelFont\font.aft')
+ImgPath = r'OtherFiles\Fonts\8×8 pixelFont\img.png' * path.exists(r'OtherFiles\Fonts\8×8 pixelFont\img.png')
 borderThick, borderColor = 10, (255, 255, 255)
 
 app = QApplication(argv)

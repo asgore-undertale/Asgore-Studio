@@ -6,18 +6,17 @@ def Width(text : str, charmap : dict):
     return textWidth
 
 def OffsetTextWithSpaces(text : str, charsNum : int, textOffset : int, spacesNum = 0):
-    if not spacesNum:
-        spacesNum = charsNum - len(text)
+    if not spacesNum: spacesNum = charsNum - len(text)
     if spacesNum <= 0: return text
     
     if   textOffset == 0: # first
-        return ' ' * spacesNum
+        return text + ' ' * spacesNum
     elif textOffset == 1: # last
         return ' ' * spacesNum + text
-    elif textOffset == 2: # middle filled
+    elif textOffset == 2: # middle
         halfSpaces = spacesNum // 2
-        return (' ' * halfSpaces) + text + ' ' * (spacesNum - halfSpaces)
-    elif textOffset == 3: # middle
+        return (' ' * halfSpaces) + text
+    elif textOffset == 3: # middle filled
         halfSpaces = spacesNum // 2
         return (' ' * halfSpaces) + text + ' ' * (spacesNum - halfSpaces)
 

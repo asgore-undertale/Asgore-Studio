@@ -14,8 +14,8 @@ from Parts.Scripts.TakeFromTable import TakeFromTable
 
 
 convertingTablePath = r'OtherFiles/Tables/CharsConvertingTable.act'
-if path.exists(convertingTablePath): convert_database = TakeFromTable(convertingTablePath)
-else: convert_database = {}
+if path.exists(convertingTablePath): convertDatabase = TakeFromTable(convertingTablePath)
+else: convertDatabase = {}
 
 
 def opentextFile():
@@ -26,8 +26,9 @@ def opentextFile():
 def openConvertTable():
     tablePath = openFile(('act', 'zts'), TextConverterOptionsWindow, 'جدول التحويل')
     if not tablePath: return
-    global convertingTablePath
+    global convertingTablePath, convertDatabase
     convertingTablePath = tablePath
+    convertDatabase = TakeFromTable(convertingTablePath)
 
 def cell():
     cell._startCommand  = byteInCell(TextConverterOptionsWindow.startCommand.toPlainText())
@@ -51,10 +52,10 @@ def applyConverts(text):
     HarakatOptionindex = TextConverterOptionsWindow.HarakatComboBox.currentIndex()
     if HarakatOptionindex: text = handleHarakat(text, HarakatOptionindex)#Handle Harakat
     if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked(): text = Freeze(text)#Freeze Arabic
-    if TextConverterOptionsWindow.C_check.isChecked(): text = Convert(text, convert_database, True)#Convert
     if TextConverterOptionsWindow.RT_check.isChecked(): text = Reverse(text) #Reverse whole text
     if TextConverterOptionsWindow.RAO_check.isChecked(): text = Reverse(text, False) #‫Reverse Arabic only
-    if TextConverterOptionsWindow.UC_check.isChecked(): text = Convert(text, convert_database, False)#Unconvert
+    if TextConverterOptionsWindow.C_check.isChecked(): text = Convert(text, convertDatabase, True)#Convert
+    if TextConverterOptionsWindow.UC_check.isChecked(): text = Convert(text, convertDatabase, False)#Unconvert
     if TextConverterOptionsWindow.UA_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked(): text = Freeze(text, False)#UnFreeze Arabic
     if TextConverterOptionsWindow.CB_check.isChecked(): text = convertBytes(text, cell._convertedByte)#Convert bytes
     return text
@@ -62,7 +63,7 @@ def applyConverts(text):
 def convert(text, thisTool = True):
     if not text: return
     if (TextConverterOptionsWindow.C_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked()) and not path.exists(convertingTablePath):
-        QMessageBox.about(TextConverter, "!!خطأ", "جدول التحويل غير موجودة")
+        QMessageBox.about(TextConverter, "!!خطأ", "جدول التحويل غير موجود")
         return
         
     cell()

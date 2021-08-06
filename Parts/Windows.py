@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.017v")
+        self.setWindowTitle("Asgore Studio 2.018v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -62,7 +62,7 @@ class StudioMotherWindow(QMainWindow):
             self.mdiArea.addSubWindow(container)
         widget.show()
 
-    def AddReportWindow(self, title, reportText):
+    def Report(self, title, reportText):
         ReportWindow = QMdiSubWindow()
         ReportWindow.setWindowTitle(title)
         
@@ -847,15 +847,26 @@ class EnteringMotherWindow(QMainWindow):
         OptinsLayout = QVBoxLayout()
         self.databaseCheck = QCheckBox("استخدام قاعدة بيانات النصوص للإدخال.")
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
-        self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر: (بقيم الهيكس)")
+        self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر:")
         
         OffsetOptions = [
             "النص أول الجملة واملأ بعده فراغات",
             "النص آخر الجملة واملأ قبله فراغات",
+            "النص وسط الجملة واملأ قبله فراغات",
             "النص وسط الجملة واملأ قبله وبعده فراغات"
         ]
         self.Offset = QComboBox()
         self.Offset.addItems(OffsetOptions)
+        
+        offsetTypeLabel = QLabel()
+        offsetTypeLabel.setText("     وفق:")
+        
+        offsetTypeOptions = [
+            "قيم الهيكس",
+            "عدد الأحرف"
+        ]
+        self.OffsetType = QComboBox()
+        self.OffsetType.addItems(offsetTypeOptions)
         
         
         layout.addLayout(boxesLayout, 0, 0)
@@ -887,6 +898,8 @@ class EnteringMotherWindow(QMainWindow):
         OptinsLayout.addWidget(self.tooLongCheck)
         OptinsLayout.addWidget(self.translationOffsetCheck)
         OptinsLayout.addWidget(self.Offset)
+        OptinsLayout.addWidget(offsetTypeLabel)
+        OptinsLayout.addWidget(self.OffsetType)
 
 EnteringWindow = EnteringMotherWindow()
 
