@@ -5,7 +5,7 @@ from os import path, mkdir, makedirs
 import openpyxl
 
 from Parts.Scripts.UsefulLittleFunctions import selectFolder, openFile, dirList, byteInCell, bytesToString
-from Parts.Vars import checkVersion, _ATE_VERSION_, _CSV_DELIMITER_
+from Parts.Vars import checkVersion, _ATE_VERSION_, _CSV_DELIMITER_, Returns
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.LineOffset import OffsetTextWithSpaces
@@ -194,10 +194,13 @@ def extract():
                 if len(extracted):
                     content += f'<-- {filename} -->\n'
                     for item in extracted:
-                        item = item.decode(encoding='utf8', errors='replace')
+                        item = item.decode(encoding='utf8', errors='replace').replace('"', '""')
                         if _CSV_DELIMITER_ in item:
-                            item = f'"{item}"'.replace('\n', '"\n"').replace('\r', '"\r"')
-                            item = f'"{item}"'.replace('"\r""\n"', '"\r\n"').replace('"\n""\r"', '"\n\r"')
+                            for r in Returns:
+                                item = f'"{item}"'.replace(r, f'"{r}"')
+                            for r in Returns:
+                                for b in Returns:
+                                    item = f'"{item}"'.replace(f'"{r}""{b}"', f'"{r}{b}"')
                         content += item + '\n'
                 
             database.write(content)

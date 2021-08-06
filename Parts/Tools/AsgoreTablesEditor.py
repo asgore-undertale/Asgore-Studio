@@ -6,22 +6,21 @@ from sys import argv, exit
 app = QApplication(argv)
 from Parts.Windows import TableEditorWindow
 
+Table = TableEditorWindow.Table
+ROWS, COLS = TableEditorWindow.ROWS, TableEditorWindow.COLS
+
 def windowTrig(action):
     action = action.text()
-    Table = TableEditorWindow.Table
-    ROWS, COLS = TableEditorWindow.ROWS, TableEditorWindow.COLS
     
     if   action == "فتح جدول .ate": loadATE(openFile(('ate', 'aft', 'act'), TableEditorWindow), Table, ROWS, COLS, True)
     elif action == "فتح جدول .csv": loadCSV(openFile(['csv'], TableEditorWindow), Table, ROWS, COLS, True)
     elif action == "حفظ الجدول كـ .ate": saveATE(saveFile(('ate', 'aft', 'act'), TableEditorWindow), Table)
     elif action == "حفظ الجدول كـ .csv": saveCSV(saveFile(['csv'], TableEditorWindow), Table)
-    elif action == "إضافة صف": ROWS = add_row(Table, ROWS)
-    elif action == "حذف صف": ROWS = remove_row(Table, ROWS)
-    elif action == "إضافة عمود": COLS = add_col(Table, COLS)
-    elif action == "حذف عمود": COLS = remove_col(Table, COLS)
+    elif action == "إضافة صف": add_row(Table)
+    elif action == "حذف صف": remove_row(Table)
+    elif action == "إضافة عمود": add_col(Table)
+    elif action == "حذف عمود": remove_col(Table)
     elif action == "مسح محتوى الجدول": eraseTable(Table, ROWS, COLS)
-    
-    TableEditorWindow.ROWS, TableEditorWindow.COLS = ROWS, COLS
 
 TableEditorWindow.bar.triggered[QAction].connect(windowTrig)
 

@@ -1,16 +1,18 @@
 from PyQt5.QtWidgets import QTableWidgetItem
 from Parts.Scripts.UsefulLittleFunctions import intToHex
 from Parts.Vars import checkVersion, _ATE_VERSION_, _ATE_SEPARATOR_, _CSV_DELIMITER_
+import csv
 
 def deleteEmptyLines(tableContent : str):
     while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
     return tableContent
 
 def deleteTrash(tableContent : str, seperator : str):
-    while seperator+'\n' in tableContent: tableContent = tableContent.replace(seperator+'\n', '\n')
-    #while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
-    while tableContent[-1] == '\n': tableContent = tableContent[:-1]
-
+    try:
+        while seperator+'\n' in tableContent: tableContent = tableContent.replace(seperator+'\n', '\n')
+        #while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
+        while tableContent[-1] == '\n': tableContent = tableContent[:-1]
+    except: pass
     return tableContent
 
 def eraseTable(Table, ROWS, COLS):
@@ -18,23 +20,19 @@ def eraseTable(Table, ROWS, COLS):
         for col in range(COLS):
             Table.setItem(row, col, QTableWidgetItem(''))
 
-def add_row(Table, ROWS):
-    Table.setRowCount(ROWSCOLS + 1)
-    return ROWSCOLS + 1
+def add_row(Table):
+    Table.setRowCount(Table.rowCount() + 1)
 
-def remove_row(Table, ROWS):
-    if not ROWS: return
-    Table.setRowCount(ROWS - 1)
-    return ROWS - 1
+def remove_row(Table):
+    if not Table.rowCount(): return
+    Table.setRowCount(Table.rowCount() - 1)
 
-def add_col(Table, COLS):
-    Table.setColumnCount(COLSCOLS + 1)
-    return COLS + 1
+def add_col(Table):
+    Table.setColumnCount(Table.columnCount() + 1)
 
-def remove_col(Table, COLS):
-    if not COLS: return
-    Table.setColumnCount(COLS - 1)
-    return COLS - 1
+def remove_col(Table):
+    if not Table.columnCount(): return
+    Table.setColumnCount(Table.columnCount() - 1)
 
 def loadTBL(tablePath : str, Table, ROWS, COLS):
     if not tablePath: return
@@ -49,17 +47,17 @@ def loadTBL(tablePath : str, Table, ROWS, COLS):
         Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
 
 def loadList(tableList : list, Table, ROWS, COLS, increaseCells : bool):
+    rowsnum = len(tableList)
+    if rowsnum > ROWS and increaseCells:
+        Table.setRowCount(rowsnum)
+
     for r in range(len(tableList)):
-        rowsnum = len(tableList[r])
-        if rowsnum > ROWS and increaseCells:
-            ROWS = rowsnum
-            Table.setRowCount(rowsnum)
-        
+        cellsnum = len(tableList[r])
+        if cellsnum > COLS and increaseCells:
+            COLS = cellsnum
+            Table.setColumnCount(cellsnum)
+
         for c in range(len(tableList[r])):
-            cellsnum = len(tableList[r][c])
-            if cellsnum > COLS and increaseCells:
-                COLS = cellsnum
-                Table.setColumnCount(cellsnum)
             
             Table.setItem(r, c, QTableWidgetItem(tableList[r][c]))
 
@@ -85,35 +83,12 @@ def loadATE(tablePath : str, Table, ROWS, COLS, increaseCells : bool):
 
 def CSVtoList(tablePath : str):
     tableList = []
-    rows = open(tablePath, 'r', encoding='utf8', errors='replace').read()
-    rows = deleteTrash(rows, _CSV_DELIMITER_).split('\n')
-    
-    for r in range(len(rows)):
-        parts = rows[r].split('"')
-        switch, cellnum, row, cell = False, 0, [], ''
-        if not parts[-1]: del parts[-1]
-        if not parts[0]:
-            del parts[0]
-            switch = True
+    with open(tablePath, newline='', encoding='utf8', errors='replace') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"')
+        for row in spamreader:
+            tableList.append(row)
         
-        for i in range(len(parts)):
-            switch = not switch
-            if not switch:
-                cell += parts[i]
-                continue
-            if parts[i]:
-                cellnum += parts[i].count(_CSV_DELIMITER_)
-                if cell:
-                    row.append(cell)
-                    cell = ''
-                for v in parts[i].split(_CSV_DELIMITER_): row.append(v)
-            else:
-                parts[i] = '"'
-                cell += parts[i]
-        row.append(cell)
-        tableList.append(row)
-    
-    return tableList
+        return tableList
 
 def loadCSV(tablePath : str, Table, ROWS, COLS, increaseCells : bool):
     if not tablePath: return
@@ -151,18 +126,18 @@ def saveATE(save_loc : str, Table):
 
 def saveCSV(save_loc : str, Table):
     if not save_loc: return
-    content = ''
     
-    for row in range(Table.rowCount()):
-        csv_row = []
-        for col in range(Table.columnCount()):
-            if Table.item(row, col) and Table.item(row, col).text():
-                cell = Table.item(row, col).text().replace('"', '""')
-                if _CSV_DELIMITER_ in cell: cell = f'"{cell}"'
-                csv_row.append(cell)
-            else: csv_row.append('')
-    
-        content += _CSV_DELIMITER_.join(csv_row) + '\n'
+    with open(save_loc, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in range(Table.rowCount()):
+            csvRow = []
+            for col in range(Table.columnCount()):
+                if Table.item(row, col) and Table.item(row, col).text():
+                    csvRow.append(Table.item(row, col).text())
+            
+            spamwriter.writerow(csvRow)
         
-    content = deleteTrash(content, _CSV_DELIMITER_)
-    open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
+    a = open(save_loc, 'r', encoding="utf-8", errors='replace').read() # for some reason this is nessesary
+    open(save_loc, 'w', encoding="utf-8", errors='replace').write(
+        deleteTrash(a, _CSV_DELIMITER_)
+        )

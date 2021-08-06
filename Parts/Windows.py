@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.018v")
+        self.setWindowTitle("Asgore Studio 2.019v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -81,21 +81,20 @@ class TableEditorMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.ROWS, self.COLS = 100, 40
+        self.ROWS, self.COLS = 1000, 100
         
         TableContainer = QWidget()
         layout = QVBoxLayout()
-
-        # self.TableContainer.setWindowTitle(f"Asgore Tables {_ATE_VERSION_}v")
+        
         self.Table = QTableWidget()
         self.Table.setColumnCount(self.COLS)
         self.Table.setRowCount(self.ROWS)
 
         self.bar = self.menuBar()
-
+        
         file = self.bar.addMenu("ملف")
         options = self.bar.addMenu("خيارات الجدول")
-
+        
         file.addAction("فتح جدول .ate")
         file.addAction("فتح جدول .csv")
         file.addAction("حفظ الجدول كـ .ate")
@@ -105,7 +104,7 @@ class TableEditorMotherWindow(QMainWindow):
         options.addAction("إضافة عمود")
         options.addAction("حذف عمود")
         self.bar.addAction("مسح محتوى الجدول")
-
+        
         layout.addWidget(self.Table)
         TableContainer.setLayout(layout)
         self.setCentralWidget(TableContainer)
