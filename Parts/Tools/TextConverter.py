@@ -61,7 +61,7 @@ def applyConverts(text):
     return text
 
 def convert(text, thisTool = True):
-    if not text: return
+    if not text: return ''
     if (TextConverterOptionsWindow.C_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked()) and not path.exists(convertingTablePath):
         QMessageBox.about(TextConverter, "!!خطأ", "جدول التحويل غير موجود")
         return

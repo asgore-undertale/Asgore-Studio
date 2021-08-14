@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.019v")
+        self.setWindowTitle("Asgore Studio 2.020v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -844,7 +844,7 @@ class EnteringMotherWindow(QMainWindow):
         maxTextLabel.setText("وطولها:")
         
         OptinsLayout = QVBoxLayout()
-        self.databaseCheck = QCheckBox("استخدام قاعدة بيانات النصوص للإدخال.")
+        self.databaseCheck = QCheckBox("استخدام جدول النصوص للإدخال.")
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
         self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر:")
         

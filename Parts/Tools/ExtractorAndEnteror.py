@@ -80,7 +80,8 @@ def getTextListFromTable(textTablePath, convertBool):
             
             translation, tooLong = prepareTextAndTranslation(text, translation, convertBool)
             if tooLong: tooLongList.append(tooLong)
-            if translation != None: textList.append([text, translation])
+            if translation != None:
+                textList.append([text, translation])
     
     elif textTablePath.endswith('.xlsx'):
         textXlsx = openpyxl.load_workbook(textTablePath)
@@ -142,7 +143,8 @@ def enter(convertBool = True):
         for i in range(textListLength):
             i -= deletedText
             
-            text, translation = before + textList[i][0] + after, before + textList[i][1] + after
+            # text, translation = before + textList[i][0] + after, before + textList[i][1] + after
+            text, translation = textList[i][0], textList[i][1]
             byteText = text.encode()
             if byteText not in fileContent: continue
             

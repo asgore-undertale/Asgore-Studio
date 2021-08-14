@@ -15,9 +15,9 @@ def deleteTrash(tableContent : str, seperator : str):
     except: pass
     return tableContent
 
-def eraseTable(Table, ROWS, COLS):
-    for row in range(ROWS):
-        for col in range(COLS):
+def eraseTable(Table):
+    for row in range(Table.rowCount()):
+        for col in range(Table.columnCount()):
             Table.setItem(row, col, QTableWidgetItem(''))
 
 def add_row(Table):
@@ -34,9 +34,9 @@ def remove_col(Table):
     if not Table.columnCount(): return
     Table.setColumnCount(Table.columnCount() - 1)
 
-def loadTBL(tablePath : str, Table, ROWS, COLS):
+def loadTBL(tablePath : str, Table):
     if not tablePath: return
-    eraseTable(Table, ROWS, COLS)
+    eraseTable(Table)
     
     tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
     lines = tablePath.split('\n')
@@ -46,19 +46,17 @@ def loadTBL(tablePath : str, Table, ROWS, COLS):
         parts = line.split('=')
         Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
 
-def loadList(tableList : list, Table, ROWS, COLS, increaseCells : bool):
+def loadList(tableList : list, Table, increaseCells : bool):
     rowsnum = len(tableList)
-    if rowsnum > ROWS and increaseCells:
+    if rowsnum > Table.rowCount() and increaseCells:
         Table.setRowCount(rowsnum)
 
     for r in range(len(tableList)):
         cellsnum = len(tableList[r])
-        if cellsnum > COLS and increaseCells:
-            COLS = cellsnum
+        if cellsnum > Table.columnCount() and increaseCells:
             Table.setColumnCount(cellsnum)
 
         for c in range(len(tableList[r])):
-            
             Table.setItem(r, c, QTableWidgetItem(tableList[r][c]))
 
 def ATEtoList(tablePath : str):
@@ -74,12 +72,12 @@ def ATEtoList(tablePath : str):
     
     return tableList
 
-def loadATE(tablePath : str, Table, ROWS, COLS, increaseCells : bool):
+def loadATE(tablePath : str, Table, increaseCells : bool):
     if not tablePath: return
-    eraseTable(Table, ROWS, COLS)
+    eraseTable(Table)
     
     tableList = ATEtoList(tablePath)
-    loadList(tableList, Table, ROWS, COLS, increaseCells)
+    loadList(tableList, Table, increaseCells)
 
 def CSVtoList(tablePath : str):
     tableList = []
@@ -90,12 +88,12 @@ def CSVtoList(tablePath : str):
         
         return tableList
 
-def loadCSV(tablePath : str, Table, ROWS, COLS, increaseCells : bool):
+def loadCSV(tablePath : str, Table, increaseCells : bool):
     if not tablePath: return
-    eraseTable(Table, ROWS, COLS)
+    eraseTable(Table)
     
     tableList = CSVtoList(tablePath)
-    loadList(tableList, Table, ROWS, COLS, increaseCells)
+    loadList(tableList, Table, increaseCells)
 
 def saveTBL(save_loc : str, Table):
     if not save_loc: return

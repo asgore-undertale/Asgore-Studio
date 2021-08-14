@@ -83,20 +83,20 @@ def checkUserChars():
 def windowTrig(action):
     def check(text): return action.text() == text
 
-    if check("فتح جدول حروف .tbl"): loadTBL(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, ROWS, COLS)
-    elif check("فتح جدول حروف .act"): loadATE(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, ROWS, COLS, False)
-    elif check("فتح جدول حروف .csv"): loadCSV(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, ROWS, COLS, False)
+    if check("فتح جدول حروف .tbl"): loadTBL(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("فتح جدول حروف .act"): loadATE(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, False)
+    elif check("فتح جدول حروف .csv"): loadCSV(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, False)
     elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(saveFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .act"): saveACT(saveFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .csv"): saveCSV(saveFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("مسح محتوى الجدول"): eraseTable(CharsTablesCreatorWindow.Table, ROWS, COLS)
+    elif check("مسح محتوى الجدول"): eraseTable(CharsTablesCreatorWindow.Table)
 
 
 app = QApplication(argv)
 from Parts.Windows import CharsTablesCreatorWindow
 
 
-ROWS, COLS = 16, 16
+userChars = FreezedArabicChars
 
 CharsTablesCreatorWindow.nextChar.setText(f"الحرف التالي: {FreezedArabicChars[0]}")
 CharsTablesCreatorWindow.charsCell.setText(FreezedArabicChars)
