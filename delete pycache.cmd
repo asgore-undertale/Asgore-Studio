@@ -1,0 +1,1 @@
+@RD /s /q Parts\__pycache__, Parts\Scripts\__pycache__, Parts\Tools\__pycache__

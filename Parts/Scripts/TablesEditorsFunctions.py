@@ -80,13 +80,9 @@ def loadATE(tablePath : str, Table, increaseCells : bool):
     loadList(tableList, Table, increaseCells)
 
 def CSVtoList(tablePath : str):
-    tableList = []
     with open(tablePath, newline='', encoding='utf8', errors='replace') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"')
-        for row in spamreader:
-            tableList.append(row)
-        
-        return tableList
+        return list(spamreader)
 
 def loadCSV(tablePath : str, Table, increaseCells : bool):
     if not tablePath: return
