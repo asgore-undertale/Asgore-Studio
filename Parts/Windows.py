@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.21v")
+        self.setWindowTitle("Asgore Studio 2.0.22v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -350,7 +350,7 @@ class CharsTablesCreatorMotherWindow(QMainWindow):
         self.Table = QTableWidget(self)
         self.Table.setColumnCount(16)
         self.Table.setRowCount(16)
-        self.Table.setGeometry(QRect(0, 20, 516, 475))
+        self.Table.setLayoutDirection(Qt.LeftToRight)
         
         charsLayout = QHBoxLayout()
         self.charsCell = QTextEdit(self)

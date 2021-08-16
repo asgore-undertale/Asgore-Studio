@@ -98,7 +98,8 @@ def saveTBL(save_loc : str, Table):
     for row in range(Table.rowCount()):
         for col in range(Table.columnCount()):
             if Table.item(row, col) and Table.item(row, col).text():
-                content += f'{intToHex(row)[1]}{intToHex(col)[1]}={Table.item(row, col).text()}\n'
+                for char in Table.item(row, col).text():
+                    content += f'{intToHex(row)[1]}{intToHex(col)[1]}={char}\n'
     
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
 
