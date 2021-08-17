@@ -124,7 +124,7 @@ def Kruptar():
 def CsvTable():
     global text_list, file_path, columnIndex, sentences_num, table
     
-    if columnIndex <= 0: return
+    if columnIndex < 0: return
     
     with open(file_path, newline='', encoding='utf8', errors='replace') as csvfile:
         table = list(csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"'))
