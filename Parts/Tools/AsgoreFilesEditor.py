@@ -1,20 +1,22 @@
 from PyQt5.QtWidgets import QApplication
-from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile
+from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ConvertFiles import MsytToTxt, TxtToMsyt
+from Parts.Vars import _CSV_DELIMITER_
 from Parts.Tools.TextConverter import convert
 from sys import argv, exit
 from os import path
-import re, openpyxl, keyboard
+import re, openpyxl, keyboard, csv
 
 
-file_content, text_list, trans_list, sentences_num, database = '', '', '', '', ''
-before, after, dataBaseDirectory = '', '', ''
+file_content, file_path, text_list, trans_list, sentences_num, database, table = '', '', '', '', '', '', ''
+before, after, columnIndex, dataBaseDirectory = '', '', '', ''
 
 def fileType():
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     if index == 0: return 'msyt'
     if index == 1: return 'txt'
+    if index == 2: return 'csv'
 
 def typeCommand():
     if not FilesEditorWindow.isActiveWindow(): return
@@ -51,19 +53,49 @@ def openTextDataBase():
     elif dataBaseDirectory.endswith('.csv'):
         database = CSVtoList(dataBaseDirectory)
 
+def indexHandle(index, filePath, case):
+    global file_content, before, after, columnIndex, text_list, trans_list, table
+    if case:
+        handleText.current_item = 0
+        if index == 0:
+            file_content = open(filePath, 'r', encoding='utf-8').read()
+            before, after = '\n', '\n'
+            Msyt()
+        if index == 1:
+            file_content = open(filePath, 'r', encoding='utf-8').read()
+            before, after = '', FilesEditorWindow.endCommandCell.toPlainText()
+            Kruptar()
+        if index == 2:
+            columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
+            CsvTable()
+    else:
+        if index == 0:
+            for t in range(len(text_list)):
+                file_content = file_content.replace(before+text_list[t]+after, before+trans_list[t]+after, 1)
+            file_content = TxtToMsyt(file_content)
+            open(filePath, 'w', encoding='utf-8').write(file_content)
+        if index == 1:
+            for t in range(len(text_list)):
+                file_content = file_content.replace(before+text_list[t]+after, before+trans_list[t]+after, 1)
+            open(filePath, 'w', encoding='utf-8').write(file_content)
+        if index == 2:
+            for t in range(len(text_list)):
+                try: table[t][columnIndex] = trans_list[t]
+                except: pass
+            with open(filePath, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                for row in table:
+                    spamwriter.writerow(row)
+
 def loadFile():
-    global file_content, before, after
-    filePath = openFile([fileType()], FilesEditorWindow, 'ملف')
-    if not filePath: return
-    file_content = open(filePath, 'r', encoding='utf-8').read()
+    global file_path, text_list, trans_list
+    file_path = openFile([fileType()], FilesEditorWindow, 'ملف')
+    if not file_path: return
     
-    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
-    if index == 0:
-        before, after = '\n', '\n'
-        Msyt()
-    if index == 1:
-        before, after = '', FilesEditorWindow.endCommandCell.toPlainText()
-        Kruptar()
+    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), file_path, True)
+    if not text_list: return
+    
+    trans_list = list(text_list)
     
     FilesEditorWindow.textBox.setPlainText(text_list[0])
     FilesEditorWindow.translationBox.setPlainText(text_list[0])
@@ -73,46 +105,51 @@ def save_file():
     filePath = saveFile([fileType()], FilesEditorWindow, 'ملف')
     if not filePath: return
     
-    file_content = file_content.replace(
-        before+trans_list[handleText.current_item]+after,
-        before+FilesEditorWindow.translationBox.toPlainText()+after
-        )
     trans_list[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
     
-    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
-    if index == 0: file_content = TxtToMsyt(file_content)
-    if index == 1: pass
-    
-    open(filePath, 'w', encoding='utf-8').write(file_content)
+    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), filePath, False)
 
 def Kruptar():
-    global text_list, trans_list, sentences_num
+    global text_list, sentences_num
     
     endcommand = FilesEditorWindow.endCommandCell.toPlainText()
     if not endcommand: return
     
     text_list = file_content.split(endcommand)
     del text_list[-1]
-    trans_list = list(text_list)
+    
+    sentences_num = len(text_list)-1
+    FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+
+def CsvTable():
+    global text_list, file_path, columnIndex, sentences_num, table
+    
+    if columnIndex <= 0: return
+    
+    with open(file_path, newline='', encoding='utf8', errors='replace') as csvfile:
+        table = list(csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"'))
+    
+    text_list = []
+    for row in table:
+        try: text_list.append(row[columnIndex])
+        except: pass
     
     sentences_num = len(text_list)-1
     FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
     
 def Msyt():
-    global file_content, text_list, trans_list, sentences_num
+    global file_content, text_list, sentences_num
     
     file_content = MsytToTxt(file_content)
     msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", file_content.replace('\n', '\uffff'))#for regex
     msyt_content_list = [x.replace('\uffff', '\n') for x in msyt_content_list]
     
     text_list = msyt_content_list[0].split('\n')
-    trans_list = list(text_list)
     
     sentences_num = len(text_list) -1
     FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
 
 def handleText(direction = True):
-    global file_content
     if not sentences_num: return
     
     if direction:

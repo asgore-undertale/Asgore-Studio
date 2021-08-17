@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.22v")
+        self.setWindowTitle("Asgore Studio 2.0.23v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -533,7 +533,8 @@ class FilesEditorMotherWindow(QMainWindow):
         
         fileTypeComboBoxOptions = [
             "ملف زيلدا نفس البرية msyt.",
-            "ملف نص مستخرج من الكروبتار"
+            "ملف نص مستخرج من الكروبتار",
+            "جدول csv"
         ]
         self.fileTypeComboBox = QComboBox()
         self.fileTypeComboBox.addItems(fileTypeComboBoxOptions)
@@ -545,7 +546,7 @@ class FilesEditorMotherWindow(QMainWindow):
         
         buttonsLayout = QHBoxLayout()
         self.textButton = QPushButton()
-        self.textButton.setText("جدول نصوص")
+        self.textButton.setText("جدول ترجمة")
         self.openButton = QPushButton()
         self.openButton.setText("فتح ملف")
         self.saveButton = QPushButton()
@@ -564,12 +565,17 @@ class FilesEditorMotherWindow(QMainWindow):
         self.ConvertAllbutton = QPushButton()
         self.ConvertAllbutton.setText("تحويل كل الترجمات")
         
-        cellsLayout = QHBoxLayout()
+        cellsLayout = QGridLayout()
         self.endCommandCell = QTextEdit()
         self.endCommandCell.setFixedSize(120, 26)
         self.endCommandCell.setText("<END>")
         endCommandLabel = QLabel()
         endCommandLabel.setText("أمر نهاية الجملة:")
+        self.columnIndexCell = QTextEdit()
+        self.columnIndexCell.setFixedSize(120, 26)
+        self.columnIndexCell.setText("1")
+        columnIndexLabel = QLabel()
+        columnIndexLabel.setText("رقم عمود الجدول:")
         
         layout.addWidget(self.fileTypeComboBox, 0, 0)
         layout.addLayout(workLayout, 1, 0)
@@ -585,8 +591,10 @@ class FilesEditorMotherWindow(QMainWindow):
         workLayout.addWidget(self.backButton)
         workLayout.addWidget(self.per)
         workLayout.addWidget(self.nextButton)
-        cellsLayout.addWidget(endCommandLabel)
-        cellsLayout.addWidget(self.endCommandCell)
+        cellsLayout.addWidget(endCommandLabel, 0, 0)
+        cellsLayout.addWidget(self.endCommandCell, 0, 1)
+        cellsLayout.addWidget(columnIndexLabel, 1, 0)
+        cellsLayout.addWidget(self.columnIndexCell, 1, 1)
 
 FilesEditorWindow = FilesEditorMotherWindow()
 
