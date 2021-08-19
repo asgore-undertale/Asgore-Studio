@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.24v")
+        self.setWindowTitle("Asgore Studio 2.0.25v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -685,13 +685,14 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         HarakatOptions = [
             "اتركها كما هي",
             "احذفها",
-            "أبقي الأولى في حالة التتالي",
+            "أبقي الأولى عند التتالي",
             "أعدها حرفاً للوراء",
             "قدمها حرفاً للأمام",
-            "حولها لشكلها مع التطويلة"
+            "حولها لشكلها مع التطويلة",
+            "ادمج الحركات"
         ]
         self.HarakatComboBox = QComboBox(self)
-        self.HarakatComboBox.setGeometry(QRect(195, 350, 145, 26))
+        self.HarakatComboBox.setGeometry(QRect(195, 350, 185, 26))
         self.HarakatComboBox.addItems(HarakatOptions)
         self.HarakatComboBox.setFixedSize(160, 27)
 

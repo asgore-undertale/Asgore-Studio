@@ -2,7 +2,15 @@ from Parts.Scripts.ReshapeHarakat import Reshape
 from Parts.Vars import Harakat
 
 
-def keepLast(text):
+def handleHarakat(text, index):
+    if index == 1: return delete(text)
+    if index == 2: return keepFirst(text)
+    if index == 3: return getBack(text)
+    if index == 4: return getForward(text)
+    if index == 5: return Reshape(text)
+    if index == 6: return merg(text)
+
+def keepFirst(text):
     new_text = ''
     text = ' ' + text
     for _ in range(1, len(text)):
@@ -30,9 +38,12 @@ def getForward(text):
         if text[i] in Harakat: new_text += text[i]
     return new_text
 
-def handleHarakat(text, index):
-    if index == 1: return delete(text)
-    if index == 2: return keepLast(text)
-    if index == 3: return getBack(text)
-    if index == 4: return getForward(text)
-    if index == 5: return Reshape(text)
+def merg(text):
+    text = text.replace('ﹼﹶ', 'ﱠ').replace('ﹽﹶ', 'ﳲ').replace('ﹼﹷ', 'ﳲ').replace('ﹽﹷ', 'ﳲ').replace('َّ', 'ﱠ')
+    text = text.replace('ﹼﹸ', 'ﱠ').replace('ﹽﹸ', 'ﳳ').replace('ﹼﹹ', 'ﳳ').replace('ﹽﹹ', 'ﳳ').replace('ُّ', 'ﱡ')
+    text = text.replace('ﹼﹺ', 'ﱢ').replace('ﹽﹺ', 'ﳴ').replace('ﹼﹻ', 'ﳴ').replace('ﹽﹻ', 'ﳴ').replace('ِّ', 'ﱢ')
+    
+    text = text.replace('ﹼﹰ', 'ﹰ').replace('ﹽﹰ', 'ﹱ').replace('ﹼﹱ', 'ﹱ').replace('ﹽﹱ', 'ﹱ').replace('ًّ', 'ﹰ')
+    text = text.replace('ﹼﹲ', 'ﱞ').replace('ﹽﹲ', 'ﱞ').replace('ٌّ', 'ﱞ')
+    text = text.replace('ﹼﹴ', 'ﱟ').replace('ﹽﹴ', 'ﱟ').replace('ٍّ', 'ﱟ')
+    return text
