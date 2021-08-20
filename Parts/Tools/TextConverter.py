@@ -13,9 +13,9 @@ from Parts.Scripts.HandleHarakat import handleHarakat
 from Parts.Scripts.TakeFromTable import TakeFromTable
 
 
+convertDatabase = {}
 convertingTablePath = r'OtherFiles/Tables/CharsConvertingTable.act'
 if path.exists(convertingTablePath): convertDatabase = TakeFromTable(convertingTablePath)
-else: convertDatabase = {}
 
 
 def opentextFile():

@@ -36,7 +36,6 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 waitForPress(display)
                 drawBox(0, 0, boxWidth + borderThick * 2, boxHeight + borderThick * 2, BackgroundColor, boxAnimation, display)
                 _y = Y
-            # elif sentences[s] == newLine:
             _x = X
             continue
         
@@ -262,9 +261,9 @@ def loadFile():
     
     if FilePath.endswith('.msyt'):
         textList = []
-        for part in fileContent.split('\n    contents:\n'):
+        parts = fileContent.split('\n    contents:\n')
+        for part in parts[1:len(parts)]:
             extractedList = Extract(part, '      - text: ', '\n')
-            del extractedList[0]
             textList.append(''.join(fixMsytList(extractedList)))
         fileContent = '\n'.join(textList)
         
