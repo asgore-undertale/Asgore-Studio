@@ -261,19 +261,23 @@ def loadFile():
     fileContent = open(FilePath, 'r', encoding='utf8', errors='replace').read()
     
     if FilePath.endswith('.msyt'):
-        textList = Extract(fileContent, '      - text: ', '\n')
-        fileContent = ''.join(fixMsytList(textList))
+        textList = []
+        for part in fileContent.split('\n    contents:\n'):
+            extractedList = Extract(part, '      - text: ', '\n')
+            del extractedList[0]
+            textList.append(''.join(fixMsytList(extractedList)))
+        fileContent = '\n'.join(textList)
         
         linesNum = 3
         fontSize = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
         pixelsPerLine = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
         
         FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
-        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'{50 * fontSize}')
         FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
+        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'{50 * fontSize}')
         FontTesterOptionsWindow.boxHeightCell.setPlainText(f'{(fontSize * linesNum) + (pixelsPerLine * (linesNum - 1))}')
         FontTesterOptionsWindow.newLineCell.setPlainText('\\n')
-        FontTesterOptionsWindow.newPageCell.setPlainText('\\n\\n\\n')
+        FontTesterOptionsWindow.newPageCell.setPlainText('\n')
     
     FontTesterWindow.enteredTextBox.setPlainText(fileContent)
 
