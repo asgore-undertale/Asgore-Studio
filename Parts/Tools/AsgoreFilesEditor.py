@@ -177,34 +177,25 @@ def handleText(direction = True):
     if not path.exists(dataBaseDirectory): return
     parts = re.split('＜(.*?)＞', trans_list[handleText.current_item])
     
-    for item in range(len(parts)):
-        if item % 2 or not parts[item]: continue
-        
-        if dataBaseDirectory.endswith('.xlsx'):
-            r = False
-            for sheet in database.sheetnames:
-                text_table = database.get_sheet_by_name(sheet)
-                for cell in range(2, len(text_table['A'])+1):
-                    if text_table['A'+str(cell)].value != parts[item]: continue
-                    FilesEditorWindow.translationBox.setPlainText(
-                        trans_list[handleText.current_item].replace(parts[item], text_table['B'+str(cell)].value, 1)
-                        )
-                    r = True
-                    break
-                if r: break
-        
-        elif dataBaseDirectory.endswith('.csv'):
-            for row in database:
-                try:
-                    text = row[0]
-                    translation = row[1]
-                except: continue
-                
-                if not text or text != parts[item]: continue
-                if not translation: translation = ''
-                
-                FilesEditorWindow.translationBox.setPlainText(trans_list[handleText.current_item].replace(text, translation, 1))
-                break
+    if dataBaseDirectory.endswith('.xlsx'):
+        for sheet in database.sheetnames:
+            text_table = database.get_sheet_by_name(sheet)
+            for cell in range(2, len(text_table['A'])+1):
+                if text_table['A'+str(cell)].value != trans_list[handleText.current_item]: continue
+                FilesEditorWindow.translationBox.setPlainText(text_table['B'+str(cell)].value)
+                return
+    
+    elif dataBaseDirectory.endswith('.csv'):
+        for row in database:
+            try:
+                text = row[0]
+                translation = row[1]
+            except: continue
+            
+            if text != trans_list[handleText.current_item]: continue
+            FilesEditorWindow.translationBox.setPlainText(translation)
+            
+            return
 handleText.current_item = 0
 
 

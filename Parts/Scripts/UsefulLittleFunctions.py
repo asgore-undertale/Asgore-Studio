@@ -1,3 +1,4 @@
+from Parts.Vars import bowsList
 from PyQt5.QtWidgets import QFileDialog
 from os import path, walk
 import re
@@ -23,6 +24,11 @@ def intToHex(num):
 def hexToString(hexstring):
     hexstring = '0'*(len(hexstring) % 2) + hexstring
     return bytearray.fromhex(hexstring).decode(encoding='utf8', errors='replace')
+
+def hexLength(text):
+    hexstring = text.encode().hex()
+    hexstring = '0'*(len(hexstring) % 2) + hexstring
+    return len(hexstring) // 2
 
 def bytesToString(Bytes):
     try: Bytes = Bytes.decode()
@@ -53,7 +59,9 @@ def checkForCommand(command : str, text : str, currentIndex : int):
         return True
     except: pass
 
-def splitTextBySoperators(text : str, soperators : tuple):
+def splitTextBySoperators(text : str, soperators : list):
+    soperators = list(filter(lambda a: a, soperators))
+    if not soperators: return [text]
     sentence, sentences, passTimes, Pass = '', [], 0, False
     try:
         for i in range(len(text)):
@@ -91,7 +99,7 @@ def fixBeforAfterCommands(beforeCom, afterCom):
 def getRegexPattern(beforeCom, afterCom):
     beforeCom, afterCom = fixBeforAfterCommands(beforeCom, afterCom)
     middle = "(.*?)"
-    if isinstance(beforeCom, bytes):  middle = middle.encode()
+    if isinstance(beforeCom, bytes): middle = middle.encode()
     return beforeCom + middle + afterCom
 
 def SortLines(text, lineCom = '\n', case = True):
@@ -139,7 +147,6 @@ def byteInCell(text, subject = '[b]'):
     if not subject in text: return text
     return hexToString(text.replace(subject, ''))
 
-bowsList = ['()', '[]', '{}', '<>']
 def swap(text, bowsList, unused_char = u'\uffff'):
     for bow in bowsList:
         text.replace(bow[0], unused_char).replace(bow[1], bow[0]).replace(unused_char, bow[1])

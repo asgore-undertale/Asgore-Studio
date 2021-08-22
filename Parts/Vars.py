@@ -20,4 +20,5 @@ CharsConnectBefore = 'آأؤإاةدذرزوى'
 EnglishChars = '?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 Numbers = '0123456789٠١٢٣٤٥٦٧٨٩'
 Symbols = '!"#$%&\'()*+,-./:;<=>@[\\]^_`{|}~'
-ASCII = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'    
+ASCII = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
+bowsList = ['()', '[]', '{}', '<>', '＜＞', '「」']

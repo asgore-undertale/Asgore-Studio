@@ -4,7 +4,7 @@ from sys import argv, exit
 from os import path, mkdir, makedirs
 import openpyxl
 
-from Parts.Scripts.UsefulLittleFunctions import selectFolder, openFile, dirList, byteInCell, bytesToString
+from Parts.Scripts.UsefulLittleFunctions import selectFolder, openFile, dirList, byteInCell, bytesToString, hexLength
 from Parts.Vars import checkVersion, _ATE_VERSION_, _CSV_DELIMITER_, Returns
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ExtractFromText import Extract
@@ -63,7 +63,7 @@ def prepareTextAndTranslation(text, translation, convertBool):
     if convertBool: translation = convert(translation, False)
     
     if EnteringWindow.tooLongCheck.isChecked():
-        if len(translation.encode().hex()) > len(text.encode().hex()):
+        if hexLength(translation) > hexLength(text):
             return None, [text, translation]
     
     return translation, None
@@ -79,7 +79,7 @@ def getTextListFromTable(textTablePath, convertBool):
             except: continue
             
             translation, tooLong = prepareTextAndTranslation(text, translation, convertBool)
-            if tooLong: tooLongList.append(tooLong)
+            if tooLong: tooLongList.append([tooLong, hexLength(tooLong[1]) - hexLength(tooLong[0])])
             if translation != None:
                 textList.append([text, translation])
     
@@ -92,7 +92,7 @@ def getTextListFromTable(textTablePath, convertBool):
                 translation = textTable['B'+str(cell)].value
                 
                 translation, tooLong = prepareTextAndTranslation(text, translation, convertBool)
-                if tooLong: tooLongList.append(tooLong)
+                if tooLong: tooLongList.append([tooLong, hexLength(tooLong[1]) - hexLength(tooLong[0])])
                 if translation != None: textList.append([text, translation])
     
     return sorted(textList, key=lambda x: len(str(x[0])), reverse=True), tooLongList
@@ -106,7 +106,7 @@ def putInXlsx(text, sheet, cell, isbold = False, isAlignted = False, fill = Fals
 def offsetTranslation(text, translation):
     offsetType = EnteringWindow.OffsetType.currentIndex()
     if offsetType == 0:
-        spacesNum = (len(text.encode().hex()) - len(translation.encode().hex())) // 2
+        spacesNum = hexLength(text) - hexLength(translation)
     if offsetType == 1:
         spacesNum = len(text) - len(translation)
     
@@ -128,7 +128,7 @@ def enter(convertBool = True):
         text = EnteringWindow.textBox.toPlainText()
         if text:
             translation, tooLong = prepareTextAndTranslation(text, EnteringWindow.translationBox.toPlainText(), convertBool)
-            if tooLong: tooLongList = [tooLong]
+            # if tooLong: tooLongList = [tooLong, int(len(tooLong[1].encode().hex()) - len(tooLong[0].encode().hex()))]
             if translation != None: textList = [[text, translation]]
     
     before = byteInCell(EnteringWindow.beforeText.toPlainText())
@@ -143,7 +143,6 @@ def enter(convertBool = True):
         for i in range(textListLength):
             i -= deletedText
             
-            # text, translation = before + textList[i][0] + after, before + textList[i][1] + after
             text, translation = textList[i][0], textList[i][1]
             byteText = text.encode()
             if byteText not in fileContent: continue
@@ -194,7 +193,7 @@ def extract():
                 
                 extracted = Extract(fileContent, before, after, True, mini, maxi)
                 if len(extracted):
-                    content += f'<-- {filename} -->\n'
+                    content += f'<-- {filename} -->,-\n'
                     for item in extracted:
                         item = item.decode(encoding='utf8', errors='replace').replace('"', '""')
                         if _CSV_DELIMITER_ in item:
@@ -222,6 +221,7 @@ def extract():
             extracted = Extract(fileContent, before, after, True, mini, maxi)
             if len(extracted):
                 putInXlsx(filename, sheet, 'A'+str(row), True, True, 'D112D1')
+                putInXlsx('-', sheet, 'B'+str(row), True, True, 'D112D1')
                 row += 1
                 
                 for item in extracted:
