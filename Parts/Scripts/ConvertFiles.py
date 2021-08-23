@@ -30,8 +30,8 @@ def MsytToTxt(file_content):
             new_file_dump += line + '\n'
     
     newFileContent = '{\n'+new_file_text+'}\n\n' + '{\n'+new_file_commands+'}\n\n' + '{\n'+new_file_dump+'}'
-    print(new_file_commands)
-    return newFileContent
+    
+    return newFileContent, new_file_commands
 
 def TxtToMsyt(file_content):
     msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", file_content.replace('\n', '\uffff'))#for regex

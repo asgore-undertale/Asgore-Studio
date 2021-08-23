@@ -93,8 +93,8 @@ def loadFile():
     if not file_path: return
     
     indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), file_path, True)
-    if not text_list: return
     
+    if not text_list: return
     trans_list = list(text_list)
     
     FilesEditorWindow.textBox.setPlainText(text_list[0])
@@ -140,7 +140,7 @@ def CsvTable():
 def Msyt():
     global file_content, text_list, sentences_num
     
-    file_content = MsytToTxt(file_content)
+    file_content, reportContent = MsytToTxt(file_content)
     msyt_content_list = re.findall("\{\uffff(.*?)\uffff\}", file_content.replace('\n', '\uffff'))#for regex
     msyt_content_list = [x.replace('\uffff', '\n') for x in msyt_content_list]
     
@@ -148,6 +148,8 @@ def Msyt():
     
     sentences_num = len(text_list) -1
     FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+    
+    StudioWindow.Report('أوامر ملف .msyt', reportContent)
 
 def handleText(direction = True):
     if not sentences_num: return
@@ -175,7 +177,6 @@ def handleText(direction = True):
     FilesEditorWindow.translationBox.setPlainText(trans_list[handleText.current_item])
 
     if not path.exists(dataBaseDirectory): return
-    parts = re.split('＜(.*?)＞', trans_list[handleText.current_item])
     
     if dataBaseDirectory.endswith('.xlsx'):
         for sheet in database.sheetnames:
@@ -200,7 +201,7 @@ handleText.current_item = 0
 
 
 app = QApplication(argv)
-from Parts.Windows import FilesEditorWindow
+from Parts.Windows import FilesEditorWindow, StudioWindow
 
 FilesEditorWindow.textButton.clicked.connect(lambda: openTextDataBase())
 FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))

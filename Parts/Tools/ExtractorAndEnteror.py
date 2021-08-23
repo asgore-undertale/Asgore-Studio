@@ -95,7 +95,10 @@ def getTextListFromTable(textTablePath, convertBool):
                 if tooLong: tooLongList.append([tooLong, hexLength(tooLong[1]) - hexLength(tooLong[0])])
                 if translation != None: textList.append([text, translation])
     
-    return sorted(textList, key=lambda x: len(str(x[0])), reverse=True), tooLongList
+    if EnteringWindow.sortedCheck.isChecked():
+        return textList, tooLongList
+    else:
+        return sorted(textList, key=lambda x: len(str(x[0])), reverse=True), tooLongList
 
 def putInXlsx(text, sheet, cell, isbold = False, isAlignted = False, fill = False):
     sheet[cell].value = text
@@ -128,7 +131,6 @@ def enter(convertBool = True):
         text = EnteringWindow.textBox.toPlainText()
         if text:
             translation, tooLong = prepareTextAndTranslation(text, EnteringWindow.translationBox.toPlainText(), convertBool)
-            # if tooLong: tooLongList = [tooLong, int(len(tooLong[1].encode().hex()) - len(tooLong[0].encode().hex()))]
             if translation != None: textList = [[text, translation]]
     
     before = byteInCell(EnteringWindow.beforeText.toPlainText())
