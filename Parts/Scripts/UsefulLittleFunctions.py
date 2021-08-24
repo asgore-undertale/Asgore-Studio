@@ -167,3 +167,6 @@ def swapCharsOnEdges(text, char):
         text = text[0:-1]
     
     return (charsBefore * char) + text + (charsAfter * char)
+
+def ToModulePath(path):
+    return path.replace('/', '.').replace('\\', '.').replace('.py', '')

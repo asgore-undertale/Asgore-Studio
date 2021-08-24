@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.30v")
+        self.setWindowTitle("Asgore Studio 2.0.31v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -650,8 +650,8 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         tab2 = QWidget()
         container = QTabWidget()
         
-        container.addTab(tab1, 'التحويل')
-        container.addTab(tab2, 'الأسطر والصفحات')
+        container.addTab(tab1, 'صفحة 1')
+        container.addTab(tab2, 'صفحة 2')
 
         layout = QGridLayout()
         layout2 = QVBoxLayout()
@@ -661,12 +661,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         OptionsWindow_Width = 400
         checkbox_size = [OptionsWindow_Width-5, 16]
-        
-        self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
-        self.SSL_check = QCheckBox("ترتيب أسطر الصفحة من الأقصر للأطول")
-        self.SLS_check = QCheckBox("ترتيب أسطر الصفحة من الأطول للأقصر")
-        self.RP_check = QCheckBox("عكس ترتيب الصفحات")
-        self.RL_check = QCheckBox("عكس ترتيب أسطر الصفحات")
         
         checksLayout = QVBoxLayout()
         self.RA_check = QCheckBox("تجميد النص العربي")
@@ -678,9 +672,9 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.Ext_check = QCheckBox("استخرج من النص")
         self.CB_check = QCheckBox("تحويل البايتات")
         
-        comboBoxLayout = QHBoxLayout()
-        HarakatLabel = QLabel(self)
-        HarakatLabel.setGeometry(QRect(240, 350, 150, 26))
+        harakatLayout = QHBoxLayout()
+        HarakatLabel = QLabel()
+        HarakatLabel.setFixedSize(60, 26)
         HarakatLabel.setText("الحركات:")
         HarakatOptions = [
             "اتركها كما هي",
@@ -688,67 +682,81 @@ class TextConverterOptionsMotherWindow(QMainWindow):
             "أبقي الأولى عند التتالي",
             "أعدها حرفاً للوراء",
             "قدمها حرفاً للأمام",
-            "حولها لشكلها مع التطويلة",
+            "جمدها مع التطويلة",
             "ادمج الحركات"
         ]
-        self.HarakatComboBox = QComboBox(self)
-        self.HarakatComboBox.setGeometry(QRect(195, 350, 185, 26))
+        self.HarakatComboBox = QComboBox()
         self.HarakatComboBox.addItems(HarakatOptions)
-        self.HarakatComboBox.setFixedSize(160, 27)
-
-        self.EnglishOnlyCheck = QCheckBox("استخراج الانكليزية فقط")
-        self.FixSlashes = QCheckBox(r"مراعاة (n, \r, \t, \0\)")
-        self.AutoCopyCheck = QCheckBox("النسخ تلقائية بعد التحويل")
+        self.HarakatComboBox.setFixedSize(150, 27)
         
+        customScriptLayout = QHBoxLayout()
+        CustomScriptLabel = QLabel()
+        CustomScriptLabel.setFixedSize(60, 26)
+        CustomScriptLabel.setText("سكربتاتي:")
+        self.CustomScriptComboBox = QComboBox()
+        self.CustomScriptComboBox.setFixedSize(150, 27)
+        self.CustomScriptComboBox.addItems(['تحديث القائمة', '...'])
+
+
+        self.FixSlashes = QCheckBox(r"مراعاة (n, \r, \t, \0\)")
+        self.EnglishOnlyCheck = QCheckBox("استخراج الانكليزية فقط")
+        self.AutoCopyCheck = QCheckBox("النسخ تلقائيا بعد التحويل")
         
         containerLayout = QVBoxLayout()
         cellsLayout = QGridLayout()
-        startComLabel = QLabel(self)
+        startComLabel = QLabel()
         startComLabel.setText("قبل الأوامر:")
-        self.startCommand = QTextEdit(self)
+        self.startCommand = QTextEdit()
         self.startCommand.setFixedSize(90, 26)
         self.startCommand.setText("[")
-        endComLabel = QLabel(self)
+        endComLabel = QLabel()
         endComLabel.setText("بعدها:")
-        self.endCommand = QTextEdit(self)
+        self.endCommand = QTextEdit()
         self.endCommand.setFixedSize(90, 26)
         self.endCommand.setText("]")
-        pageComLabel = QLabel(self)
+        pageComLabel = QLabel()
         pageComLabel.setText("أمر صفحة جديدة:")
-        self.pageCommand = QTextEdit(self)
+        self.pageCommand = QTextEdit()
         self.pageCommand.setFixedSize(90, 26)
         self.pageCommand.setText("<page>")
-        lineComLabel = QLabel(self)
+        lineComLabel = QLabel()
         lineComLabel.setText("أمر سطر جديد:")
-        self.lineCommand = QTextEdit(self)
+        self.lineCommand = QTextEdit()
         self.lineCommand.setFixedSize(90, 26)
         self.lineCommand.setText("<line>")
-        beforeTextLabel = QLabel(self)
+        beforeTextLabel = QLabel()
         beforeTextLabel.setText("ما قبل النصوص:")
-        self.beforeText = QTextEdit(self)
+        self.beforeText = QTextEdit()
         self.beforeText.setFixedSize(90, 26)
-        afterTextLabel = QLabel(self)
+        afterTextLabel = QLabel()
         afterTextLabel.setText("ما بعدها:")
-        self.afterText = QTextEdit(self)
+        self.afterText = QTextEdit()
         self.afterText.setFixedSize(90, 26)
-        miniTextLabel = QLabel(self)
+        miniTextLabel = QLabel()
         miniTextLabel.setText("أقصى حد لقصرها:")
-        self.miniText = QTextEdit(self)
+        self.miniText = QTextEdit()
         self.miniText.setFixedSize(90, 26)
-        maxTextLabel = QLabel(self)
+        maxTextLabel = QLabel()
         maxTextLabel.setText("أقصى حد لطولها:")
-        self.maxText = QTextEdit(self)
+        self.maxText = QTextEdit()
         self.maxText.setFixedSize(90, 26)
-        convertedByteLabel = QLabel(self)
+        convertedByteLabel = QLabel()
         convertedByteLabel.setText("صيغة البايت المحول:")
-        self.convertedByte = QTextEdit(self)
+        self.convertedByte = QTextEdit()
         self.convertedByte.setFixedSize(90, 26)
         self.convertedByte.setText(r'\xXY')
-
-        self.C_databaseButton = QPushButton(self)
+        
+        self.C_databaseButton = QPushButton()
         self.C_databaseButton.setText("فتح جدول تحويل")
         
         
+        self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
+        self.SSL_check = QCheckBox("ترتيب أسطر الصفحة تصاعديا")
+        self.SLS_check = QCheckBox("ترتيب أسطر الصفحة تنازليا")
+        self.RL_check = QCheckBox("عكس ترتيب أسطر الصفحات")
+        self.RP_check = QCheckBox("عكس ترتيب الصفحات")
+        
+
         cellsLayout.addWidget(startComLabel, 0, 0)
         cellsLayout.addWidget(self.startCommand, 0, 1)
         cellsLayout.addWidget(endComLabel, 1, 0)
@@ -767,8 +775,10 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         cellsLayout.addWidget(self.maxText, 7, 1)
         cellsLayout.addWidget(convertedByteLabel, 8, 0)
         cellsLayout.addWidget(self.convertedByte, 8, 1)
-        comboBoxLayout.addWidget(HarakatLabel)
-        comboBoxLayout.addWidget(self.HarakatComboBox)
+        harakatLayout.addWidget(HarakatLabel)
+        harakatLayout.addWidget(self.HarakatComboBox)
+        customScriptLayout.addWidget(CustomScriptLabel)
+        customScriptLayout.addWidget(self.CustomScriptComboBox)
         checksLayout.addWidget(self.RA_check)
         checksLayout.addWidget(self.UA_check)
         checksLayout.addWidget(self.C_check)
@@ -777,20 +787,22 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         checksLayout.addWidget(self.RAO_check)
         checksLayout.addWidget(self.Ext_check)
         checksLayout.addWidget(self.CB_check)
-        checksLayout.addLayout(comboBoxLayout)
-        checksLayout.addWidget(self.EnglishOnlyCheck)
-        checksLayout.addWidget(self.FixSlashes)
-        checksLayout.addWidget(self.AutoCopyCheck)
+        checksLayout.addLayout(harakatLayout)
+        checksLayout.addLayout(customScriptLayout)
+        checksLayout.addWidget(self.DDL_check)
+        checksLayout.addWidget(self.SSL_check)
+        checksLayout.addWidget(self.SLS_check)
+        checksLayout.addWidget(self.RL_check)
+        checksLayout.addWidget(self.RP_check)
         containerLayout.addLayout(cellsLayout)
+        containerLayout.addWidget(self.FixSlashes)
+        containerLayout.addWidget(self.EnglishOnlyCheck)
+        containerLayout.addWidget(self.AutoCopyCheck)
         containerLayout.addWidget(self.C_databaseButton)
         layout.addLayout(checksLayout, 0, 0)
         layout.addLayout(containerLayout, 0, 1)
         
-        layout2.addWidget(self.DDL_check)
-        layout2.addWidget(self.SSL_check)
-        layout2.addWidget(self.SLS_check)
-        layout2.addWidget(self.RP_check)
-        layout2.addWidget(self.RL_check)
+        # layout2.addWidget(self.DDL_check)
 
 TextConverterOptionsWindow = TextConverterOptionsMotherWindow()
 
@@ -854,7 +866,7 @@ class EnteringMotherWindow(QMainWindow):
         
         OptinsLayout = QVBoxLayout()
         self.databaseCheck = QCheckBox("استخدام جدول النصوص للإدخال.")
-        self.sortedCheck = QCheckBox("مرتبة حسب الاستخراج.")
+        self.sortedCheck = QCheckBox("النصوص مرتبة حسب الاستخراج.")
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
         self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر:")
         
