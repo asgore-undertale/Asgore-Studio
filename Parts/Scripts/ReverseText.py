@@ -1,8 +1,8 @@
-from Parts.Vars import ArabicChars, FreezedArabicChars, Space, Harakat, Returns
+from Parts.Vars import ArabicChars, FreezedArabicChars, neutralChars, Harakat, Returns
 from Parts.Scripts.UsefulLittleFunctions import swapCharsOnEdges
 import re
 
-fullStack = ArabicChars + FreezedArabicChars + Space + Harakat + Returns
+fullStack = ArabicChars + FreezedArabicChars + neutralChars + Harakat + Returns
 
 def reverseArabic(text):
     container = ''
