@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.32v")
+        self.setWindowTitle("Asgore Studio 2.0.33v")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -668,7 +668,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.C_check = QCheckBox("تحويل النص")
         self.UC_check = QCheckBox("إلغاء تحويل النص")
         self.RT_check = QCheckBox("عكس النص كاملاً")
-        self.RAO_check = QCheckBox("عكس العربية في النص")
+        self.RAO_check = QCheckBox("عكس العربية في النص (تجريبي)")
         self.Ext_check = QCheckBox("استخرج من النص")
         self.CB_check = QCheckBox("تحويل البايتات")
         
