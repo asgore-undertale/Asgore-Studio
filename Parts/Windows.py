@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import sys
+
+from Parts.Classes import CheckableComboBox
 
 textboxFont = QFont()
 textboxFont.setPointSize(10)
@@ -14,7 +15,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.34")
+        self.setWindowTitle("Asgore Studio 2.0.35")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -643,49 +644,6 @@ TextConverterWindow = TextConverterMotherWindow()
 
 
 #<-------------------------------------------[خيارات التحويل]------------------------------------------->
-
-class CheckableComboBox(QComboBox):
-    def __init__(self):
-        super(CheckableComboBox, self).__init__()
-        self.view().pressed.connect(self.handle_item_pressed)
-        self.setModel(QStandardItemModel(self))
-  
-    def handle_item_pressed(self, index):
-        item = self.model().itemFromIndex(index)
-        
-        if item.checkState() == Qt.Checked:
-            item.setCheckState(Qt.Unchecked)
-        else:
-            item.setCheckState(Qt.Checked)
-        
-        self.check_items()
-    
-    def item_checked(self, index):
-        item = self.model().item(index, 0)
-        return item.checkState() == Qt.Checked
-  
-    def check_items(self):
-        checkedItems = []
-        for i in range(self.count()):
-            if self.item_checked(i):
-                checkedItems.append(i)
-        
-        return checkedItems
-    
-    def AddItems(self, items):
-        self.addItems(items)
-    
-    def AddCheckBoxItems(self, items):
-        for i in range(len(items)):
-            self.addItem(items[i])
-            item = self.model().item(i+self.count(), 0)
-            
-            item.setCheckState(Qt.Unchecked)
-    
-    # def clearItems(self, items):
-        # pass
-    
-    sys.stdout.flush()
 
 class TextConverterOptionsMotherWindow(QMainWindow):
     def __init__(self):
