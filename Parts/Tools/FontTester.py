@@ -97,7 +97,6 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
             except: pass
             if PassTimes: continue
             
-            if lineBox: pygame.draw.rect(display, (255, 0, 0), (borderThick, _y, boxWidth, fontSize), 1)
             pygame.display.update()
             
             char = sentences[s][c]
@@ -130,6 +129,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
             if fromRight: _x -= char_xadvance
             else: _x += char_width + char_xadvance
             
+            if lineBox: pygame.draw.rect(display, (255, 0, 0), (borderThick, _y, boxWidth, fontSize), 1)
             pygame.display.update()
             pygameWait(display, SleepTime)
             

@@ -38,7 +38,7 @@ def loadCustomScripts():
             exec(f"from {ToModulePath(script)} import Name", globals())
             CustomScript.append(Name)
         except Exception as e: print(e)
-
+    
     TextConverterOptionsWindow.CustomScriptComboBox.blockSignals(True)
     TextConverterOptionsWindow.CustomScriptComboBox.clear()
     TextConverterOptionsWindow.CustomScriptComboBox.AddItems(['تحديث القائمة', '...'])
