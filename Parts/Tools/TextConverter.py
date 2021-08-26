@@ -27,16 +27,20 @@ def openConvertTable():
 
 def loadCustomScripts():
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
+    
+    scripts = list(filter(lambda x: x.endswith('.py'), dirList(r'Parts\CustomScripts')))
+    try:
+        exec(f"from {ToModulePath(scripts[CustomScriptindex-2])} import Script", globals())
+    except Exception as e: print(e)
+    
     if CustomScriptindex: return
-
+    
     CustomScript = ['تحديث القائمة', '...']
-    for script in dirList(r'Parts\CustomScripts'):
-        if not script.endswith('.py'): continue
+    for script in scripts: 
         try:
-            exec(f"from {ToModulePath(script)} import Script, Name", globals())
+            exec(f"from {ToModulePath(script)} import Name", globals())
             CustomScript.append(Name)
-        except Exception as e:
-            print(e)
+        except Exception as e: print(e)
 
     TextConverterOptionsWindow.CustomScriptComboBox.blockSignals(True)
     TextConverterOptionsWindow.CustomScriptComboBox.clear()
@@ -79,14 +83,14 @@ def applyConverts(text):
 def convert(text, thisTool = True):
     if not text: return ''
     if (TextConverterOptionsWindow.C_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked()) and not path.exists(convertingTablePath):
-        QMessageBox.about(TextConverter, "!!خطأ", "جدول التحويل غير موجود")
+        QMessageBox.about(TextConverterWindow, "!!خطأ", "جدول التحويل غير موجود")
         return
         
     cell()
     
     if TextConverterOptionsWindow.Ext_check.isChecked():# Extract from text
         if not cell._beforeText or not cell._afterText:
-            QMessageBox.about(EnteringWindow, "!!خطأ", "املأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
+            QMessageBox.about(TextConverterWindow, "!!خطأ", "املأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
             return
         
         mini = byteInCell(TextConverterOptionsWindow.miniText.toPlainText())
@@ -121,7 +125,7 @@ def convert(text, thisTool = True):
     return text
 
 def convertFiles():
-    folderPath = selectFolder(EnteringWindow)
+    folderPath = selectFolder(TextConverterWindow)
     if not folderPath: return
     files = dirList(folderPath)
     
@@ -130,7 +134,7 @@ def convertFiles():
         if not content: continue
         open(file, 'w', encoding='utf-8').write(convert(content))
     
-    QMessageBox.about(EnteringWindow, "!!تهانينا", "انتهى تحويل الملفات.")
+    QMessageBox.about(TextConverterWindow, "!!تهانينا", "انتهى تحويل الملفات.")
 
 def convertByHotkey():
     # if not TextConverter.isActiveWindow(): return

@@ -111,7 +111,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 if char not in charmap: continue
                 char_x, char_y, char_height = charmap[char][0], charmap[char][1], charmap[char][3]
                 
-                charinfo = list(map(lambda x: int(x + (x * per)), charmap[char])) # ((x + (x * per)) % 1 > 0) * 1 + 
+                charinfo = list(map(lambda x: int(x + (x * per)), charmap[char]))
                 
                 char_width, char_height, char_xoffset = charinfo[2], charinfo[3], charinfo[4]
                 char_yoffset, char_xadvance = charinfo[5], charinfo[6]
@@ -200,29 +200,17 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     pygame.display.set_caption('Font Tester')
     textbox = pygame.display.set_mode(WindowSize)
     
-    onTop(pygame.display.get_wm_info()['window'])
+    alwaysOnTop(pygame.display.get_wm_info()['window'], True)
     
     type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, textbox,
                 lineBox, fromRight, boxAnimation)
 
     while True: pygameCheck(textbox)
 
-class RECT(Structure):
-    _fields_ = [
-    ('left',    c_long),
-    ('top',     c_long),
-    ('right',   c_long),
-    ('bottom',  c_long),
-    ]
-    def width(self):  return self.right  - self.left
-    def height(self): return self.bottom - self.top
-
-def onTop(window):
+def alwaysOnTop(window, yesOrNo):
+    zorder = (-2, -1)[yesOrNo]
     SetWindowPos = windll.user32.SetWindowPos
-    GetWindowRect = windll.user32.GetWindowRect
-    rc = RECT()
-    GetWindowRect(window, byref(rc))
-    SetWindowPos(window, -1, rc.left, rc.top, 0, 0, 0x0001)
+    SetWindowPos(window, zorder, 0, 0, 0, 0, 2|1)
 
 def waitForPress(display):
     pressed = False
@@ -273,7 +261,7 @@ def loadFile():
         
         FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
         FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
-        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'{50 * fontSize}')
+        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'50 * {fontSize}')
         FontTesterOptionsWindow.boxHeightCell.setPlainText(f'{(fontSize * linesNum) + (pixelsPerLine * (linesNum - 1))}')
         FontTesterOptionsWindow.newLineCell.setPlainText('\\n')
         FontTesterOptionsWindow.newPageCell.setPlainText('\n')

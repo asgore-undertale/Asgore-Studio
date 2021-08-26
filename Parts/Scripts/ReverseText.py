@@ -1,6 +1,5 @@
 from Parts.Vars import ArabicChars, FreezedArabicChars, neutralChars, Harakat, Returns
 from Parts.Scripts.UsefulLittleFunctions import swapCharsOnEdges
-import re
 
 fullStack = ArabicChars + FreezedArabicChars + neutralChars + Harakat + Returns
 

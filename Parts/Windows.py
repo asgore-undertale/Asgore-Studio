@@ -13,7 +13,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.33v")
+        self.setWindowTitle("Asgore Studio 2.0.34")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -674,7 +674,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         harakatLayout = QHBoxLayout()
         HarakatLabel = QLabel()
-        HarakatLabel.setFixedSize(60, 26)
+        HarakatLabel.setFixedSize(55, 26)
         HarakatLabel.setText("الحركات:")
         HarakatOptions = [
             "اتركها كما هي",
@@ -687,14 +687,14 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         ]
         self.HarakatComboBox = QComboBox()
         self.HarakatComboBox.addItems(HarakatOptions)
-        self.HarakatComboBox.setFixedSize(150, 27)
+        self.HarakatComboBox.setFixedSize(160, 27)
         
         customScriptLayout = QHBoxLayout()
         CustomScriptLabel = QLabel()
-        CustomScriptLabel.setFixedSize(60, 26)
-        CustomScriptLabel.setText("سكربتاتي:")
+        CustomScriptLabel.setFixedSize(55, 26)
+        CustomScriptLabel.setText("سكربتات:")
         self.CustomScriptComboBox = QComboBox()
-        self.CustomScriptComboBox.setFixedSize(150, 27)
+        self.CustomScriptComboBox.setFixedSize(160, 27)
         self.CustomScriptComboBox.addItems(['تحديث القائمة', '...'])
 
 

@@ -47,10 +47,13 @@ def sortDictByKeyLengh(Dict):
 
 def tryTakeNum(string : str, defaultNum = 0, isInt = True):
     try:
-        num = float(string)
+        num = float(eval(string))
         if isInt: return int(num)
         return num
-    except: return defaultNum
+        
+    except Exception as e:
+        print(e)
+        return defaultNum
 
 def checkForCommand(command : str, text : str, currentIndex : int):
     try:
