@@ -19,12 +19,17 @@ class CheckableComboBox(QComboBox):
             item.setCheckState(Qt.Unchecked)
         else:
             item.setCheckState(Qt.Checked)
-        
-        # self.check_items()
     
     def item_checked(self, index):
         item = self.model().item(index, 0)
         return item.checkState() == Qt.Checked
+    
+    def check_items(self):
+        checkedItems = []
+        for i in range(self.count()):
+            if self.item_checked(i):
+                checkedItems.append(i)
+        return checkedItems
     
     def AddItems(self, items):
         self.addItems(items)
@@ -43,4 +48,4 @@ class CheckableComboBox(QComboBox):
         # self.clear()
         # self.blockSignals(False)
     
-    stdout.flush()
+    # stdout.flush()
