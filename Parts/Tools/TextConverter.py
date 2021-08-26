@@ -25,18 +25,15 @@ def openConvertTable():
     convertingTablePath = tablePath
     convertDatabase = TakeFromTable(convertingTablePath)
 
+def getCustomScriptsList():
+    return list(filter(lambda x: x.endswith('.py'), dirList(r'Parts\CustomScripts')))
+
 def loadCustomScripts():
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
-    
-    scripts = list(filter(lambda x: x.endswith('.py'), dirList(r'Parts\CustomScripts')))
-    try:
-        exec(f"from {ToModulePath(scripts[CustomScriptindex-2])} import Script", globals())
-    except Exception as e: print(e)
-    
     if CustomScriptindex: return
     
-    CustomScript = ['تحديث القائمة', '...']
-    for script in scripts: 
+    CustomScript = []
+    for script in getCustomScriptsList(): 
         try:
             exec(f"from {ToModulePath(script)} import Name", globals())
             CustomScript.append(Name)
@@ -44,9 +41,21 @@ def loadCustomScripts():
 
     TextConverterOptionsWindow.CustomScriptComboBox.blockSignals(True)
     TextConverterOptionsWindow.CustomScriptComboBox.clear()
-    TextConverterOptionsWindow.CustomScriptComboBox.addItems(CustomScript)
+    TextConverterOptionsWindow.CustomScriptComboBox.AddItems(['تحديث القائمة', '...'])
+    TextConverterOptionsWindow.CustomScriptComboBox.AddCheckBoxItems(CustomScript)
     TextConverterOptionsWindow.CustomScriptComboBox.setCurrentIndex(1)
     TextConverterOptionsWindow.CustomScriptComboBox.blockSignals(False)
+
+def applyCustomScripts(text):
+    scripts = getCustomScriptsList()
+    indexes = TextConverterOptionsWindow.CustomScriptComboBox.check_items()
+    for index in indexes:
+        try:
+            exec(f"from {ToModulePath(scripts[index-2])} import Script", globals())
+            text = Script(text)
+        except Exception as e: print(e)
+    
+    return text
 
 def cell():
     cell._startCommand  = byteInCell(TextConverterOptionsWindow.startCommand.toPlainText())
@@ -69,7 +78,7 @@ def cell():
 def applyConverts(text):
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
     HarakatOptionindex = TextConverterOptionsWindow.HarakatComboBox.currentIndex()
-    if CustomScriptindex > 1: text = Script(text)# Custom Script
+    if CustomScriptindex > 1: text = applyCustomScripts(text)# Custom Script
     if HarakatOptionindex: text = handleHarakat(text, HarakatOptionindex)# Handle Harakat
     if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked(): text = Freeze(text)# Freeze Arabic
     if TextConverterOptionsWindow.RT_check.isChecked(): text = Reverse(text) # Reverse whole text

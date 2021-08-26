@@ -1,8 +1,8 @@
 from Parts.Vars import ArabicChars, FreezedArabicChars, neutralChars, Harakat, Returns
 
 Name = 'حل مشكلة النقطة بعكس العربية'
-fullStack = ArabicChars + FreezedArabicChars + neutralChars + Harakat + Returns
 
+fullStack = ArabicChars + FreezedArabicChars + neutralChars + Harakat + Returns
 def Script(text):
     container = ''
     for char in text:
