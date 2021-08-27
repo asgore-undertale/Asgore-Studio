@@ -106,9 +106,30 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 
                 if fromRight: _x -= char_width
                 display.blit(dialogue, (_x, _y))
+                
+            elif FontPath.endswith('.aff'):
+                if char not in charmap: continue
+                
+                charinfo = list(map(lambda x: int(x + (x * per)), charmap[char][0:-1]))
+                
+                char_width    = charinfo[2]
+                char_height   = charinfo[3]
+                char_xoffset  = charinfo[4]
+                char_yoffset  = charinfo[5]
+                char_xadvance = charinfo[6]
+                char_drawdata = charmap[char][7]
+                pxWidth = char_height / len(char_drawdata)
+                
+                if fromRight: _x -= char_width
+                
+                for r in range(len(char_drawdata)):
+                    row = char_drawdata[r]
+                    for p in range(len(row)):
+                        if row[p] != charmap['filler']: continue
+                        pygame.draw.rect(display, TextColor, (_x + (pxWidth * p), _y + (pxWidth * r), pxWidth, pxWidth))
             else:
                 if char not in charmap: continue
-                char_x, char_y, char_height = charmap[char][0], charmap[char][1], charmap[char][3]
+                char_x, char_y = charmap[char][0], charmap[char][1]
                 
                 charinfo = list(map(lambda x: int(x + (x * per)), charmap[char]))
                 
@@ -165,13 +186,13 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     
     if not FontPath or not boxWidth or not boxHeight or not fontSize: return
     
-    charsinfo = {}
     charmap = TakeFromTable(FontPath, text, fontSize)
     char_height = charmap[list(charmap)[0]][3]
     per = (fontSize * char_height / charmap['tallest'] - char_height) / charmap['tallest']
+    charsinfo = {}
     for k, v in charmap.items():
-        if not isinstance(v, tuple): break
-        charsinfo[k] = list(map(lambda x: int(x + (x * per)), v))
+        if not isinstance(v, tuple): continue # for 'tallest' var
+        charsinfo[k] = list(map(lambda x: int(x + (x * per)), v[0:7])) # [0:7] for 'drawdata' var
     
     linesNum = (boxHeight + pxPerLine) // (fontSize + pxPerLine)
     fittedText = fit(text, charsinfo, boxWidth, linesNum, newLine, newPage, beforeCom, afterCom)
@@ -194,7 +215,7 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     
     FontTesterWindow.resultTextBox.setPlainText(fittedText)
     
-    if not ImgPath and not FontPath.endswith('.ttf'): return
+    if not ImgPath and (not FontPath.endswith('.ttf') or FontPath.endswith('.aff')): return
     
     WindowSize = (int(boxWidth + borderThick * 2), int(boxHeight + borderThick * 2))
     pygame.display.set_caption('Font Tester')
@@ -242,37 +263,46 @@ def fixMsytList(textList):
         if textList[i][0] == '"' and textList[i][-1] == '"': textList[i] = textList[i][1:-1]
     return textList
 
+def handleMsyt(fileContent):
+    textList = []
+    parts = fileContent.split('\n    contents:\n')
+    for part in parts[1:len(parts)]:
+        extractedList = Extract(part, '      - text: ', '\n')
+        textList.append(''.join(fixMsytList(extractedList)))
+    fileContent = '\n'.join(textList)
+        
+    linesNum = 3
+    fontSize = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
+    pixelsPerLine = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
+    
+    FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
+    FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
+    FontTesterOptionsWindow.boxWidthCell.setPlainText(f'50 * {fontSize}')
+    FontTesterOptionsWindow.boxHeightCell.setPlainText(f'{(fontSize * linesNum) + (pixelsPerLine * (linesNum - 1))}')
+    FontTesterOptionsWindow.newLineCell.setPlainText('\\n')
+    FontTesterOptionsWindow.newPageCell.setPlainText('\n')
+    
+    return fileContent
+
 def loadFile():
     FilePath = openFile(['*'], FontTesterWindow, 'ملف')
     if not FilePath: return
     fileContent = open(FilePath, 'r', encoding='utf8', errors='replace').read()
     
     if FilePath.endswith('.msyt'):
-        textList = []
-        parts = fileContent.split('\n    contents:\n')
-        for part in parts[1:len(parts)]:
-            extractedList = Extract(part, '      - text: ', '\n')
-            textList.append(''.join(fixMsytList(extractedList)))
-        fileContent = '\n'.join(textList)
-        
-        linesNum = 3
-        fontSize = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
-        pixelsPerLine = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
-        
-        FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
-        FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
-        FontTesterOptionsWindow.boxWidthCell.setPlainText(f'50 * {fontSize}')
-        FontTesterOptionsWindow.boxHeightCell.setPlainText(f'{(fontSize * linesNum) + (pixelsPerLine * (linesNum - 1))}')
-        FontTesterOptionsWindow.newLineCell.setPlainText('\\n')
-        FontTesterOptionsWindow.newPageCell.setPlainText('\n')
+        fileContent = handleMsyt(fileContent)
     
     FontTesterWindow.enteredTextBox.setPlainText(fileContent)
 
 def openFont():
     global FontPath, ImgPath
-    FontPath = openFile(('aft', 'fnt', 'ttf'), FontTesterWindow, 'الخط')
-    if FontPath.endswith('.ttf'): return
-    ImgPath  = openFile(('jpg', 'png'), FontTesterWindow, 'صورة الخط')
+    _fontPath = openFile(('aft', 'fnt', 'ttf', 'aff'), FontTesterWindow, 'الخط')
+    if _fontPath: FontPath = _fontPath
+    
+    if FontPath.endswith('.ttf') or FontPath.endswith('.aff'): return
+    
+    _imgPath = openFile(('jpg', 'png'), FontTesterWindow, 'صورة الخط')
+    if _imgPath: ImgPath = _imgPath
 
 def start():
     fontSize  = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)

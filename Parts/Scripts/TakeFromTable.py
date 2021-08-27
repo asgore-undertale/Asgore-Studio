@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh
-from Parts.Vars import checkActVersion
+from Parts.Vars import checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
 import pygame, re
@@ -12,6 +12,7 @@ def TakeFromTable(filePath, chars = '', fontSize = 16):
     if filePath.endswith('.ttf'): return TakeFromTTF(filePath, chars, fontSize)
     if filePath.endswith('.aft'): return TakeFromAFT(filePath)
     if filePath.endswith('.fnt'): return TakeFromFNT(filePath)
+    if filePath.endswith('.aff'): return TakeFromAFF(filePath)
 
 def TakeFromFNT(fntPath):
     with open(fntPath, 'r', encoding='utf-8') as f: fontContent = f.read()
@@ -49,18 +50,47 @@ def TakeFromAFT(aftPath):
     
     VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:-1]
-    checkAftVersion(VERSION)
+    checkVersion(VERSION, 1)
     tallest = 0
     
     for r in range(5, len(rows)):
         if not rows[r]: continue
-        cols = rows[r].split(SEPARATOR)
+        cells = rows[r].split(SEPARATOR)
         
-        height = int(cols[4])
-        charmap[cols[0]] = (int(cols[1]), int(cols[2]), int(cols[3]), height, int(cols[5]), int(cols[6]), int(cols[7]))
+        height = int(cells[4])
+        charmap[cells[0]] = (int(cells[1]), int(cells[2]), int(cells[3]), height, int(cells[5]), int(cells[6]), int(cells[7]))
         if height > tallest: tallest = height
     
     charmap['tallest'] = tallest
+    return fixCharmap(charmap)
+
+def TakeFromAFF(affPath):
+    with open(affPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    rows = fontContent.split('\n')
+    
+    VERSION = rows[1][9:-1]
+    SEPARATOR = rows[2][11:-1]
+    MIN_SEPARATOR = rows[3][15:-1]
+    FILLER = rows[4][8:-1]
+    checkVersion(VERSION, 2)
+    tallest = 0
+    
+    for r in range(7, len(rows)):
+        if not rows[r]: continue
+        cells = rows[r].split(SEPARATOR)
+        
+        DrowData = cells[1].split(MIN_SEPARATOR)
+        height = len(DrowData)
+        
+        width  = 0
+        for row in DrowData:
+            if len(row) > width: width = len(row)
+        
+        charmap[cells[0]] = (0, 0, width, height, int(cells[2]), int(cells[3]), int(cells[4]), DrowData)
+        if height > tallest: tallest = height
+    
+    charmap['tallest'] = tallest
+    charmap['filler'] = FILLER
     return fixCharmap(charmap)
 
 def TakeFromTTF(ttfPath, chars, fontSize):
@@ -86,7 +116,7 @@ def TakeFromACT(actPath):
     
     VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:-1]
-    checkActVersion(VERSION)
+    checkVersion(VERSION, 0)
     
     for r in range(5, len(rows)):
         if not rows[r]: continue
