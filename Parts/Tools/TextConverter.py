@@ -5,7 +5,6 @@ from os import path
 
 from Parts.Scripts.UsefulLittleFunctions import *
 from Parts.Scripts.FreezeArabic import Freeze
-from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.ConvertBytes import convertBytes
 from Parts.Scripts.ReverseText import Reverse
 from Parts.Scripts.ConvertText import Convert
@@ -97,17 +96,6 @@ def convert(text, thisTool = True):
         
     cell()
     
-    if TextConverterOptionsWindow.Ext_check.isChecked():# Extract from text
-        if not cell._beforeText or not cell._afterText:
-            QMessageBox.about(TextConverterWindow, "!!خطأ", "املأ حقلي: ما قبل النصوص، ما بعدها.\nعلى الأقل للاستخراج.")
-            return
-        
-        mini = byteInCell(TextConverterOptionsWindow.miniText.toPlainText())
-        maxi = byteInCell(TextConverterOptionsWindow.maxText.toPlainText())
-        text = Extract(text, cell._beforeText, cell._afterText, True, mini, maxi, TextConverterOptionsWindow.EnglishOnlyCheck.isChecked())
-        text = '\n'.join(text)
-        if not text: return
-    
     sentences = splitTextBySoperators(text, (cell._pageCommand, cell._lineCommand))
     for s in range(len(sentences)):
         if s % 2: continue
@@ -126,7 +114,6 @@ def convert(text, thisTool = True):
         if TextConverterOptionsWindow.RL_check.isChecked():  textPagesList[p] = cell._lineCommand.join(textPagesList[p].split(cell._lineCommand)[::-1]) #Reverse Lines
     text = cell._pageCommand.join(textPagesList)
     if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
-    
     
     if thisTool and TextConverterOptionsWindow.AutoCopyCheck.isChecked():
         pyperclip.copy(text)
