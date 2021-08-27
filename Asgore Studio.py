@@ -25,7 +25,7 @@ def windowTrig(action):
     elif action == "إغلاق كافة النوافذ": StudioWindow.mdiArea.closeAllSubWindows()
     elif action == "جداول آسغور": StudioWindow.newChild(TableEditorWindow, TableEditorContainer, 'جداول آسغور')
     elif action == "مختزل النصوص": StudioWindow.newChild(TextAnalyzerWindow, TextAnalyzerContainer, 'مختزل النصوص')
-    elif action == "منشئ الخطوط الموحدة حجم الحروف": StudioWindow.newChild(FontsCreatorWindow, FontsCreatorContainer, 'منشئ الخطوط الموحدة حجم الحروف')
+    elif action == "محوّل الخطوط": StudioWindow.newChild(FontsConverterWindow, FontsConverterContainer, 'محوّل الخطوط')
     elif action == "محوّل الجداول": StudioWindow.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
     elif action == "منشئ جداول الحروف": StudioWindow.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
     elif action == "مجرب الخطوط": StudioWindow.newChild(FontTesterWindow, FontTesterContainer, 'مجرب الخطوط')
@@ -37,7 +37,7 @@ def windowTrig(action):
 
 from Parts.Tools.AsgoreTablesEditor import TableEditorWindow
 from Parts.Tools.TextAnalyzer import TextAnalyzerWindow
-from Parts.Tools.FontsCreator import FontsCreatorWindow
+from Parts.Tools.FontsConverter import FontsConverterWindow
 from Parts.Tools.TablesConverter import TablesConverterWindow
 from Parts.Tools.CharsTablesCreator import CharsTablesCreatorWindow
 from Parts.Tools.FontTester import FontTesterWindow, FontTesterOptionsWindow
@@ -49,8 +49,8 @@ TableEditorContainer = QMdiSubWindow()
 TableEditorContainer.setWidget(TableEditorWindow)
 TextAnalyzerContainer = QMdiSubWindow()
 TextAnalyzerContainer.setWidget(TextAnalyzerWindow)
-FontsCreatorContainer = QMdiSubWindow()
-FontsCreatorContainer.setWidget(FontsCreatorWindow)
+FontsConverterContainer = QMdiSubWindow()
+FontsConverterContainer.setWidget(FontsConverterWindow)
 TablesConverterContainer = QMdiSubWindow()
 TablesConverterContainer.setWidget(TablesConverterWindow)
 CharsTablesCreatorContainer = QMdiSubWindow()

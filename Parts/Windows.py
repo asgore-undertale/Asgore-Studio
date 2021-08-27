@@ -15,7 +15,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.39")
+        self.setWindowTitle("Asgore Studio 2.0.40")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -48,7 +48,7 @@ class StudioMotherWindow(QMainWindow):
         self.windows.addAction("إغلاق كافة النوافذ")
         self.tools.addAction("جداول آسغور")
         self.tools.addAction("مختزل النصوص")
-        self.tools.addAction("منشئ الخطوط الموحدة حجم الحروف")
+        self.tools.addAction("محوّل الخطوط")
         self.tools.addAction("محوّل الجداول")
         self.tools.addAction("منشئ جداول الحروف")
         self.tools.addAction("مجرب الخطوط")
@@ -120,7 +120,6 @@ class TextAnalyzerMotherWindow(QMainWindow):
         super().__init__()
         
         container = QWidget()
-
         layout = QGridLayout()
         container.setLayout(layout)
         self.setCentralWidget(container)
@@ -206,84 +205,94 @@ TextAnalyzerWindow = TextAnalyzerMotherWindow()
 
 
 #<-------------------------------------------[منشئ الخطوط موحدة حجم الحروف]------------------------------------------->
-class FontsCreatorMotherWindow(QMainWindow):
+class FontsConverterMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.setFixedSize(360, 460)
+        container = QWidget()
+        layout = QGridLayout()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
         labelsWidth, labelsHeight = 180, 26
 
         self.TtfSizeCell = QTextEdit(self)
-        self.TtfSizeCell.setGeometry(QRect(10, self.y(0), 180, 26))
+        self.TtfSizeCell.setFixedSize(180, 26)
         self.TtfSizeCell.setText('28')
         TtfSizeLabel = QLabel(self)
-        TtfSizeLabel.setGeometry(QRect(170, self.y(0), labelsWidth, labelsHeight))
         TtfSizeLabel.setText("حجم خط ttf:")
         self.WidthCell = QTextEdit(self)
-        self.WidthCell.setGeometry(QRect(10, self.y(1), 180, 26))
+        self.WidthCell.setFixedSize(180, 26)
         self.WidthCell.setText('32')
         WidthLabel = QLabel(self)
-        WidthLabel.setGeometry(QRect(170, self.y(1), labelsWidth, labelsHeight))
         WidthLabel.setText("عرض الحروف الموحد:")
         self.HeightCell = QTextEdit(self)
-        self.HeightCell.setGeometry(QRect(10, self.y(2), 180, 26))
+        self.HeightCell.setFixedSize(180, 26)
         self.HeightCell.setText('32')
         HeightLabel = QLabel(self)
-        HeightLabel.setGeometry(QRect(170, self.y(2), labelsWidth, labelsHeight))
         HeightLabel.setText("طول الحروف الموحد:")
         self.charsPerRowCell = QTextEdit(self)
-        self.charsPerRowCell.setGeometry(QRect(10, self.y(3), 180, 26))
+        self.charsPerRowCell.setFixedSize(180, 26)
         self.charsPerRowCell.setText('8')
         charsPerRowLabel = QLabel(self)
-        charsPerRowLabel.setGeometry(QRect(170, self.y(3), labelsWidth, labelsHeight))
         charsPerRowLabel.setText("عدد الحروف في السطر الواحد:")
         self.beforeFirstColCell = QTextEdit(self)
-        self.beforeFirstColCell.setGeometry(QRect(10, self.y(4), 180, 26))
+        self.beforeFirstColCell.setFixedSize(180, 26)
         self.beforeFirstColCell.setText('0')
         beforeFirstColLabel = QLabel(self)
-        beforeFirstColLabel.setGeometry(QRect(170, self.y(4), labelsWidth, labelsHeight))
         beforeFirstColLabel.setText("المسافة يسار العمود الاول:")
         self.beforeFirstRowCell = QTextEdit(self)
-        self.beforeFirstRowCell.setGeometry(QRect(10, self.y(5), 180, 26))
+        self.beforeFirstRowCell.setFixedSize(180, 26)
         self.beforeFirstRowCell.setText('0')
         beforeFirstRowLabel = QLabel(self)
-        beforeFirstRowLabel.setGeometry(QRect(170, self.y(5), labelsWidth, labelsHeight))
         beforeFirstRowLabel.setText("المسافة فوق السطر الاول:")
         self.BetweenCharsXCell = QTextEdit(self)
-        self.BetweenCharsXCell.setGeometry(QRect(10, self.y(6), 180, 26))
+        self.BetweenCharsXCell.setFixedSize(180, 26)
         self.BetweenCharsXCell.setText('0')
         BetweenCharsXLabel = QLabel(self)
-        BetweenCharsXLabel.setGeometry(QRect(170, self.y(6), labelsWidth, labelsHeight))
         BetweenCharsXLabel.setText("المسافة بين كل حرف أفقياً:")
         self.BetweenCharsYCell = QTextEdit(self)
-        self.BetweenCharsYCell.setGeometry(QRect(10, self.y(7), 180, 26))
+        self.BetweenCharsYCell.setFixedSize(180, 26)
         self.BetweenCharsYCell.setText('0')
         BetweenCharsYLabel = QLabel(self)
-        BetweenCharsYLabel.setGeometry(QRect(170, self.y(7), labelsWidth, labelsHeight))
         BetweenCharsYLabel.setText("المسافة بين كل حرف عمودياً:")
         self.charsCell = QTextEdit(self)
-        self.charsCell.setGeometry(QRect(10, self.y(8), 180, 80))
+        self.charsCell.setFixedSize(180, 104)
         charsLabel = QLabel(self)
-        charsLabel.setGeometry(QRect(170, self.y(8), labelsWidth, labelsHeight))
         charsLabel.setText("الحروف بالترتيب:")
 
         self.fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", self)
-        self.fromRightCheck.setGeometry(QRect(30, self.y(10.5), 150, 26))
         self.smoothCheck = QCheckBox("نعومة الخط", self)
-        self.smoothCheck.setGeometry(QRect(190, self.y(10.5), 150, 26))
 
         self.saveButton = QPushButton(self)
-        self.saveButton.setGeometry(QRect(180, self.y(11.5), 170, 30))
         self.saveButton.setText("حفظ الجدول")
         self.TtfButton = QPushButton(self)
-        self.TtfButton.setGeometry(QRect(10, self.y(11.5), 170, 30))
         self.TtfButton.setText("فتح خط ttf")
+        
+        layout.addWidget(TtfSizeLabel, 0, 0)
+        layout.addWidget(self.TtfSizeCell, 0, 1)
+        layout.addWidget(WidthLabel, 1, 0)
+        layout.addWidget(self.WidthCell, 1, 1)
+        layout.addWidget(HeightLabel, 2, 0)
+        layout.addWidget(self.HeightCell, 2, 1)
+        layout.addWidget(charsPerRowLabel, 3, 0)
+        layout.addWidget(self.charsPerRowCell, 3, 1)
+        layout.addWidget(beforeFirstColLabel, 4, 0)
+        layout.addWidget(self.beforeFirstColCell, 4, 1)
+        layout.addWidget(beforeFirstRowLabel, 5, 0)
+        layout.addWidget(self.beforeFirstRowCell, 5, 1)
+        layout.addWidget(BetweenCharsXLabel, 6, 0)
+        layout.addWidget(self.BetweenCharsXCell, 6, 1)
+        layout.addWidget(BetweenCharsYLabel, 7, 0)
+        layout.addWidget(self.BetweenCharsYCell, 7, 1)
+        layout.addWidget(charsLabel, 8, 0)
+        layout.addWidget(self.charsCell, 8, 1)
+        layout.addWidget(self.smoothCheck, 9, 0)
+        layout.addWidget(self.fromRightCheck, 9, 1)
+        layout.addWidget(self.TtfButton, 10, 0)
+        layout.addWidget(self.saveButton, 10, 1)
 
-    def y(self, num, height = 26, per = 10, first = 20):
-        return first + (num * height) + ((num - 1) * per)
-
-FontsCreatorWindow = FontsCreatorMotherWindow()
+FontsConverterWindow = FontsConverterMotherWindow()
 
 
 #<-------------------------------------------[محوّل الجداول]------------------------------------------->
@@ -377,7 +386,7 @@ class CharsTablesCreatorMotherWindow(QMainWindow):
         charsLayout.addWidget(charsLabel)
         charsLayout.addWidget(self.charsCell)
         charsLayout.addWidget(self.nextChar)
-# https://www.youtube.com/watch?v=mnDT_0rMtsc
+
 CharsTablesCreatorWindow = CharsTablesCreatorMotherWindow()
 
 
