@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QTableWidgetItem
 from Parts.Scripts.UsefulLittleFunctions import intToHex
-from Parts.Vars import checkVersion, _ATE_VERSION_, _ATE_SEPARATOR_, _CSV_DELIMITER_
+from Parts.Vars import _ACT_SEPARATOR_, _CSV_DELIMITER_
 import csv
 
 def deleteEmptyLines(tableContent : str):
@@ -61,13 +61,13 @@ def loadList(tableList : list, Table, increaseCells : bool):
 
 def ATEtoList(tablePath : str):
     tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
-    tablePath = deleteTrash(tablePath, _ATE_SEPARATOR_)
+    tablePath = deleteTrash(tablePath, _ACT_SEPARATOR_)
     
     tableList = []
     rows = tablePath.split('\n')
     
     for row in range(len(rows)):
-        cells = rows[row].split(_ATE_SEPARATOR_)
+        cells = rows[row].split(_ACT_SEPARATOR_)
         tableList.append(cells)
     
     return tableList
@@ -105,7 +105,7 @@ def saveTBL(save_loc : str, Table):
 
 def saveATE(save_loc : str, Table):
     if not save_loc: return
-    content = f'\nVERSION="1.0"\nSEPARATOR="{_ATE_SEPARATOR_}"\n#####################\n'
+    content = f'\nVERSION="1.0"\nSEPARATOR="{_ACT_SEPARATOR_}"\n#####################\n'
 
     for row in range(Table.rowCount()):
         csv_row = []
@@ -114,9 +114,9 @@ def saveATE(save_loc : str, Table):
                 csv_row.append(Table.item(row, col).text())
             else: csv_row.append('')
  
-        content += _ATE_SEPARATOR_.join(csv_row) + '\n'
+        content += _ACT_SEPARATOR_.join(csv_row) + '\n'
     
-    content = deleteTrash(content, _ATE_SEPARATOR_)
+    content = deleteTrash(content, _ACT_SEPARATOR_)
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
 
 def saveCSV(save_loc : str, Table):

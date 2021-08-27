@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh
-from Parts.Vars import checkVersion
+from Parts.Vars import checkActVersion
 from Parts.Scripts.FixTables import *
 from os import path
 import pygame, re
@@ -47,9 +47,9 @@ def TakeFromAFT(aftPath):
     with open(aftPath, 'r', encoding='utf-8') as f: fontContent = f.read()
     rows = fontContent.split('\n')
     
-    VERSION = float(rows[1][9:-1])
-    checkVersion(VERSION)
+    VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:-1]
+    checkAftVersion(VERSION)
     tallest = 0
     
     for r in range(5, len(rows)):
@@ -84,9 +84,9 @@ def TakeFromACT(actPath):
     charmap = {}
     rows = open(actPath, 'r', encoding="utf-8").read().split('\n')
     
-    VERSION = float(rows[1][9:-1])
-    checkVersion(VERSION)
+    VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:-1]
+    checkActVersion(VERSION)
     
     for r in range(5, len(rows)):
         if not rows[r]: continue

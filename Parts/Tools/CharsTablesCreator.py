@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QAction, QTableWidgetItem
 from Parts.Scripts.FixTables import sortACT
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, openFile, saveFile
-from Parts.Vars import _ATE_VERSION_, _ATE_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII
+from Parts.Vars import _ACT_VERSION_, _ACT_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII
 from sys import argv, exit
 import keyboard
 
@@ -16,11 +16,11 @@ def saveACT(save_loc : str, Table):
         for col in range(Table.columnCount()):
             if not Table.item(row, col): continue
             if not Table.item(row, col).text(): continue
-            content += f'{Table.item(row, col).text()}{_ATE_SEPARATOR_*4}{hexToString(intToHex(row)[1]+intToHex(col)[1])}\n'
+            content += f'{Table.item(row, col).text()}{_ACT_SEPARATOR_*4}{hexToString(intToHex(row)[1]+intToHex(col)[1])}\n'
     
-    content = sortACT(deleteTrash(content, _ATE_SEPARATOR_))
+    content = sortACT(deleteTrash(content, _ACT_SEPARATOR_))
     content = deleteEmptyLines(content)
-    content = f'\nVERSION="{_ATE_VERSION_}"\nSEPARATOR="{_ATE_SEPARATOR_}"\n#####################\nالحرف{_ATE_SEPARATOR_}أول{_ATE_SEPARATOR_}وسط{_ATE_SEPARATOR_}آخر{_ATE_SEPARATOR_}منفصل\n' + content
+    content = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_ACT_SEPARATOR_}"\n#####################\nالحرف{_ACT_SEPARATOR_}أول{_ACT_SEPARATOR_}وسط{_ACT_SEPARATOR_}آخر{_ACT_SEPARATOR_}منفصل\n' + content
 
     open(save_loc, 'w', encoding="utf-8").write(content)
 
@@ -35,11 +35,11 @@ def saveCSV(save_loc : str, Table):
             char = Table.item(row, col).text().replace('"', '""')
             if _CSV_DELIMITER_ in char: char = f'"{char}"'
             convert = hexToString(intToHex(row)[1]+intToHex(col)[1]).replace(_CSV_DELIMITER_, f'"{_CSV_DELIMITER_}"')
-            content += f'{char}{_ATE_SEPARATOR_*4}{convert}\n'
+            content += f'{char}{_ACT_SEPARATOR_*4}{convert}\n'
     
-    content = sortACT(deleteTrash(content, _ATE_SEPARATOR_), _ATE_SEPARATOR_).replace(_ATE_SEPARATOR_, _CSV_DELIMITER_)
+    content = sortACT(deleteTrash(content, _ACT_SEPARATOR_), _ACT_SEPARATOR_).replace(_ACT_SEPARATOR_, _CSV_DELIMITER_)
     content = deleteEmptyLines(content)
-    content = f'الحرف{_ATE_SEPARATOR_}أول{_ATE_SEPARATOR_}وسط{_ATE_SEPARATOR_}آخر{_ATE_SEPARATOR_}منفصل\n' + content
+    content = f'الحرف{_ACT_SEPARATOR_}أول{_ACT_SEPARATOR_}وسط{_ACT_SEPARATOR_}آخر{_ACT_SEPARATOR_}منفصل\n' + content
 
     open(save_loc, 'w', encoding="utf-8").write(content)
 

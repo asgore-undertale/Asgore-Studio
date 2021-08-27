@@ -1,13 +1,24 @@
 from PyQt5.QtWidgets import QMessageBox
 
-_ATE_VERSION_ = 1.0
-_ATE_SEPARATOR_ = "█"
+_ACT_VERSION_ = 1.0
+_AFT_VERSION_ = 1.0
+_ACT_SEPARATOR_ = "█"
 _CSV_DELIMITER_ = ','
 
-def checkVersion(ver : int):
-    if ver == _ATE_VERSION_: return
+def checkActVersion(ver):
+    try: ver = float(ver)
+    except: return
+    if ver == _ACT_VERSION_: return
     QMessageBox.about(
-        None, "!!تحذير", f"النسخة {_ATE_VERSION_} غير مدعومة.\n(ستتم العملية على أي حال.)"
+        None, "!!تحذير", f"النسخة {_ACT_VERSION_} غير متوافقة.\n(ستتم العملية على أي حال.)"
+        )
+
+def checkAftVersion(ver):
+    try: ver = float(ver)
+    except: return
+    if ver == _AFT_VERSION_: return
+    QMessageBox.about(
+        None, "!!تحذير", f"النسخة {_AFT_VERSION_} غير متوافقة.\n(ستتم العملية على أي حال.)"
         )
 
 ArabicChars = '؟،؛ـءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيپچڤ'

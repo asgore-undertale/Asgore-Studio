@@ -5,7 +5,7 @@ from os import path, mkdir, makedirs
 import openpyxl
 
 from Parts.Scripts.UsefulLittleFunctions import *
-from Parts.Vars import checkVersion, _ATE_VERSION_, _CSV_DELIMITER_, Returns
+from Parts.Vars import _CSV_DELIMITER_, Returns
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.LineOffset import OffsetTextWithSpaces
