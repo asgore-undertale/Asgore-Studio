@@ -122,11 +122,16 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 
                 if fromRight: _x -= char_width
                 
+                xPos = _x + (-char_xoffset * fromRight) + (char_xoffset * (not fromRight))
+                yPos = _y + char_yoffset
+                
                 for r in range(len(char_drawdata)):
                     row = char_drawdata[r]
                     for p in range(len(row)):
                         if row[p] != charmap['filler']: continue
-                        pygame.draw.rect(display, TextColor, (_x + (pxWidth * p), _y + (pxWidth * r), pxWidth, pxWidth))
+                        pygame.draw.rect(
+                            display, TextColor, (xPos + (pxWidth * p), yPos + (pxWidth * r), pxWidth, pxWidth)
+                            )
             else:
                 if char not in charmap: continue
                 char_x, char_y = charmap[char][0], charmap[char][1]
@@ -144,8 +149,11 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 
                 pySurface = pygame.transform.scale(pySurface, (char_width, char_height))
                 
+                xPos = _x + (-char_xoffset * fromRight) + (char_xoffset * (not fromRight))
+                yPos = _y + char_yoffset
+                
                 if fromRight: _x -= char_width
-                display.blit(pySurface, (_x + char_xoffset, _y + char_yoffset))
+                display.blit(pySurface, (xPos, yPos))
             
             if fromRight: _x -= char_xadvance
             else: _x += char_width + char_xadvance
