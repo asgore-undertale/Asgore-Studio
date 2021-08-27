@@ -15,7 +15,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.0.38")
+        self.setWindowTitle("Asgore Studio 2.0.39")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -701,7 +701,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
 
 
         self.FixSlashes = QCheckBox(r"مراعاة (n, \r, \t, \0\)")
-        self.EnglishOnlyCheck = QCheckBox("استخراج الانكليزية فقط")
         self.AutoCopyCheck = QCheckBox("النسخ تلقائيا بعد التحويل")
         
         containerLayout = QVBoxLayout()
@@ -769,7 +768,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         checksLayout.addLayout(harakatLayout)
         checksLayout.addLayout(customScriptLayout)
         checksLayout.addWidget(self.FixSlashes)
-        checksLayout.addWidget(self.EnglishOnlyCheck)
         checksLayout.addWidget(self.AutoCopyCheck)
         
         containerLayout.addLayout(cellsLayout)
@@ -843,10 +841,11 @@ class EnteringMotherWindow(QMainWindow):
         minTextLabel = QLabel()
         minTextLabel.setText("أقصى حد لقصر النصوص المستخرجة:")
         maxTextLabel = QLabel()
-        maxTextLabel.setText("وطولها:")
+        maxTextLabel.setText("أقصى حد لطولها:")
         
         OptinsLayout = QVBoxLayout()
         self.databaseCheck = QCheckBox("استخدام جدول النصوص للإدخال.")
+        self.asciiCheck = QCheckBox("استخراج الآسكي فقط.")
         self.sortedCheck = QCheckBox("النصوص مرتبة حسب الاستخراج.")
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
         self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر:")
@@ -897,6 +896,7 @@ class EnteringMotherWindow(QMainWindow):
         boxesLayout.addWidget(translationLabel)
         boxesLayout.addWidget(self.translationBox)
         OptinsLayout.addWidget(self.databaseCheck)
+        OptinsLayout.addWidget(self.asciiCheck)
         OptinsLayout.addWidget(self.sortedCheck)
         OptinsLayout.addWidget(self.tooLongCheck)
         OptinsLayout.addWidget(self.translationOffsetCheck)

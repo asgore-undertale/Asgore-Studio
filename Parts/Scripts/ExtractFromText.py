@@ -2,24 +2,26 @@ from Parts.Scripts.UsefulLittleFunctions import getRegexPattern
 from Parts.Vars import ASCII
 import re
 
-def minimax(text):
+def minimax(text, mini, maxi):
     if mini and len(text) < mini: return
     if maxi and len(text) > maxi: return
     return text
     
-def inEnglish(text):
-    for char in text:
+def isAscii(text):
+    t = text
+    if isinstance(text, bytes):
+        t = t.decode(errors='replace')
+    
+    for char in t:
         if char not in ASCII:
             return
+    
     return text
 
-def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = False, onlyEnglish = False):
-    if not before or not after: return
-    try: mini = int(mini)
-    except: mini = False
-    try: maxi = int(maxi)
-    except: maxi = False
-    if mini > maxi: return
+def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = False, onlyASCII = False):
+    if not before or not after:
+        if onlyASCII: return extractAscii(text)
+        return
     
     _UnusedChar = (u'\uffff' * 4)
     _EnterChar  = '\n'
@@ -31,24 +33,46 @@ def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = Fa
     after = after.replace(_EnterChar, _UnusedChar)
     
     if before == after:
-        extracted_list = text.split(before)
-        if len(extracted_list) > 2:
-            del extracted_list[0]
-            del extracted_list[-1]
+        extractedList = text.split(before)
+        if len(extractedList) > 2:
+            del extractedList[0]
+            del extractedList[-1]
     else:
-        extracted_list = re.findall(getRegexPattern(before, after), text)
+        extractedList = re.findall(getRegexPattern(before, after), text)
     
     if addBeforeAfter:
-        extracted_list = [(before+x+after).replace(_UnusedChar, _EnterChar) for x in extracted_list]
+        extractedList = [(before+x+after).replace(_UnusedChar, _EnterChar) for x in extractedList]
     else:
-        extracted_list = [x.replace(_UnusedChar, _EnterChar) for x in extracted_list]
+        extractedList = [x.replace(_UnusedChar, _EnterChar) for x in extractedList]
     
-    if onlyEnglish:
-        extracted_list = list(map(inEnglish, extracted_list))
-        extracted_list = list(filter(lambda a: a, extracted_list))
+    if onlyASCII:
+        extractedList = list(map(isAscii, extractedList))
+        extractedList = list(filter(lambda a: a, extractedList))
     
     if mini or maxi:
-        extracted_list = list(map(minimax, extracted_list))
-        extracted_list = list(filter(lambda a: a, extracted_list))
+        for i in range(len(extractedList)):
+            extractedList[i] = minimax(extractedList[i], mini, maxi)
+        extractedList = list(filter(lambda a: a, extractedList))
     
-    return extracted_list
+    return extractedList
+
+def extractAscii(text):
+    isBytes = isinstance(text, bytes)
+    if isBytes: text = text.decode(errors='replace')
+    
+    extractedList, container = [], ''
+    for char in text:
+        if char in ASCII:
+            container += char
+        else:
+            if not container: continue
+            if isBytes: container = container.encode(errors='replace')
+            extractedList.append(container)
+            container = ''
+    
+    if container:
+        if isBytes: container = container.encode(errors='replace')
+        extractedList.append(container)
+        container = ''
+    
+    return extractedList

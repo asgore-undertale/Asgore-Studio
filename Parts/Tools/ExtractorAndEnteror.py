@@ -4,15 +4,15 @@ from sys import argv, exit
 from os import path, mkdir, makedirs
 import openpyxl
 
-from Parts.Scripts.UsefulLittleFunctions import selectFolder, openFile, dirList, byteInCell, bytesToString, hexLength
+from Parts.Scripts.UsefulLittleFunctions import *
 from Parts.Vars import checkVersion, _ATE_VERSION_, _CSV_DELIMITER_, Returns
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.LineOffset import OffsetTextWithSpaces
 from Parts.Tools.TextConverter import convert
 
-textTablePath = r'OtherFiles/Tables/TextTable.xlsx'
-extractedTextTablePath = r'OtherFiles/Tables/ExtractedTextTable.xlsx'
+textTablePath = r'OtherFiles/Tables/TextTable.csv'
+extractedTextTablePath = r'OtherFiles/Tables/ExtractedTextTable.csv'
 inputFolder, outputFolder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
 
 def openTextTable():
@@ -136,7 +136,6 @@ def enter(convertBool = True):
     before = byteInCell(EnteringWindow.beforeText.toPlainText())
     after = byteInCell(EnteringWindow.afterText.toPlainText())
     
-    
     for filename in filesList:
         with open(filename, 'rb') as f:
             fileContent = f.read()
@@ -145,7 +144,7 @@ def enter(convertBool = True):
         for i in range(textListLength):
             i -= deletedText
             
-            text, translation = textList[i][0], textList[i][1]
+            text, translation = before+textList[i][0]+after, before+textList[i][1]+after
             byteText = text.encode()
             if byteText not in fileContent: continue
             
@@ -174,7 +173,7 @@ def enter(convertBool = True):
 def extract():
     before = byteInCell(EnteringWindow.beforeText.toPlainText()).encode()
     after  = byteInCell(EnteringWindow.afterText.toPlainText()).encode()
-    if not before or not after:
+    if (not before or not after) and not EnteringWindow.asciiCheck.isChecked():
         QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما يسبق النصوص، ما يلحقها.")
         return
     filesList = dirList(inputFolder)
@@ -182,29 +181,28 @@ def extract():
         QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nلا توجد أي ملفات للاستخراج منها.")
         return
     
-    mini = byteInCell(EnteringWindow.minText.toPlainText())
-    maxi = byteInCell(EnteringWindow.maxText.toPlainText())
+    mini = tryTakeNum(byteInCell(EnteringWindow.minText.toPlainText()), False)
+    maxi = tryTakeNum(byteInCell(EnteringWindow.maxText.toPlainText()), False)
     
     if extractedTextTablePath.endswith('.csv'):
-        with open(extractedTextTablePath, 'w', encoding='utf8', errors='replace') as database: # 'wb'
+        with open(extractedTextTablePath, 'w', encoding='utf8', errors='replace') as database:
             content = ''
             
             for filename in filesList:
                 with open(filename, 'rb') as f:
                     fileContent = f.read()
                 
-                extracted = Extract(fileContent, before, after, True, mini, maxi)
-                if len(extracted):
-                    content += f'<-- {filename} -->,-\n'
-                    for item in extracted:
-                        item = item.decode(encoding='utf8', errors='replace').replace('"', '""')
-                        if _CSV_DELIMITER_ in item:
-                            for r in Returns:
-                                item = f'"{item}"'.replace(r, f'"{r}"')
-                            for r in Returns:
-                                for b in Returns:
-                                    item = f'"{item}"'.replace(f'"{r}""{b}"', f'"{r}{b}"')
-                        content += item + '\n'
+                extracted = Extract(fileContent, before, after, False, mini, maxi, EnteringWindow.asciiCheck.isChecked())
+                if not extracted: break
+                
+                content += f'<-- {filename} -->,-\n'
+                for item in extracted:
+                    item = item.decode(encoding='utf8', errors='replace').replace('"', '""')
+                    if _CSV_DELIMITER_ in item:
+                        item = f'"{item}"'
+                        for r in Returns:
+                            item = item.replace(r, f'"{r}"')
+                    content += item + '\n'
                 
             database.write(content)
         
@@ -220,7 +218,7 @@ def extract():
             with open(filename, 'rb') as f:
                 fileContent = f.read()
             
-            extracted = Extract(fileContent, before, after, True, mini, maxi)
+            extracted = Extract(fileContent, before, after, False, mini, maxi, EnteringWindow.asciiCheck.isChecked())
             if len(extracted):
                 putInXlsx(filename, sheet, 'A'+str(row), True, True, 'D112D1')
                 putInXlsx('-', sheet, 'B'+str(row), True, True, 'D112D1')
