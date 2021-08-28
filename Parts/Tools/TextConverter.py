@@ -61,8 +61,6 @@ def cell():
     cell._endCommand    = byteInCell(TextConverterOptionsWindow.endCommand.toPlainText())
     cell._pageCommand   = byteInCell(TextConverterOptionsWindow.pageCommand.toPlainText())
     cell._lineCommand   = byteInCell(TextConverterOptionsWindow.lineCommand.toPlainText())
-    cell._beforeText    = byteInCell(TextConverterOptionsWindow.beforeText.toPlainText())
-    cell._afterText     = byteInCell(TextConverterOptionsWindow.afterText.toPlainText())
     cell._convertedByte = byteInCell(TextConverterOptionsWindow.convertedByte.toPlainText())
     
     if not TextConverterOptionsWindow.FixSlashes.isChecked(): return
@@ -70,8 +68,6 @@ def cell():
     cell._endCommand    = fixSlashes(cell._endCommand)
     cell._pageCommand   = fixSlashes(cell._pageCommand)
     cell._lineCommand   = fixSlashes(cell._lineCommand)
-    cell._beforeText    = fixSlashes(cell._beforeText)
-    cell._afterText     = fixSlashes(cell._afterText)
     cell._convertedByte = fixSlashes(cell._convertedByte)
 
 def applyConverts(text):

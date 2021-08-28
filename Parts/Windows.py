@@ -15,7 +15,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.1.44")
+        self.setWindowTitle("Asgore Studio 2.0.2.45")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -544,8 +544,9 @@ class FilesEditorMotherWindow(QMainWindow):
         
         fileTypeComboBoxOptions = [
             "ملف زيلدا نفس البرية msyt.",
-            "ملف نص مستخرج من الكروبتار",
-            "جدول csv"
+            "ملف نص مستخرج من الكروبتار txt.",
+            "جدول csv.",
+            "ملف po."
         ]
         self.fileTypeComboBox = QComboBox()
         self.fileTypeComboBox.addItems(fileTypeComboBoxOptions)
