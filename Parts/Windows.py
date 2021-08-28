@@ -15,7 +15,7 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Asgore Studio 2.1.43")
+        self.setWindowTitle("Asgore Studio 2.1.44")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -262,7 +262,7 @@ class FontsConverterMotherWindow(QMainWindow):
         charsLabel.setText("الحروف بالترتيب:")
 
         self.fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", self)
-        self.smoothCheck = QCheckBox("نعومة الخط", self)
+        self.smoothCheck = QCheckBox("نعومة الخط (ttf)", self)
 
         self.saveButton = QPushButton(self)
         self.saveButton.setText("حفظ الجدول")
