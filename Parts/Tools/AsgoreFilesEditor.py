@@ -10,10 +10,10 @@ from os import path
 import re, openpyxl, keyboard, csv
 
 
-file_content, file_path = '', ''
-text_list, trans_list, old_trans_list = '', '', ''
-sentences_num, database, table = '', '', ''
-columnIndex, dataBaseDirectory = '', ''
+fileContent = ''
+textList, transList, oldTransList = '', '', ''
+database, dataBaseDirectory, table = '', '', ''
+sentencesNum, columnIndex = '', ''
 
 def fileType():
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
@@ -41,175 +41,166 @@ def Convert():
     FilesEditorWindow.translationBox.setPlainText(convert(FilesEditorWindow.translationBox.toPlainText(), False))
 
 def ConvertAll():
-    for t in range(len(trans_list)):
-        trans_list[t] = convert(trans_list[t], False)
+    for t in range(len(transList)):
+        transList[t] = convert(transList[t], False)
     Convert()
 
 def openTextDataBase():
-    global dataBaseDirectory, database
+    global database
 
     filePath = openFile(('xlsx', 'csv'), FilesEditorWindow, 'جدول نصوص')
     if not filePath: return
     
     dataBaseDirectory = filePath
-    if dataBaseDirectory.endswith('.xlsx'):
-        database = openpyxl.load_workbook(dataBaseDirectory)
-    elif dataBaseDirectory.endswith('.csv'):
-        database = CSVtoList(dataBaseDirectory)
+    if filePath.endswith('.xlsx'):
+        database = openpyxl.load_workbook(filePath)
+    elif filePath.endswith('.csv'):
+        database = CSVtoList(filePath)
 
 def indexHandle(index, filePath, case):
-    global file_content, columnIndex, text_list, trans_list, table
+    global fileContent, columnIndex, textList, transList, oldTransList, table, sentencesNum
     if case:
         handleText.current_item = 0
         if index == 0:
-            file_content = open(filePath, 'r', encoding='utf-8', errors='replace').read()
-            Msyt()
+            textList, transList = loadMsyt() # filePath
         if index == 1:
-            file_content = open(filePath, 'r', encoding='utf-8', errors='replace').read()
-            Kruptar()
+            textList, transList = loadKruptar() # filePath
         if index == 2:
             columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
-            CsvTable()
+            textList, transList, table = loadCsvTable() # filePath
         if index == 3:
-            file_content = open(filePath, 'r', encoding='utf-8', errors='replace').read()
-            Po()
+            textList, transList = loadPo() # filePath
+            oldTransList = list(transList)
+        
+        sentencesNum = len(textList)-1
+        FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
     else:
-        if index == 0:
-            for t in range(len(text_list)):
-                file_content = file_content.replace(f'\n{text_list[t]}\n', f'\n{trans_list[t]}\n', 1)
-            open(filePath, 'w', encoding='utf-8', errors='replace').write(TxtToMsyt(file_content))
-            
-        if index == 1:
-            endCom = FilesEditorWindow.endCommandCell.toPlainText()
-            for t in range(len(text_list)):
-                file_content = file_content.replace(text_list[t] + endCom, trans_list[t] + endCom, 1)
-            open(filePath, 'w', encoding='utf-8', errors='replace').write(file_content)
-            
-        if index == 2:
-            for t in range(len(text_list)):
-                try: table[t][columnIndex] = trans_list[t]
-                except: pass
-            with open(filePath, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                for row in table:
-                    spamwriter.writerow(row)
-                    
-        if index == 3:
-            for t in range(len(text_list)):
-                file_content = file_content.replace(f'msgstr "{old_trans_list[t]}"\n\n', f'msgstr "{trans_list[t]}"\n\n', 1)
-            open(filePath, 'w', encoding='utf-8', errors='replace').write(file_content)
+        if index == 0: saveMsyt() # filePath, fileContent
+        if index == 1: saveKruptar() # filePath, fileContent
+        if index == 2: saveCsvTable() # filePath, table
+        if index == 3: savePo() # filePath, fileContent
 
 def loadFile():
-    global file_path, text_list
-    file_path = openFile([fileType()], FilesEditorWindow, 'ملف')
-    if not file_path: return
+    filePath = openFile([fileType()], FilesEditorWindow, 'ملف')
+    if not filePath: return
     
-    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), file_path, True)
+    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), filePath, True)
     
-    if not text_list: return
-    FilesEditorWindow.textBox.setPlainText(text_list[0])
-    FilesEditorWindow.translationBox.setPlainText(trans_list[0])
+    if not textList: return
+    FilesEditorWindow.textBox.setPlainText(textList[0])
+    FilesEditorWindow.translationBox.setPlainText(transList[0])
     
 def save_file():
-    global file_content, trans_list
+    global transList
     filePath = saveFile([fileType()], FilesEditorWindow, 'ملف')
     if not filePath: return
     
-    trans_list[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
+    transList[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
     
     indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), filePath, False)
 
-def Kruptar():
-    global text_list, trans_list, sentences_num
-    
+def loadKruptar(): # filePath
     endcommand = FilesEditorWindow.endCommandCell.toPlainText()
     if not endcommand: return
     
-    text_list = file_content.split(endcommand)
-    del text_list[-1]
-    trans_list = list(text_list)
+    fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read()
+    textList = fileContent.split(endcommand)
+    del textList[-1]
     
-    sentences_num = len(text_list)-1
-    FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+    return textList, list(textList)
 
-def Po():
-    global text_list, trans_list, old_trans_list, sentences_num
+def saveKruptar(): # filePath, fileContent
+    endCom = FilesEditorWindow.endCommandCell.toPlainText()
+    for t in range(len(textList)):
+        fileContent = fileContent.replace(textList[t] + endCom, transList[t] + endCom, 1)
     
-    text_list = Extract(file_content, 'msgid "', '"\nmsgstr')
-    trans_list = Extract(file_content, 'msgstr "', '"\n\n')
-    text_list = list(map(lambda x: x.replace('\\n', '\n').replace('"\n"', ''), text_list))
-    trans_list = list(map(lambda x: x.replace('\\n', '\n').replace('"\n"', ''), trans_list))
-    del text_list[0], trans_list[0]
-    
-    old_trans_list = list(trans_list)
-    
-    sentences_num = len(text_list)-1
-    FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+    open(filePath, 'w', encoding='utf-8', errors='replace').write(fileContent)
 
-def CsvTable():
-    global text_list, trans_list, file_path, columnIndex, sentences_num, table
+def loadPo(): # filePath
+    fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read() + '\n\n'
     
+    textList = Extract(fileContent, 'msgid "', '"\nmsgstr')
+    transList = Extract(fileContent, 'msgstr "', '"\n\n')
+    textList = list(map(lambda x: x.replace('\\n', '\n').replace('"\n"', ''), textList))
+    transList = list(map(lambda x: x.replace('\\n', '\n').replace('"\n"', ''), transList))
+    del textList[0], transList[0]
+    
+    return textList, transList
+
+def savePo(): # filePath, fileContent
+    for t in range(len(textList)):
+        fileContent = fileContent.replace(f'msgstr "{oldTransList[t]}"\n\n', f'msgstr "{transList[t]}"\n\n', 1)
+    open(filePath, 'w', encoding='utf-8', errors='replace').write(fileContent)
+
+def loadCsvTable(): # filePath
     if columnIndex < 0: return
     
-    with open(file_path, newline='', encoding='utf8', errors='replace') as csvfile:
+    with open(filePath, newline='', encoding='utf8', errors='replace') as csvfile:
         table = list(csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"'))
     
-    text_list = []
+    textList = []
     for row in table:
-        try: text_list.append(row[columnIndex])
+        try: textList.append(row[columnIndex])
         except: pass
     
-    trans_list = list(text_list)
+    return textList, list(textList), table
+
+def saveCsvTable(): # filePath, table
+    for t in range(len(textList)):
+        try: table[t][columnIndex] = transList[t]
+        except: pass
+    with open(filePath, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in table:
+            spamwriter.writerow(row)
+
+def loadMsyt(): # filePath
+    global textList, transList, sentencesNum
     
-    sentences_num = len(text_list)-1
-    FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+    fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read()
     
-def Msyt():
-    global file_content, text_list, trans_list, sentences_num
-    
-    file_content, reportContent = MsytToTxt(file_content)
-    msyt_content_list = Extract(file_content, '{\n', '\n}')
-    
-    text_list = msyt_content_list[0].split('\n')
-    trans_list = list(text_list)
-    
-    sentences_num = len(text_list) -1
-    FilesEditorWindow.per.setText(f"{sentences_num} \ {0}")
+    fileContent, reportContent = MsytToTxt(fileContent)
+    msyt_content_list = Extract(fileContent, '{\n', '\n}')
+    textList = msyt_content_list[0].split('\n')
     
     StudioWindow.Report('أوامر ملف .msyt', reportContent)
+    
+    return textList, list(textList)
+
+def saveMsyt(): # filePath, fileContent
+    for t in range(len(textList)):
+        fileContent = fileContent.replace(f'\n{textList[t]}\n', f'\n{transList[t]}\n', 1)
+    open(filePath, 'w', encoding='utf-8', errors='replace').write(TxtToMsyt(fileContent))
 
 def handleText(direction = True):
-    if not sentences_num: return
+    if not sentencesNum: return
     
     if direction:
-        handleText.current_item += 1
-        handleText.current_item = handleText.current_item % (sentences_num +1)
-        FilesEditorWindow.per.setText(f"{sentences_num} \ {handleText.current_item}")
-        
-        index = handleText.current_item -1
-        if index == -1:
-            index = sentences_num
+        handleText.current_item = (handleText.current_item + 1) % (sentencesNum + 1)
+        index = ((not handleText.current_item) * sentencesNum) + ((handleText.current_item > 0) * (handleText.current_item - 1))
     else:
-        handleText.current_item -= 1
-        if handleText.current_item == -1:
-            handleText.current_item = sentences_num
-        FilesEditorWindow.per.setText(f"{sentences_num} \ {handleText.current_item}")
-        
-        index = handleText.current_item +1
-        index = index % (sentences_num +1)
+        handleText.current_item = ((not handleText.current_item) * sentencesNum) + ((handleText.current_item > 0) * (handleText.current_item - 1))
+        index = (handleText.current_item + 1) % (sentencesNum + 1)
     
-    trans_list[index] = FilesEditorWindow.translationBox.toPlainText()
+    FilesEditorWindow.per.setText(f"{sentencesNum} \ {handleText.current_item}")
     
-    FilesEditorWindow.textBox.setPlainText(text_list[handleText.current_item])
-    FilesEditorWindow.translationBox.setPlainText(trans_list[handleText.current_item])
+    transList[index] = FilesEditorWindow.translationBox.toPlainText()
+    
+    FilesEditorWindow.textBox.setPlainText(textList[handleText.current_item])
+    FilesEditorWindow.translationBox.setPlainText(transList[handleText.current_item])
+    
+    setTranslation() # dataBaseDirectory
+handleText.current_item = 0
 
+def setTranslation(): # dataBaseDirectory
     if not path.exists(dataBaseDirectory): return
     
     if dataBaseDirectory.endswith('.xlsx'):
         for sheet in database.sheetnames:
             text_table = database.get_sheet_by_name(sheet)
             for cell in range(2, len(text_table['A'])+1):
-                if text_table['A'+str(cell)].value != trans_list[handleText.current_item]: continue
+                if text_table['A'+str(cell)].value != transList[handleText.current_item]:
+                    continue
                 FilesEditorWindow.translationBox.setPlainText(text_table['B'+str(cell)].value)
                 return
     
@@ -220,11 +211,10 @@ def handleText(direction = True):
                 translation = row[1]
             except: continue
             
-            if text != trans_list[handleText.current_item]: continue
+            if text != transList[handleText.current_item]:
+                continue
             FilesEditorWindow.translationBox.setPlainText(translation)
-            
             return
-handleText.current_item = 0
 
 
 app = QApplication(argv)
