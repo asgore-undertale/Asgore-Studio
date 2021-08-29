@@ -132,7 +132,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                         pygame.draw.rect(
                             display, TextColor, (xPos + (pxWidth * p), yPos + (pxWidth * r), pxWidth, pxWidth)
                             )
-            else:
+            elif FontPath.endswith('.aft'):
                 if char not in charmap: continue
                 char_x, char_y = charmap[char][0], charmap[char][1]
                 

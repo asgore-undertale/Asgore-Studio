@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.47")
+        self.setWindowTitle("Asgore Studio 2.0.2.48")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -263,7 +263,7 @@ class FontsConverterMotherWindow(QMainWindow):
         charsLabel.setText("الحروف بالترتيب:")
 
         self.fromRightCheck = QCheckBox("إزاحة الحروف ليمين الخانة", self)
-        self.smoothCheck = QCheckBox("نعومة الخط (ttf)", self)
+        self.smoothCheck = QCheckBox("تنعيم الخط (ttf)", self)
 
         self.saveButton = QPushButton(self)
         self.saveButton.setText("حفظ الجدول")

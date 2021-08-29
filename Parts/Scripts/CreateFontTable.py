@@ -1,6 +1,6 @@
 from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_
 
-def CreateFontTable(firstX, firstY, BetweenCharsX, BetweenCharsY, unifiedWidth, unifiedHeight, charsPerRow, Chars):
+def CreateAftFontTable(firstX, firstY, BetweenCharsX, BetweenCharsY, unifiedWidth, unifiedHeight, charsPerRow, Chars):
     table = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nChar{_A_SEPARATOR_}X{_A_SEPARATOR_}Y{_A_SEPARATOR_}Width{_A_SEPARATOR_}Height{_A_SEPARATOR_}Xoffset{_A_SEPARATOR_}Yoffset{_A_SEPARATOR_}Xadvance'
     for c in range(len(Chars)):
         X = firstX + (c %  charsPerRow * unifiedWidth ) + (c %  charsPerRow * BetweenCharsX)

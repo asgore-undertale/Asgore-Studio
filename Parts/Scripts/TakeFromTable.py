@@ -51,6 +51,8 @@ def TakeFromAFT(aftPath):
     VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:-1]
     checkVersion(VERSION, 1)
+    
+    charmap = {}
     tallest = 0
     
     for r in range(5, len(rows)):
@@ -73,6 +75,8 @@ def TakeFromAFF(affPath):
     MIN_SEPARATOR = rows[3][15:-1]
     FILLER = rows[4][8:-1]
     checkVersion(VERSION, 2)
+    
+    charmap = {}
     tallest = 0
     
     for r in range(7, len(rows)):
@@ -94,6 +98,7 @@ def TakeFromAFF(affPath):
     return fixCharmap(charmap)
 
 def TakeFromTTF(ttfPath, chars, fontSize):
+    charmap = {}
     dialogue_font = pygame.font.Font(ttfPath, fontSize)
     for char in Freeze(chars):
         try:
@@ -103,9 +108,9 @@ def TakeFromTTF(ttfPath, chars, fontSize):
     return fixCharmap(charmap)
 
 def TakeFromZTS(ztsPath):
+    charmap = {}
     lines = open(ztsPath, 'r', encoding="utf-8").read().split('\n')
     string1, string2 = lines[0], lines[1]
-    charmap = {}
     
     for i, j in zip(string1, string2): charmap[j] = i
     return fixCharmap(charmap)
