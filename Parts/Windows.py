@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.50")
+        self.setWindowTitle("Asgore Studio 2.0.2.51")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -524,11 +524,13 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         offsetWithComboBoxLabel.setText("باستعمال:")
 
         self.fromRightCheck = QCheckBox("تدفق النص من اليمين", self)
-        self.fromRightCheck.setGeometry(QRect(75, 250, 145, 26))
+        self.fromRightCheck.setGeometry(QRect(75, 225, 145, 26))
         self.boxAnimationCheck = QCheckBox("أنميشن مربع الحوار", self)
-        self.boxAnimationCheck.setGeometry(QRect(75, 275, 145, 26))
-        self.lineBoxCheck = QCheckBox("صناديق الأسطر", self)
-        self.lineBoxCheck.setGeometry(QRect(75, 300, 145, 26))
+        self.boxAnimationCheck.setGeometry(QRect(75, 250, 145, 26))
+        self.lineBoxCheck = QCheckBox("صناديق السطور", self)
+        self.lineBoxCheck.setGeometry(QRect(75, 275, 145, 26))
+        self.charBoxCheck = QCheckBox("صناديق الحروف", self)
+        self.charBoxCheck.setGeometry(QRect(75, 300, 145, 26))
         
 
     def y(self, num, height = 26, per = 10, first = 20):

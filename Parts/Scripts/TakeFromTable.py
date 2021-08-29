@@ -99,12 +99,16 @@ def TakeFromAFF(affPath):
 
 def TakeFromTTF(ttfPath, chars, fontSize):
     charmap = {}
+    tallest = 0
     dialogue_font = pygame.font.Font(ttfPath, fontSize)
     for char in Freeze(chars):
         try:
             dialogue = dialogue_font.render(char, True, (0,0,0))
-            charmap[char] = (0, 0, dialogue.get_size()[0], dialogue.get_size()[1], 0, 0, 0)
+            height = dialogue.get_size()[1]
+            if height > tallest: tallest = height
+            charmap[char] = (0, 0, dialogue.get_size()[0], height, 0, 0, 0)
         except: pass
+    charmap['tallest'] = tallest
     return fixCharmap(charmap)
 
 def TakeFromZTS(ztsPath):

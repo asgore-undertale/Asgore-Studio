@@ -17,7 +17,7 @@ using arcade library will disable "keyboard library in the whole studio... for s
 '''
 
 def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, display,
-                lineBox, fromRight, boxAnimation):
+                lineBox, charBox, fromRight, boxAnimation):
     if FontPath.endswith('.ttf'): dialogue_font = pygame.font.Font(FontPath, fontSize)
     
     X, Y = borderThick + (boxWidth * fromRight), borderThick
@@ -102,10 +102,13 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
             char = sentences[s][c]
             if FontPath.endswith('.ttf'):
                 dialogue = dialogue_font.render(char, True, TextColor)
-                char_width, char_xadvance = dialogue.get_size()[0], 0
+                char_width, char_height = dialogue.get_size()[0], dialogue.get_size()[1]
+                char_xadvance = 0
+                
+                xPos, yPos = _x, _y
                 
                 if fromRight: _x -= char_width
-                display.blit(dialogue, (_x, _y))
+                display.blit(dialogue, (xPos, yPos))
                 
             elif FontPath.endswith('.aff'):
                 if char not in charmap: continue
@@ -132,7 +135,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                         pygame.draw.rect(
                             display, TextColor, (xPos + (pxWidth * p), yPos + (pxWidth * r), pxWidth, pxWidth)
                             )
-            elif FontPath.endswith('.aft'):
+            elif FontPath.endswith('.aft') or FontPath.endswith('.fnt'):
                 if char not in charmap: continue
                 char_x, char_y = charmap[char][0], charmap[char][1]
                 
@@ -158,9 +161,12 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
             if fromRight: _x -= char_xadvance
             else: _x += char_width + char_xadvance
             
-            if lineBox: pygame.draw.rect(display, (255, 0, 0), (borderThick, _y, boxWidth, fontSize), 1)
+            if charBox: pygame.draw.rect(display, (0, 0, 255), (xPos, yPos, char_width, char_height), 1)
             pygame.display.update()
             pygameWait(display, SleepTime)
+        
+        if lineBox: pygame.draw.rect(display, (255, 0, 0), (borderThick, _y, boxWidth, fontSize), 1)
+        pygame.display.update()
             
         _y += fontSize + pxPerLine
 
@@ -190,7 +196,7 @@ def drawBox(x, y, width, height, boxColor, boxAnimation, display):
         sleep(0.0025)
 
 def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, beforeCom, afterCom, fromRight,
-            lineBox, boxAnimation, lineOffset, offsetWith, offsetCom):
+            lineBox, charBox, boxAnimation, lineOffset, offsetWith, offsetCom):
     
     if not path.exists(FontPath) or not boxWidth or not boxHeight or not fontSize: return
     
@@ -232,7 +238,7 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     alwaysOnTop(pygame.display.get_wm_info()['window'], True)
     
     type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charmap, newLine, newPage, textbox,
-                lineBox, fromRight, boxAnimation)
+                lineBox, charBox, fromRight, boxAnimation)
 
     while True: pygameCheck(textbox)
 
@@ -326,6 +332,7 @@ def start():
     offsetCom    = FontTesterOptionsWindow.offsetComCell.toPlainText()
     fromRight    = FontTesterOptionsWindow.fromRightCheck.isChecked()
     lineBox      = FontTesterOptionsWindow.lineBoxCheck.isChecked()
+    charBox      = FontTesterOptionsWindow.charBoxCheck.isChecked()
     boxAnimation = FontTesterOptionsWindow.boxAnimationCheck.isChecked()
     
     offset     = FontTesterOptionsWindow.offsetComboBox.currentIndex() -1
@@ -334,7 +341,7 @@ def start():
     testFont(
         text, fontSize, boxWidth, boxHeight, pixelsPer, newLineCom,
         newPageCom, beforeCom, afterCom, fromRight,
-        lineBox, boxAnimation, offset, offsetWith, offsetCom
+        lineBox, charBox, boxAnimation, offset, offsetWith, offsetCom
         )
 
 FontPath = r'OtherFiles\Fonts\8×8 pixelFont\font.aft' * path.exists(r'OtherFiles\Fonts\8×8 pixelFont\font.aft')
