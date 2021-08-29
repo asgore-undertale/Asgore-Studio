@@ -24,7 +24,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
     _y, _x = Y, X
     
     PassTimes = 0
-    TextColor = (225, 225, 225)
+    TextColor = (255, 255, 255)
     BackgroundColor = 0
     SleepTime = 0
     shakeTimes, shakeRange = 7, fontSize
@@ -60,7 +60,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                     pygame.display.update()
                     PassTimes = 2
                 elif checkForCommand(r'[\t#]', sentences[s], c):
-                    TextColor = (225, 225, 225)
+                    TextColor = (255, 255, 255)
                     PassTimes = 4
                 elif checkForCommand(r'[\b#]', sentences[s], c):
                     BackgroundColor = 0

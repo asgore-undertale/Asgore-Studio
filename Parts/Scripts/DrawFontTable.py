@@ -19,6 +19,8 @@ def drawFontTable(aftPath, chars, cellWidth, cellHeight, imgSize, fontPath, font
         pxWidth = charHeight / len(affTable[char][-1])
     
     for char in chars:
+        if char not in charsTable: continue
+        
         x = charsTable[char][0]
         y = charsTable[char][1]
         
@@ -32,9 +34,8 @@ def drawFontTable(aftPath, chars, cellWidth, cellHeight, imgSize, fontPath, font
             draw.text((x, y), char, 'white', font)
             
         elif fontPath.endswith('.aff'):
-            if char not in affTable: continue
-            
-            x += (cellWidth - affTable[char][2]) * rightOffset
+            charWidth = affTable[char][2] + (affTable[char][2] * per)
+            x += (cellWidth - charWidth) * rightOffset
             char_drawdata = affTable[char][7]
             
             for r in range(len(char_drawdata)):
@@ -43,6 +44,6 @@ def drawFontTable(aftPath, chars, cellWidth, cellHeight, imgSize, fontPath, font
                     if row[p] != affTable['filler']: continue
                     
                     _x, _y =  x + (pxWidth * p), y + (pxWidth * r)
-                    draw.rectangle((_x, _y, _x + pxWidth, _y + pxWidth), fill=(225, 225, 225))
+                    draw.rectangle((_x, _y, _x + pxWidth, _y + pxWidth), fill=(255, 255, 255))
 
     canvas.save(savepath, "PNG")

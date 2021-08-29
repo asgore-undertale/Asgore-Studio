@@ -26,7 +26,7 @@ def saveFont():
     
     tableContent = CreateAftFontTable(
         beforeFirstCol, beforeFirstRow, BetweenCharsX, BetweenCharsY, Width, Height,
-        charsPerRow, chars
+        charsPerRow, chars, fontPath, fontSize
         )
     
     fontFileSavePath = saveFile(['aft'], FontsConverterWindow, 'ملف الخط')
