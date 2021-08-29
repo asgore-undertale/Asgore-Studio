@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.49")
+        self.setWindowTitle("Asgore Studio 2.0.2.50")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -301,15 +301,12 @@ class TablesConverterMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.setFixedSize(170, 75)
+        container = QWidget()
+        layout = QVBoxLayout()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
         
-        self.convertButton = QPushButton(self)
-        self.convertButton.setGeometry(QRect(10, 45, 150, 25))
-        self.convertButton.setText("اختر جدول وحوّله")
-
-        comboLineWidth = 120
-        y = 10
-
+        comboboxLayout = QHBoxLayout()
         fromComboBoxOptions = [
             "act",
             "fnt",
@@ -322,17 +319,24 @@ class TablesConverterMotherWindow(QMainWindow):
         ]
         self.fromComboBox = QComboBox(self)
         self.fromComboBox.addItems(fromComboBoxOptions)
-        self.fromComboBox.setGeometry(QRect(comboLineWidth-35, y, 40, 25))
         self.toComboBox = QComboBox(self)
         self.toComboBox.addItems(toComboBoxOptions)
-        self.toComboBox.setGeometry(QRect(comboLineWidth-110, y, 40, 25))
 
         fromLabel = QLabel(self)
-        fromLabel.setGeometry(QRect(comboLineWidth, y, 40, 25))
-        fromLabel.setText("تحويل:")
+        fromLabel.setText("حوّل:")
         toLabel = QLabel(self)
-        toLabel.setGeometry(QRect(comboLineWidth-75, y, 30, 25))
         toLabel.setText("إلى:")
+        
+        self.convertButton = QPushButton(self)
+        self.convertButton.setText("اختر جدول وحوّله")
+        
+        comboboxLayout.addWidget(fromLabel)
+        comboboxLayout.addWidget(self.fromComboBox)
+        comboboxLayout.addWidget(toLabel)
+        comboboxLayout.addWidget(self.toComboBox)
+        
+        layout.addLayout(comboboxLayout)
+        layout.addWidget(self.convertButton)
 
 TablesConverterWindow = TablesConverterMotherWindow()
 
