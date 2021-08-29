@@ -105,9 +105,9 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 char_width, char_height = dialogue.get_size()[0], dialogue.get_size()[1]
                 char_xadvance = 0
                 
-                xPos, yPos = _x, _y
-                
                 if fromRight: _x -= char_width
+                
+                xPos, yPos = _x, _y
                 display.blit(dialogue, (xPos, yPos))
                 
             elif FontPath.endswith('.aff'):
@@ -138,7 +138,6 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
             elif FontPath.endswith('.aft') or FontPath.endswith('.fnt'):
                 if char not in charmap: continue
                 char_x, char_y = charmap[char][0], charmap[char][1]
-                
                 charinfo = list(map(lambda x: int(x * (1 + per)), charmap[char]))
                 
                 char_width, char_height, char_xoffset = charinfo[2], charinfo[3], charinfo[4]
@@ -152,10 +151,11 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 
                 pySurface = pygame.transform.scale(pySurface, (char_width, char_height))
                 
+                if fromRight: _x -= char_width
+                
                 xPos = _x + (-char_xoffset * fromRight) + (char_xoffset * (not fromRight))
                 yPos = _y + char_yoffset
                 
-                if fromRight: _x -= char_width
                 display.blit(pySurface, (xPos, yPos))
             
             if fromRight: _x -= char_xadvance
