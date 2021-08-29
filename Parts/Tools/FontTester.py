@@ -136,7 +136,7 @@ def type_in_box(sentences, fontSize, per, boxWidth, boxHeight, pxPerLine, charma
                 if char not in charmap: continue
                 char_x, char_y = charmap[char][0], charmap[char][1]
                 
-                charinfo = list(map(lambda x: int(x + (x * per)), charmap[char]))
+                charinfo = list(map(lambda x: int(x * (1 + per)), charmap[char]))
                 
                 char_width, char_height, char_xoffset = charinfo[2], charinfo[3], charinfo[4]
                 char_yoffset, char_xadvance = charinfo[5], charinfo[6]
@@ -192,7 +192,7 @@ def drawBox(x, y, width, height, boxColor, boxAnimation, display):
 def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, beforeCom, afterCom, fromRight,
             lineBox, boxAnimation, lineOffset, offsetWith, offsetCom):
     
-    if not FontPath or not boxWidth or not boxHeight or not fontSize: return
+    if not path.exists(FontPath) or not boxWidth or not boxHeight or not fontSize: return
     
     charmap = TakeFromTable(FontPath, text, fontSize)
     char_height = charmap[list(charmap)[0]][3]
@@ -200,7 +200,7 @@ def testFont(text, fontSize, boxWidth, boxHeight, pxPerLine, newLine, newPage, b
     charsinfo = {}
     for k, v in charmap.items():
         if not isinstance(v, tuple): continue # for 'tallest' var
-        charsinfo[k] = list(map(lambda x: int(x + (x * per)), v[0:7])) # [0:7] for 'drawdata' var
+        charsinfo[k] = list(map(lambda x: int(x * (1 + per)), v[0:7])) # [0:7] for 'drawdata' var
     
     linesNum = (boxHeight + pxPerLine) // (fontSize + pxPerLine)
     fittedText = fit(text, charsinfo, boxWidth, linesNum, newLine, newPage, beforeCom, afterCom)

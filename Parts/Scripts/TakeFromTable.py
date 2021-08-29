@@ -1,5 +1,5 @@
 from Parts.Scripts.FreezeArabic import Freeze
-from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh
+from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum
 from Parts.Vars import checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
@@ -38,8 +38,8 @@ def TakeFromFNT(fntPath):
     charmap = {}
     tallest = 0
     for c, x, y, w, h, xoff, yoff, xad in zip(chars_list, x_list, y_list, width_list, height_list, xoffset_list, yoffset_list, xadvance_list):
-        charmap[chr(int(c))] = tuple(map(int, (x, y, w, h, xoff, yoff, xad)))
-        if int(h) > tallest: tallest = int(h)
+        charmap[chr(tryTakeNum(c))] = tuple(map(tryTakeNum, (x, y, w, h, xoff, yoff, xad)))
+        if tryTakeNum(h) > tallest: tallest = tryTakeNum(h)
     
     charmap['tallest'] = tallest
     return fixCharmap(charmap)
@@ -59,8 +59,8 @@ def TakeFromAFT(aftPath):
         if not rows[r]: continue
         cells = rows[r].split(SEPARATOR)
         
-        height = int(cells[4])
-        charmap[cells[0]] = (int(cells[1]), int(cells[2]), int(cells[3]), height, int(cells[5]), int(cells[6]), int(cells[7]))
+        height = tryTakeNum(cells[4])
+        charmap[cells[0]] = (tryTakeNum(cells[1]), tryTakeNum(cells[2]), tryTakeNum(cells[3]), height, tryTakeNum(cells[5]), tryTakeNum(cells[6]), tryTakeNum(cells[7]))
         if height > tallest: tallest = height
     
     charmap['tallest'] = tallest
@@ -90,7 +90,7 @@ def TakeFromAFF(affPath):
         for row in DrowData:
             if len(row) > width: width = len(row)
         
-        charmap[cells[0]] = (0, 0, width, height, int(cells[2]), int(cells[3]), int(cells[4]), DrowData)
+        charmap[cells[0]] = (0, 0, width, height, tryTakeNum(cells[2]), tryTakeNum(cells[3]), tryTakeNum(cells[4]), DrowData)
         if height > tallest: tallest = height
     
     charmap['tallest'] = tallest

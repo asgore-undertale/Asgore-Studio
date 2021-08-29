@@ -8,7 +8,7 @@ from os import path
 def saveFont():
     chars = FontsConverterWindow.charsCell.toPlainText()
     fontPath = openFont.fontPath
-    if not chars: return
+    if not chars or not fontPath: return
     
     Width = tryTakeNum(FontsConverterWindow.WidthCell.toPlainText(), 32)
     Height = tryTakeNum(FontsConverterWindow.HeightCell.toPlainText(), 32)
@@ -17,6 +17,7 @@ def saveFont():
     
     fromRight = FontsConverterWindow.fromRightCheck.isChecked()
     isSmooth = (not FontsConverterWindow.smoothCheck.isChecked()) * 1
+    monoSized = FontsConverterWindow.monoSizedCheck.isChecked()
     beforeFirstCol = tryTakeNum(FontsConverterWindow.beforeFirstColCell.toPlainText())
     beforeFirstRow = tryTakeNum(FontsConverterWindow.beforeFirstRowCell.toPlainText())
     BetweenCharsX = tryTakeNum(FontsConverterWindow.BetweenCharsXCell.toPlainText())
@@ -26,7 +27,7 @@ def saveFont():
     
     tableContent = CreateAftFontTable(
         beforeFirstCol, beforeFirstRow, BetweenCharsX, BetweenCharsY, Width, Height,
-        charsPerRow, chars, fontPath, fontSize
+        charsPerRow, chars, fontPath, fontSize, monoSized, fromRight
         )
     
     fontFileSavePath = saveFile(['aft'], FontsConverterWindow, 'ملف الخط')
@@ -43,7 +44,7 @@ def saveFont():
     
     drawFontTable(
         fontFileSavePath, chars, Width, Height, imgSize,
-        fontPath, fontSize, fromRight, isSmooth, imgFileSavePath
+        fontPath, fontSize, isSmooth, imgFileSavePath
     )
 
 def openFont():
