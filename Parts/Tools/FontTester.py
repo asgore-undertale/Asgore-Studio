@@ -349,9 +349,12 @@ ImgPath = r'OtherFiles\Fonts\8×8 pixelFont\img.png' * path.exists(r'OtherFiles\
 borderThick, borderColor = 10, (255, 255, 255)
 
 app = QApplication(argv)
-from Parts.Windows import FontTesterWindow, FontTesterOptionsWindow
+from Parts.Windows import FontTesterWindow, FontTesterOptionsWindow, StudioWindow
 pygame.init()
 
 FontTesterWindow.fontButton.clicked.connect(lambda: openFont())
 FontTesterWindow.startButton.clicked.connect(lambda: start())
 FontTesterWindow.openButton.clicked.connect(lambda: loadFile())
+FontTesterWindow.infoButton.clicked.connect(
+    lambda: StudioWindow.Report('أوامر مجرب الخطوط', open('Parts/TextFiles/FontTester commands.txt', 'r', encoding='utf-8').read())
+    )

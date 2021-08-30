@@ -1,0 +1,4 @@
+Version {2.0.2.54}:
+	- Adding (changelog.txt).
+	- Moving (أوامر مجرب الخطوط.txt) to (Parts/TextFiles/FontTester commands.txt).
+	- You can see FontTester commands by using the (؟) button in FontTester.

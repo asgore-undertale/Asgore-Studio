@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.53")
+        self.setWindowTitle("Asgore Studio 2.0.2.54")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -418,21 +418,25 @@ class FontTesterMotherWindow(QMainWindow):
         resultTextLabel.setText("   النص الناتج:")
 
         minilayout = QGridLayout()
-        self.startButton = QPushButton()
-        self.fontButton = QPushButton()
+        self.infoButton = QPushButton()
         self.openButton = QPushButton()
-        self.startButton.setText("بدء")
-        self.fontButton.setText("فتح خط")
+        self.fontButton = QPushButton()
+        self.startButton = QPushButton()
+        self.infoButton.setText("؟")
         self.openButton.setText("فتح ملف")
+        self.fontButton.setText("فتح خط")
+        self.startButton.setText("بدء")
+        self.infoButton.setFixedSize(28, 28)
         
         layout.addWidget(enteredTextLabel, 0, 0)
         layout.addWidget(self.enteredTextBox, 1, 0)
         layout.addWidget(resultTextLabel, 2, 0)
         layout.addWidget(self.resultTextBox, 3, 0)
         layout.addLayout(minilayout, 4, 0)
-        minilayout.addWidget(self.startButton, 0, 2)
-        minilayout.addWidget(self.fontButton, 0, 1)
-        minilayout.addWidget(self.openButton, 0, 0)
+        minilayout.addWidget(self.infoButton, 0, 0)
+        minilayout.addWidget(self.openButton, 0, 1)
+        minilayout.addWidget(self.fontButton, 0, 2)
+        minilayout.addWidget(self.startButton, 0, 3)
 
 FontTesterWindow = FontTesterMotherWindow()
 
