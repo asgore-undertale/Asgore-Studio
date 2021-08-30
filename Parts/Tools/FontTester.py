@@ -344,8 +344,8 @@ def start():
         lineBox, charBox, boxAnimation, offset, offsetWith, offsetCom
         )
 
-FontPath = r'OtherFiles\Fonts\8×8 pixelFont\font.aft' * path.exists(r'OtherFiles\Fonts\8×8 pixelFont\font.aft')
-ImgPath = r'OtherFiles\Fonts\8×8 pixelFont\img.png' * path.exists(r'OtherFiles\Fonts\8×8 pixelFont\img.png')
+FontPath = r'OtherFiles\Fonts\font.aft' * path.exists(r'OtherFiles\Fonts\font.aft')
+ImgPath = r'OtherFiles\Fonts\img.png' * path.exists(r'OtherFiles\Fonts\img.png')
 borderThick, borderColor = 10, (255, 255, 255)
 
 app = QApplication(argv)
