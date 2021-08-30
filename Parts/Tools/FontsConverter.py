@@ -44,7 +44,7 @@ def saveFont():
     
     drawFontTable(
         fontFileSavePath, chars, Width, Height, imgSize,
-        fontPath, fontSize, isSmooth, imgFileSavePath
+        fontPath, fontSize, isSmooth, fromRight, monoSized, imgFileSavePath
     )
 
 def openFont():
