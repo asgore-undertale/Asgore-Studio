@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.55")
+        self.setWindowTitle("Asgore Studio 2.0.2.56")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -558,7 +558,8 @@ class FilesEditorMotherWindow(QMainWindow):
             "(txt) Extracted from kruptar tool",
             "(csv) Table",
             "(po) Yakuza Kiwami",
-            "(kup) Extracted from kuriimu tool"
+            "(kup) Extracted from kuriimu tool",
+            "(yaml) Zelda: oracle of ages"
         ]
         self.fileTypeComboBox = QComboBox()
         self.fileTypeComboBox.addItems(fileTypeComboBoxOptions)

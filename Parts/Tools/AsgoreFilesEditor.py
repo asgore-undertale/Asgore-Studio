@@ -20,6 +20,7 @@ def fileType():
     if index == 2: return 'csv'
     if index == 3: return 'po'
     if index == 4: return 'kup'
+    if index == 5: return 'yaml'
 
 def typeCommand():
     if not FilesEditorWindow.isActiveWindow(): return
@@ -73,6 +74,8 @@ def indexHandle(index, filePath, case):
         if index == 4:
             fileContent, textList, transList = loadKup(filePath)
             oldTransList = list(transList)
+        if index == 5:
+            fileContent, textList, transList = loadYaml(filePath)
         
         sentencesNum = len(textList)-1
         FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
@@ -82,6 +85,7 @@ def indexHandle(index, filePath, case):
         if index == 2: saveCsvTable(filePath, table, columnIndex, textList, transList)
         if index == 3: savePo(filePath, fileContent, textList, transList, oldTransList)
         if index == 4: saveKup(filePath, fileContent, textList, transList, oldTransList)
+        if index == 5: saveYaml(filePath, fileContent, textList, transList)
 
 def loadFile():
     filePath = openFile([fileType()], FilesEditorWindow, 'ملف')

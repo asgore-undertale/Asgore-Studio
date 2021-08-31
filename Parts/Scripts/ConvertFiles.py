@@ -68,8 +68,6 @@ def TxtToMsyt(file_content):
     return TxtToMsyt.newFileContent
 
 def loadMsyt(filePath):
-    global textList, transList, sentencesNum
-    
     fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read()
     
     fileContent, reportContent = MsytToTxt(fileContent)
@@ -150,3 +148,32 @@ def saveCsvTable(filePath, table, columnIndex, textList, transList):
         spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for row in table:
             spamwriter.writerow(row)
+
+def loadYaml(filePath):
+    fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read() + '\n\n'
+    
+    textList = Extract(fileContent, '    text: |-\n', '\n\n')
+    textList = list(map(lambda x: fixYamlExtractedText(x), textList))
+    textList = list(filter(lambda x: x, textList))
+    
+    return fileContent, textList, list(textList)
+
+def fixYamlExtractedText(text):
+    lines = text.split('\n')
+    for l in range(len(lines)):
+        if ' ' * 6 in lines[l]:
+            lines[l] = lines[l][6:len(lines[l])]
+            continue
+        lines[l] = ''
+    return '\n'.join(lines)
+
+def fixYamlEnteredText(text):
+    text = ('\n'+text).replace('\n', '\n      ')
+    return text[1:]
+
+def saveYaml(filePath, fileContent, textList, transList):
+    for t in range(len(textList)):
+        textList[t] = fixYamlEnteredText(textList[t])
+        transList[t] = fixYamlEnteredText(transList[t])
+        fileContent = fileContent.replace(f'    text: |-\n{textList[t]}\n', f'    text: |-\n{transList[t]}\n', 1)
+    open(filePath, 'w', encoding='utf-8', errors='replace').write(fileContent)
