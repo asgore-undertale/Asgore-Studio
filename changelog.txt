@@ -1,5 +1,9 @@
+Version {2.0.2.58}:
+	- Removing '.xlsx' support from {Extractor and Enteror}.
+	- Fixing some issue in {Extractor and Enteror} tool.
+
 Version {2.0.2.57}:
-	- Cleaning {Asgore Files Editor}'s code
+	- Cleaning {Asgore Files Editor}'s code.
 
 Version {2.0.2.56}:
 	- Adding (.yaml Zelda: oracle of ages) support in {Asgore Files Editor}.
@@ -11,3 +15,6 @@ Version {2.0.2.54}:
 	- Adding (changelog.txt).
 	- Moving (أوامر مجرب الخطوط.txt) to (Parts/TextFiles/FontTester commands.txt).
 	- You can see FontTester commands by using the (؟) button in FontTester.
+
+{} around (Tool) or (Scripts) names.
+() around (Normal names) or (Paths).
