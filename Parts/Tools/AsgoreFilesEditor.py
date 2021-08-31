@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication
 from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
-from Parts.Scripts.TablesEditorsFunctions import CSVtoList
+from Parts.Scripts.TablesEditorsFunctions import CSVtoList, loadList
 from Parts.Scripts.loadSaveFiles import *
 from Parts.Scripts.loadSaveFiles import filesTypes
 from Parts.Tools.TextConverter import convert
@@ -118,9 +118,14 @@ def setTranslation(dataBaseDirectory):
             FilesEditorWindow.translationBox.setPlainText(translation)
             return
 
+def openInTablesEditor(textList, transList):
+    tableList = list(map(lambda x: [x[0], x[1]], zip(textList, transList)))
+    # for i in range(len(textList)):
+    tableList.insert(0, ['النص الأصلي', 'الترجمة'])
+    loadList(tableList, TableEditorWindow.Table, True)
 
 app = QApplication(argv)
-from Parts.Windows import FilesEditorWindow
+from Parts.Windows import FilesEditorWindow, TableEditorWindow
 
 FilesEditorWindow.fileTypeComboBox.addItems(filesTypes)
 
@@ -129,6 +134,7 @@ FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))
 FilesEditorWindow.nextButton.clicked.connect(lambda: handleText(True))
 FilesEditorWindow.saveButton.clicked.connect(lambda: save_file())
 FilesEditorWindow.openButton.clicked.connect(lambda: loadFile())
+FilesEditorWindow.openTableButton.clicked.connect(lambda: openInTablesEditor(textList, transList))
 FilesEditorWindow.Convertbutton.clicked.connect(lambda: Convert())
 FilesEditorWindow.ConvertAllbutton.clicked.connect(lambda: ConvertAll())
 keyboard.add_hotkey("F3", lambda: typeCommand())

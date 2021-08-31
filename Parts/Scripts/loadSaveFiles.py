@@ -26,11 +26,11 @@ def loadByIndex(index, filePath, columnIndex):
     textList, transList, oldTransList = '', '', ''
     
     if index == 0:
-        fileContent, textList, transList = loadMsyt(filePath)
+        fileContent, textList = loadMsyt(filePath)
     if index == 1:
-        fileContent, textList, transList = loadKruptar(filePath)
+        fileContent, textList = loadKruptar(filePath)
     if index == 2:
-        textList, transList, table = loadCsvTable(filePath, columnIndex)
+        textList, table = loadCsvTable(filePath, columnIndex)
     if index == 3:
         fileContent, textList, transList = loadPo(filePath)
         oldTransList = list(transList)
@@ -38,7 +38,7 @@ def loadByIndex(index, filePath, columnIndex):
         fileContent, textList, transList = loadKup(filePath)
         oldTransList = list(transList)
     if index == 5:
-        fileContent, textList, transList = loadYaml(filePath)
+        fileContent, textList = loadYaml(filePath)
     
     return fileContent, table, textList, transList, oldTransList, len(textList)-1
 
@@ -124,7 +124,7 @@ def loadMsyt(filePath):
     
     StudioWindow.Report('أوامر ملف .msyt', reportContent)
     
-    return fileContent, textList, list(textList)
+    return fileContent, textList
 
 def saveMsyt(filePath, fileContent, textList, transList):
     for t in range(len(textList)):
@@ -139,7 +139,7 @@ def loadKruptar(filePath):
     textList = fileContent.split(endcommand)
     del textList[-1]
     
-    return fileContent, textList, list(textList)
+    return fileContent, textList
 
 def saveKruptar(filePath, fileContent, textList, transList):
     endCom = FilesEditorWindow.endCommandCell.toPlainText()
@@ -186,7 +186,7 @@ def loadCsvTable(filePath, columnIndex):
         try: textList.append(row[columnIndex])
         except: pass
     
-    return textList, list(textList), table
+    return textList, table
 
 def saveCsvTable(filePath, table, columnIndex, textList, transList):
     for t in range(len(textList)):
@@ -204,7 +204,7 @@ def loadYaml(filePath):
     textList = list(map(lambda x: fixYamlExtractedText(x), textList))
     textList = list(filter(lambda x: x, textList))
     
-    return fileContent, textList, list(textList)
+    return fileContent, textList
 
 def fixYamlExtractedText(text):
     lines = text.split('\n')

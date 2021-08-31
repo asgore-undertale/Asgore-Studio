@@ -1,3 +1,6 @@
+Version {2.0.2.59}:
+	- Adding (نسخ لمحرر الجداول) Button to {Asgore Files Editor} tool.
+
 Version {2.0.2.58}:
 	- Removing '.xlsx' support from {Extractor and Enteror}.
 	- Fixing some issue in {Extractor and Enteror} tool.
