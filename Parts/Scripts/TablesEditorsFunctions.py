@@ -47,6 +47,8 @@ def loadTBL(tablePath : str, Table):
         Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
 
 def loadList(tableList : list, Table, increaseCells : bool):
+    eraseTable(Table)
+    
     rowsnum = len(tableList)
     if rowsnum > Table.rowCount() and increaseCells:
         Table.setRowCount(rowsnum)

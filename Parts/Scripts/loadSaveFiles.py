@@ -22,8 +22,8 @@ def fileType(index):
     if index == 5: return 'yaml'
 
 def loadByIndex(index, filePath, columnIndex):
-    fileContent, table = '', ''
-    textList, transList, oldTransList = '', '', ''
+    fileContent, table = [], []
+    textList, transList, oldTransList = [], [], []
     
     if index == 0:
         fileContent, textList = loadMsyt(filePath)
@@ -39,6 +39,10 @@ def loadByIndex(index, filePath, columnIndex):
         oldTransList = list(transList)
     if index == 5:
         fileContent, textList = loadYaml(filePath)
+    
+    if not transList:
+        transList = ['' for i in range(len(textList))]
+        oldTransList = transList
     
     return fileContent, table, textList, transList, oldTransList, len(textList)-1
 

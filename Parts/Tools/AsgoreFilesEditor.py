@@ -63,6 +63,7 @@ def loadFile():
     
     if not textList: return
     FilesEditorWindow.textBox.setPlainText(textList[0])
+    if not transList: return
     FilesEditorWindow.translationBox.setPlainText(transList[0])
     
 def save_file():

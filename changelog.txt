@@ -1,3 +1,6 @@
+Version {2.0.2.60}:
+	- Fixing some bugs in {Asgore Files Editor} tool.
+
 Version {2.0.2.59}:
 	- Adding (نسخ لمحرر الجداول) Button to {Asgore Files Editor} tool.
 
