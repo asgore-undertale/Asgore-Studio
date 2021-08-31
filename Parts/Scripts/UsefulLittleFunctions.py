@@ -1,4 +1,4 @@
-from Parts.Vars import bowsList
+from Parts.Vars import bowsList, ASCII
 from PyQt5.QtWidgets import QFileDialog
 from os import path, walk
 import re
@@ -173,3 +173,19 @@ def swapCharsOnEdges(text, char):
 
 def ToModulePath(path):
     return path.replace('/', '.').replace('\\', '.').replace('.py', '')
+
+def minimax(text, mini, maxi):
+    if mini and len(text) < mini: return
+    if maxi and len(text) > maxi: return
+    return text
+    
+def filterAscii(text):
+    t = text
+    if isinstance(text, bytes):
+        t = t.decode(errors='replace')
+    
+    for char in t:
+        if char not in ASCII:
+            return
+    
+    return text

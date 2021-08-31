@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QApplication
 from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList, loadList
-from Parts.Scripts.loadSaveFiles import *
-from Parts.Scripts.loadSaveFiles import filesTypes
+from Parts.Scripts.LoadSaveFiles import *
+from Parts.Scripts.LoadSaveFiles import filesTypes
 from Parts.Tools.TextConverter import convert
 from sys import argv, exit
 from os import path
@@ -58,7 +58,7 @@ def loadFile():
     
     handleText.current_item = 0
     columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
-    fileContent, table, textList, transList, oldTransList, sentencesNum = loadByIndex(index, filePath, columnIndex)
+    textList, transList, oldTransList, fileContent, table, sentencesNum = loadByIndex(index, filePath, columnIndex)
     FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
     
     if not textList: return
@@ -121,7 +121,6 @@ def setTranslation(dataBaseDirectory):
 
 def openInTablesEditor(textList, transList):
     tableList = list(map(lambda x: [x[0], x[1]], zip(textList, transList)))
-    # for i in range(len(textList)):
     tableList.insert(0, ['النص الأصلي', 'الترجمة'])
     loadList(tableList, TableEditorWindow.Table, True)
 

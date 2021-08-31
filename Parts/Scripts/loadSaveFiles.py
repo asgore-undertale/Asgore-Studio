@@ -44,7 +44,7 @@ def loadByIndex(index, filePath, columnIndex):
         transList = ['' for i in range(len(textList))]
         oldTransList = transList
     
-    return fileContent, table, textList, transList, oldTransList, len(textList)-1
+    return textList, transList, oldTransList, fileContent, table, len(textList)-1
 
 def saveByIndex(index, filePath, fileContent, textList, transList, oldTransList):
     if index == 0: saveMsyt(filePath, fileContent, textList, transList)
@@ -183,6 +183,7 @@ def loadCsvTable(filePath, columnIndex):
     if columnIndex < 0: return
     
     with open(filePath, newline='', encoding='utf8', errors='replace') as csvfile:
+        csvfile = [x.replace('""', '"') for x in list(csvfile)]
         table = list(csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"'))
     
     textList = []

@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.60")
+        self.setWindowTitle("Asgore Studio 2.0.3.60")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -863,6 +863,7 @@ class EnteringMotherWindow(QMainWindow):
         OptinsLayout = QVBoxLayout()
         self.databaseCheck = QCheckBox("استخدام جدول النصوص للإدخال.")
         self.asciiCheck = QCheckBox("استخراج الآسكي فقط.")
+        self.filesEditorCheck = QCheckBox("استخراج باستخدام محرر الملفات.")
         self.sortedCheck = QCheckBox("النصوص مرتبة حسب الاستخراج.")
         self.tooLongCheck = QCheckBox("عدم إدخال ترجمات أطول من النص الأصلي. (بقيم الهيكس)")
         self.translationOffsetCheck = QCheckBox("مكان الترجمة في حال كانت أقصر:")
@@ -913,6 +914,7 @@ class EnteringMotherWindow(QMainWindow):
         boxesLayout.addWidget(self.translationBox)
         OptinsLayout.addWidget(self.databaseCheck)
         OptinsLayout.addWidget(self.asciiCheck)
+        OptinsLayout.addWidget(self.filesEditorCheck)
         OptinsLayout.addWidget(self.sortedCheck)
         OptinsLayout.addWidget(self.tooLongCheck)
         OptinsLayout.addWidget(self.translationOffsetCheck)

@@ -83,6 +83,7 @@ def loadATE(tablePath : str, Table, increaseCells : bool):
 
 def CSVtoList(tablePath : str):
     with open(tablePath, newline='', encoding='utf8', errors='replace') as csvfile:
+        csvfile = [x.replace('""', '"') for x in list(csvfile)]
         spamreader = csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"')
         return list(spamreader)
 

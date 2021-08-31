@@ -1,8 +1,6 @@
-from openpyxl.styles import PatternFill, Alignment, Font
 from PyQt5.QtWidgets import QApplication, QMessageBox
 from sys import argv, exit
 from os import path, mkdir, makedirs
-import openpyxl
 
 from Parts.Scripts.UsefulLittleFunctions import *
 from Parts.Vars import _CSV_DELIMITER_, Returns
@@ -10,6 +8,7 @@ from Parts.Scripts.TablesEditorsFunctions import CSVtoList
 from Parts.Scripts.ExtractFromText import Extract
 from Parts.Scripts.LineOffset import OffsetTextWithSpaces
 from Parts.Tools.TextConverter import convert
+from Parts.Scripts.LoadSaveFiles import fileType, loadByIndex
 
 textTablePath = r'OtherFiles/Tables/TextTable.csv'
 inputFolder, outputFolder = r'OtherFiles/_FilesFolder/', r'OtherFiles/_AfterEnteringFolder/'
@@ -51,7 +50,7 @@ def detectEnteringErrors():
     return True
 
 def detectExportingErrors(before, after, filesNum):
-    if (not before or not after) and not EnteringWindow.asciiCheck.isChecked():
+    if (not before or not after) and not EnteringWindow.asciiCheck.isChecked() and not EnteringWindow.filesEditorCheck.isChecked():
         QMessageBox.about(EnteringWindow, "!!خطأ", "تم إيقاف العملية،\nاملأ حقلي: ما يسبق النصوص، ما يلحقها.")
         return
     if not filesNum:
@@ -154,10 +153,44 @@ def enter(convertBool = True):
     
     QMessageBox.about(EnteringWindow, "!!تهانيّ", "انتهى الإدخال.")
 
+def fixExtractedItem(item):
+    if isinstance(item, bytes):
+        item = item.decode(encoding='utf8', errors='replace')
+    item = item.replace('"', '""')
+    
+    if _CSV_DELIMITER_ in item:
+        item = f'"{item}"'
+        for r in Returns:
+            item = item.replace(r, f'"{r}"')
+    return item
+
+def getExtractedLists(filepath, fileTypeindex, columnIndex, before, after, mini, maxi):
+    if EnteringWindow.filesEditorCheck.isChecked():
+        if not filepath.endswith('.'+fileType(fileTypeindex)): return None, None
+        extractedTextList, extractedTransList, _, _, _, _ = loadByIndex(fileTypeindex, filepath, columnIndex)
+        
+        if EnteringWindow.asciiCheck.isChecked():
+            extractedTextList = list(map(filterAscii, extractedTextList))
+            extractedTextList = list(filter(lambda a: a, extractedTextList))
+        
+        if mini or maxi:
+            for i in range(len(extractedTextList)):
+                extractedTextList[i] = minimax(extractedTextList[i], mini, maxi)
+            extractedTextList = list(filter(lambda a: a, extractedTextList))
+    else:
+        with open(filepath, 'rb') as f:
+            fileContent = f.read()
+        extractedTextList = Extract(fileContent, before, after, False, mini, maxi, EnteringWindow.asciiCheck.isChecked())
+        extractedTransList = ['' for i in range(len(extractedTextList))]
+    
+    return extractedTextList, extractedTransList
+
 def extract():
     before = byteInCell(EnteringWindow.beforeText.toPlainText()).encode()
     after  = byteInCell(EnteringWindow.afterText.toPlainText()).encode()
     filesList = dirList(inputFolder)
+    fileTypeindex = FilesEditorWindow.fileTypeComboBox.currentIndex()
+    columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
     
     if not detectExportingErrors(before, after, len(filesList)): return
     
@@ -170,28 +203,22 @@ def extract():
     with open(tablePath, 'w', encoding='utf8', errors='replace') as database:
         content = ''
         
-        for filename in filesList:
-            with open(filename, 'rb') as f:
-                fileContent = f.read()
+        for filepath in filesList:
+            extractedTextList, extractedTransList = getExtractedLists(
+                filepath, fileTypeindex, columnIndex, before, after, mini, maxi
+                )
+            if not extractedTextList: continue
             
-            extracted = Extract(fileContent, before, after, False, mini, maxi, EnteringWindow.asciiCheck.isChecked())
-            if not extracted: continue
-            
-            content += f'<-- {filename} -->,-\n'
-            for item in extracted:
-                item = item.decode(encoding='utf8', errors='replace').replace('"', '""')
-                if _CSV_DELIMITER_ in item:
-                    item = f'"{item}"'
-                    for r in Returns:
-                        item = item.replace(r, f'"{r}"')
-                content += item + '\n'
+            content += f'<-- {filepath} -->,-\n'
+            for i in range(len(extractedTextList)):
+                content += f'{fixExtractedItem(extractedTextList[i])},{fixExtractedItem(extractedTransList[i])}\n'
             
         database.write(content)
     
     QMessageBox.about(EnteringWindow, "!!تهانيّ", "انتهى الاستخراج.")
 
 app = QApplication(argv)
-from Parts.Windows import EnteringWindow, TextConverterOptionsWindow, StudioWindow
+from Parts.Windows import EnteringWindow, TextConverterOptionsWindow, StudioWindow, FilesEditorWindow
 
 EnteringWindow.textTableButton.clicked.connect(lambda: openTextTable())
 EnteringWindow.enterButton.clicked.connect(lambda: enter(False))

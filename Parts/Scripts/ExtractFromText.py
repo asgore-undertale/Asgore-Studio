@@ -1,22 +1,6 @@
-from Parts.Scripts.UsefulLittleFunctions import getRegexPattern
+from Parts.Scripts.UsefulLittleFunctions import getRegexPattern, filterAscii, minimax
 from Parts.Vars import ASCII
 import re
-
-def minimax(text, mini, maxi):
-    if mini and len(text) < mini: return
-    if maxi and len(text) > maxi: return
-    return text
-    
-def isAscii(text):
-    t = text
-    if isinstance(text, bytes):
-        t = t.decode(errors='replace')
-    
-    for char in t:
-        if char not in ASCII:
-            return
-    
-    return text
 
 def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = False, onlyASCII = False):
     if not before or not after:
@@ -46,7 +30,7 @@ def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = Fa
         extractedList = [x.replace(_UnusedChar, _EnterChar) for x in extractedList]
     
     if onlyASCII:
-        extractedList = list(map(isAscii, extractedList))
+        extractedList = list(map(filterAscii, extractedList))
         extractedList = list(filter(lambda a: a, extractedList))
     
     if mini or maxi:
