@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.2.54")
+        self.setWindowTitle("Asgore Studio 2.0.2.55")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -554,10 +554,11 @@ class FilesEditorMotherWindow(QMainWindow):
         self.setCentralWidget(container)
         
         fileTypeComboBoxOptions = [
-            "ملف زيلدا نفس البرية msyt.",
-            "ملف نص مستخرج من الكروبتار txt.",
-            "جدول csv.",
-            "ملف po."
+            "(msyt) Zelda: Breath of the wild",
+            "(txt) Extracted from kruptar tool",
+            "(csv) Table",
+            "(po) Yakuza Kiwami",
+            "(kup) Extracted from kuriimu tool"
         ]
         self.fileTypeComboBox = QComboBox()
         self.fileTypeComboBox.addItems(fileTypeComboBoxOptions)
