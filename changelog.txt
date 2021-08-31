@@ -1,8 +1,11 @@
+Version {2.0.2.57}:
+	- Cleaning {Asgore Files Editor}'s code
+
 Version {2.0.2.56}:
-	- Adding (.yaml Zelda: oracle of ages) support in Asgore Files Editor.
+	- Adding (.yaml Zelda: oracle of ages) support in {Asgore Files Editor}.
 
 Version {2.0.2.55}:
-	- Adding (.kup) support in Asgore Files Editor.
+	- Adding (.kup) support in {Asgore Files Editor}.
 
 Version {2.0.2.54}:
 	- Adding (changelog.txt).

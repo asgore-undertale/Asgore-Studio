@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QApplication
 from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList
-from Parts.Scripts.ConvertFiles import *
+from Parts.Scripts.loadSaveFiles import *
+from Parts.Scripts.loadSaveFiles import filesTypes
 from Parts.Tools.TextConverter import convert
 from sys import argv, exit
 from os import path
@@ -12,15 +13,6 @@ fileContent = ''
 textList, transList, oldTransList = '', '', ''
 database, dataBaseDirectory, table = '', '', ''
 sentencesNum, columnIndex = '', ''
-
-def fileType():
-    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
-    if index == 0: return 'msyt'
-    if index == 1: return 'txt'
-    if index == 2: return 'csv'
-    if index == 3: return 'po'
-    if index == 4: return 'kup'
-    if index == 5: return 'yaml'
 
 def typeCommand():
     if not FilesEditorWindow.isActiveWindow(): return
@@ -57,41 +49,17 @@ def openTextDataBase():
     elif filePath.endswith('.csv'):
         database = CSVtoList(filePath)
 
-def indexHandle(index, filePath, case):
-    global fileContent, columnIndex, textList, transList, oldTransList, table, sentencesNum
-    if case:
-        handleText.current_item = 0
-        if index == 0:
-            fileContent, textList, transList = loadMsyt(filePath)
-        if index == 1:
-            fileContent, textList, transList = loadKruptar(filePath)
-        if index == 2:
-            columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
-            textList, transList, table = loadCsvTable(filePath, columnIndex)
-        if index == 3:
-            fileContent, textList, transList = loadPo(filePath)
-            oldTransList = list(transList)
-        if index == 4:
-            fileContent, textList, transList = loadKup(filePath)
-            oldTransList = list(transList)
-        if index == 5:
-            fileContent, textList, transList = loadYaml(filePath)
-        
-        sentencesNum = len(textList)-1
-        FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
-    else:
-        if index == 0: saveMsyt(filePath, fileContent, textList, transList)
-        if index == 1: saveKruptar(filePath, fileContent, textList, transList)
-        if index == 2: saveCsvTable(filePath, table, columnIndex, textList, transList)
-        if index == 3: savePo(filePath, fileContent, textList, transList, oldTransList)
-        if index == 4: saveKup(filePath, fileContent, textList, transList, oldTransList)
-        if index == 5: saveYaml(filePath, fileContent, textList, transList)
-
 def loadFile():
-    filePath = openFile([fileType()], FilesEditorWindow, 'ملف')
+    global fileContent, table, textList, transList, oldTransList, sentencesNum
+    
+    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
+    filePath = openFile([fileType(index)], FilesEditorWindow, 'ملف')
     if not filePath: return
     
-    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), filePath, True)
+    handleText.current_item = 0
+    columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
+    fileContent, table, textList, transList, oldTransList, sentencesNum = loadByIndex(index, filePath, columnIndex)
+    FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
     
     if not textList: return
     FilesEditorWindow.textBox.setPlainText(textList[0])
@@ -99,12 +67,12 @@ def loadFile():
     
 def save_file():
     global transList
-    filePath = saveFile([fileType()], FilesEditorWindow, 'ملف')
+    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
+    filePath = saveFile([fileType(index)], FilesEditorWindow, 'ملف')
     if not filePath: return
     
     transList[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
-    
-    indexHandle(FilesEditorWindow.fileTypeComboBox.currentIndex(), filePath, False)
+    saveByIndex(index, filePath, fileContent, textList, transList, oldTransList)
 
 def handleText(direction = True):
     if not sentencesNum: return
@@ -153,6 +121,8 @@ def setTranslation(dataBaseDirectory):
 
 app = QApplication(argv)
 from Parts.Windows import FilesEditorWindow
+
+FilesEditorWindow.fileTypeComboBox.addItems(filesTypes)
 
 FilesEditorWindow.textButton.clicked.connect(lambda: openTextDataBase())
 FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))
