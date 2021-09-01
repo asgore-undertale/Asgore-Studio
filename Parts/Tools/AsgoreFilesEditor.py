@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication
 from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList, loadList
 from Parts.Scripts.LoadSaveFiles import *
-from Parts.Scripts.LoadSaveFiles import filesTypes
+from Parts.Scripts.LoadSaveFiles import filesTypesDescription
 from Parts.Tools.TextConverter import convert
 from sys import argv, exit
 from os import path
@@ -127,7 +127,7 @@ def openInTablesEditor(textList, transList):
 app = QApplication(argv)
 from Parts.Windows import FilesEditorWindow, TableEditorWindow
 
-FilesEditorWindow.fileTypeComboBox.addItems(filesTypes)
+FilesEditorWindow.fileTypeComboBox.addItems(filesTypesDescription)
 
 FilesEditorWindow.textButton.clicked.connect(lambda: openTextDataBase())
 FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))

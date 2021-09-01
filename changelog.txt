@@ -1,3 +1,6 @@
+Version {2.0.3.61}:
+	- A tiny edit on {Asgore Files Editor}' script.
+
 Version {2.0.3.60}:
 	- Adding (Extract with {Asgore Files Editor} tool) option to {Extractor and Enteror} tool.
 

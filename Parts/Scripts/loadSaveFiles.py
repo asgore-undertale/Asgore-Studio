@@ -4,7 +4,7 @@ from Parts.Windows import StudioWindow
 from Parts.Vars import _CSV_DELIMITER_
 
 
-filesTypes = [
+filesTypesDescription = [
     "(msyt) Zelda: Breath of the wild",
     "(txt) Extracted from kruptar tool",
     "(csv) Table",
@@ -13,13 +13,10 @@ filesTypes = [
     "(yaml) Zelda: oracle of ages"
 ]
 
+typesList = ['msyt', 'txt', 'csv', 'po', 'kup', 'yaml']
+
 def fileType(index):
-    if index == 0: return 'msyt'
-    if index == 1: return 'txt'
-    if index == 2: return 'csv'
-    if index == 3: return 'po'
-    if index == 4: return 'kup'
-    if index == 5: return 'yaml'
+    return typesList[index]
 
 def loadByIndex(index, filePath, columnIndex):
     fileContent, table = [], []
