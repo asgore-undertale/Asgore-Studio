@@ -1,3 +1,6 @@
+Version {2.0.3.63}:
+	- A little fix for the previous version.
+
 Version {2.0.3.62}:
 	- Adding new options in {Text Converter} tool.
 		• New page command.

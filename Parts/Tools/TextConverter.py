@@ -115,9 +115,9 @@ def convert(text, thisTool = True):
     text = cell._pageCommand.join(textPagesList)
     if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
     
-    if cell._newpageCommand:
+    if cell._newpageCommand and cell._pageCommand:
         text = text.replace(cell._pageCommand, cell._newpageCommand)
-    if cell._newlineCommand:
+    if cell._newlineCommand and cell._lineCommand:
         text = text.replace(cell._lineCommand, cell._newlineCommand)
     
     if thisTool and TextConverterOptionsWindow.AutoCopyCheck.isChecked():
