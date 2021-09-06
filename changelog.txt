@@ -1,3 +1,8 @@
+Version {2.0.3.62}:
+	- Adding new options in {Text Converter} tool.
+		• New page command.
+		• New line command.
+
 Version {2.0.3.61}:
 	- A tiny edit on {Asgore Files Editor}' script.
 

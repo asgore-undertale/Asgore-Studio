@@ -61,6 +61,8 @@ def cell():
     cell._endCommand    = byteInCell(TextConverterOptionsWindow.endCommand.toPlainText())
     cell._pageCommand   = byteInCell(TextConverterOptionsWindow.pageCommand.toPlainText())
     cell._lineCommand   = byteInCell(TextConverterOptionsWindow.lineCommand.toPlainText())
+    cell._newpageCommand   = byteInCell(TextConverterOptionsWindow.newpageCommand.toPlainText())
+    cell._newlineCommand   = byteInCell(TextConverterOptionsWindow.newlineCommand.toPlainText())
     cell._convertedByte = byteInCell(TextConverterOptionsWindow.convertedByte.toPlainText())
     
     if not TextConverterOptionsWindow.FixSlashes.isChecked(): return
@@ -68,6 +70,8 @@ def cell():
     cell._endCommand    = fixSlashes(cell._endCommand)
     cell._pageCommand   = fixSlashes(cell._pageCommand)
     cell._lineCommand   = fixSlashes(cell._lineCommand)
+    cell._newpageCommand   = fixSlashes(cell._newpageCommand)
+    cell._newlineCommand   = fixSlashes(cell._newlineCommand)
     cell._convertedByte = fixSlashes(cell._convertedByte)
 
 def applyConverts(text):
@@ -110,6 +114,11 @@ def convert(text, thisTool = True):
         if TextConverterOptionsWindow.RL_check.isChecked():  textPagesList[p] = cell._lineCommand.join(textPagesList[p].split(cell._lineCommand)[::-1]) #Reverse Lines
     text = cell._pageCommand.join(textPagesList)
     if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
+    
+    if cell._newpageCommand:
+        text = text.replace(cell._pageCommand, cell._newpageCommand)
+    if cell._newlineCommand:
+        text = text.replace(cell._lineCommand, cell._newlineCommand)
     
     if thisTool and TextConverterOptionsWindow.AutoCopyCheck.isChecked():
         pyperclip.copy(text)

@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.3.61")
+        self.setWindowTitle("Asgore Studio 2.0.3.62")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -676,7 +676,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         container.addTab(tab2, 'صفحة 2')
 
         layout = QGridLayout()
-        layout2 = QVBoxLayout()
+        layout2 = QGridLayout()
         tab1.setLayout(layout)
         tab2.setLayout(layout2)
         self.setCentralWidget(container)
@@ -735,12 +735,12 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.endCommand.setFixedSize(90, 26)
         self.endCommand.setText("]")
         pageComLabel = QLabel()
-        pageComLabel.setText("أمر صفحة جديدة:")
+        pageComLabel.setText("أمر الصفحة:")
         self.pageCommand = QTextEdit()
         self.pageCommand.setFixedSize(90, 26)
         self.pageCommand.setText("<page>")
         lineComLabel = QLabel()
-        lineComLabel.setText("أمر سطر جديد:")
+        lineComLabel.setText("أمر السطر:")
         self.lineCommand = QTextEdit()
         self.lineCommand.setFixedSize(90, 26)
         self.lineCommand.setText("<line>")
@@ -753,14 +753,25 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.C_databaseButton = QPushButton()
         self.C_databaseButton.setText("فتح جدول تحويل")
         
-        
         self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
         self.SSL_check = QCheckBox("ترتيب أسطر الصفحة تصاعديا")
         self.SLS_check = QCheckBox("ترتيب أسطر الصفحة تنازليا")
         self.RL_check = QCheckBox("عكس ترتيب أسطر الصفحات")
         self.RP_check = QCheckBox("عكس ترتيب الصفحات")
         
-
+        
+        newpageComLabel = QLabel()
+        newpageComLabel.setText("أمر الصفحة الجديد:")
+        self.newpageCommand = QTextEdit()
+        self.newpageCommand.setFixedSize(90, 26)
+        self.newpageCommand.setText("{page}")
+        newlineComLabel = QLabel()
+        newlineComLabel.setText("أمر السطر جديد:")
+        self.newlineCommand = QTextEdit()
+        self.newlineCommand.setFixedSize(90, 26)
+        self.newlineCommand.setText("{line}")
+        
+        
         cellsLayout.addWidget(startComLabel, 0, 0)
         cellsLayout.addWidget(self.startCommand, 0, 1)
         cellsLayout.addWidget(endComLabel, 1, 0)
@@ -800,6 +811,10 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         layout.addLayout(checksLayout, 0, 0)
         layout.addLayout(containerLayout, 0, 1)
         
+        layout2.addWidget(newpageComLabel, 0, 0)
+        layout2.addWidget(self.newpageCommand, 0, 1)
+        layout2.addWidget(newlineComLabel, 1, 0)
+        layout2.addWidget(self.newlineCommand, 1, 1)
         # layout2.addWidget()
 
 TextConverterOptionsWindow = TextConverterOptionsMotherWindow()
