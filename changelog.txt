@@ -1,3 +1,6 @@
+Version {2.0.3.64}:
+	- Adding (lctrl+P) and (lctrl+L) shortcuts to write (new line command) and (new page command) instantly.
+
 Version {2.0.3.63}:
 	- A little fix for the previous version.
 
@@ -36,5 +39,5 @@ Version {2.0.2.54}:
 	- Moving (أوامر مجرب الخطوط.txt) to (Parts/TextFiles/FontTester commands.txt).
 	- You can see FontTester commands by using the (؟) button in FontTester.
 
-{} around (Tool) or (Scripts) names.
+{} around {Tool} or {Scripts} names.
 () around (Normal names) or (Paths).

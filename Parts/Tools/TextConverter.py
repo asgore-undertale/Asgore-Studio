@@ -56,23 +56,19 @@ def applyCustomScripts(text):
     
     return text
 
+def takeFromCell(celltext):
+    if TextConverterOptionsWindow.FixSlashes.isChecked():
+        return fixSlashes(byteInCell(celltext))
+    return byteInCell(celltext)
+
 def cell():
-    cell._startCommand  = byteInCell(TextConverterOptionsWindow.startCommand.toPlainText())
-    cell._endCommand    = byteInCell(TextConverterOptionsWindow.endCommand.toPlainText())
-    cell._pageCommand   = byteInCell(TextConverterOptionsWindow.pageCommand.toPlainText())
-    cell._lineCommand   = byteInCell(TextConverterOptionsWindow.lineCommand.toPlainText())
-    cell._newpageCommand   = byteInCell(TextConverterOptionsWindow.newpageCommand.toPlainText())
-    cell._newlineCommand   = byteInCell(TextConverterOptionsWindow.newlineCommand.toPlainText())
-    cell._convertedByte = byteInCell(TextConverterOptionsWindow.convertedByte.toPlainText())
-    
-    if not TextConverterOptionsWindow.FixSlashes.isChecked(): return
-    cell._startCommand  = fixSlashes(cell._startCommand)
-    cell._endCommand    = fixSlashes(cell._endCommand)
-    cell._pageCommand   = fixSlashes(cell._pageCommand)
-    cell._lineCommand   = fixSlashes(cell._lineCommand)
-    cell._newpageCommand   = fixSlashes(cell._newpageCommand)
-    cell._newlineCommand   = fixSlashes(cell._newlineCommand)
-    cell._convertedByte = fixSlashes(cell._convertedByte)
+    cell._startCommand = takeFromCell(TextConverterOptionsWindow.startCommand.toPlainText())
+    cell._endCommand = takeFromCell(TextConverterOptionsWindow.endCommand.toPlainText())
+    cell._pageCommand = takeFromCell(TextConverterOptionsWindow.pageCommand.toPlainText())
+    cell._lineCommand = takeFromCell(TextConverterOptionsWindow.lineCommand.toPlainText())
+    cell._newpageCommand = takeFromCell(TextConverterOptionsWindow.newpageCommand.toPlainText())
+    cell._newlineCommand = takeFromCell(TextConverterOptionsWindow.newlineCommand.toPlainText())
+    cell._convertedByte = takeFromCell(TextConverterOptionsWindow.convertedByte.toPlainText())
 
 def applyConverts(text):
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
@@ -141,7 +137,7 @@ def convertByHotkey():
     # if not TextConverter.isActiveWindow(): return
     pyperclip.copy('')
     pyautogui.hotkey('ctrl', 'c')
-    time.sleep(.01)  # لنضمن ألا يسبق البرنامج ctrl-c
+    time.sleep(.05)  # لنضمن ألا يسبق البرنامج ctrl-c
     pyperclip.copy(convert(pyperclip.paste()))
     pyautogui.hotkey('ctrl', 'v')
 
@@ -165,6 +161,8 @@ TextConverterOptionsWindow.C_databaseButton.clicked.connect(lambda: openConvertT
 TextConverterOptionsWindow.CustomScriptComboBox.currentIndexChanged.connect(loadCustomScripts)
 
 keyboard.add_hotkey("ctrl+b", lambda: convertByHotkey())
+keyboard.add_hotkey("ctrl+p", lambda: keyboard.write(takeFromCell(TextConverterOptionsWindow.newpageCommand.toPlainText())))
+keyboard.add_hotkey("ctrl+l", lambda: keyboard.write(takeFromCell(TextConverterOptionsWindow.newlineCommand.toPlainText())))
 
 if __name__ == '__main__':
     TextConverterWindow.show()

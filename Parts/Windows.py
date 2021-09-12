@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.3.63")
+        self.setWindowTitle("Asgore Studio 2.0.3.64")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -27,12 +27,12 @@ class StudioMotherWindow(QMainWindow):
         
         self.importantInfo = ('- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n'
             '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
-            '- لا تفتح ملفات الاكسل أثناء تشغيل الأداة.\n'
-            '- ترتيب وحذف السطور يعمل لكل صفحة على حدة.\n'
             '- اضغط F3 في محرّر الملفات لإضافة <c>.\n'
-            '- اضغط ctrl+B لتحويل النص المحدد.\n'
-            '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n' #
-            "- اضغط ctrl+S لالتقاط صورة لمربع الحوار في مجرب الخطوط")
+            '- اضغط lctrl+B لتحويل النص المحدد.\n'
+            '- اضغط lctrl+P لكتابة أمر الصفحة الجديد من إعدادات محول النصوص.\n'
+            '- اضغط lctrl+L لكتابة أمر السطر الجديد من إعدادات محول النصوص.\n'
+            '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n'
+            '- اضغط ctrl+S لالتقاط صورة لمربع الحوار في مجرب الخطوط')
     
     def createBars(self):
         self.bar = self.menuBar()
