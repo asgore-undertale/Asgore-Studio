@@ -116,8 +116,8 @@ def enter(convertBool = True):
             translation, tooLong = prepareTextAndTranslation(text, EnteringWindow.translationBox.toPlainText(), convertBool)
             if translation != None: textList = [[text, translation]]
     
-    before = byteInCell(EnteringWindow.beforeText.toPlainText())
-    after = byteInCell(EnteringWindow.afterText.toPlainText())
+    before = byteInCell(EnteringWindow.beforeText.getValue())
+    after = byteInCell(EnteringWindow.afterText.getValue())
     
     for filename in filesList:
         with open(filename, 'rb') as f:
@@ -190,12 +190,12 @@ def extract():
     after  = byteInCell(EnteringWindow.afterText.toPlainText()).encode()
     filesList = dirList(inputFolder)
     fileTypeindex = FilesEditorWindow.fileTypeComboBox.currentIndex()
-    columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
+    columnIndex = FilesEditorWindow.columnIndexCell.getValue() -1
     
     if not detectExportingErrors(before, after, len(filesList)): return
     
-    mini = tryTakeNum(byteInCell(EnteringWindow.minText.toPlainText()), False)
-    maxi = tryTakeNum(byteInCell(EnteringWindow.maxText.toPlainText()), False)
+    mini = EnteringWindow.minText.getValue()
+    maxi = EnteringWindow.maxText.getValue()
     
     tablePath = saveFile(['csv'], EnteringWindow, 'جدول الاستخراج')
     if not tablePath: return

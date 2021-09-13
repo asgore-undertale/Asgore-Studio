@@ -46,14 +46,24 @@ def sortDictByKeyLengh(Dict):
     return newDict
 
 def tryTakeNum(string : str, defaultNum = 0, isInt = True):
+    string = str(string)
+    
+    if not len(string): return defaultNum
+    while string[0] == '0':
+        string = string[1:len(string)]
+        if not len(string): return defaultNum
+    
     try:
-        while string[0] == '0': string = string[1:len(string)]
-        num = float(eval(string))
-        if isInt: return int(num)
-        return num
-        
+        if isInt:
+            return int(eval(string))
+        return float(eval(string))
     except:
-        return defaultNum
+        try:
+            if isInt:
+                return int(float(string))
+            return float(string)
+        except:
+            return defaultNum
 
 def checkForCommand(command : str, text : str, currentIndex : int):
     try:

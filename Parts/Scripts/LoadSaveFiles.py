@@ -133,7 +133,7 @@ def saveMsyt(filePath, fileContent, textList, transList):
     open(filePath, 'w', encoding='utf-8', errors='replace').write(TxtToMsyt(fileContent))
 
 def loadKruptar(filePath):
-    endcommand = FilesEditorWindow.endCommandCell.toPlainText()
+    endcommand = FilesEditorWindow.endCommandCell.getValue()
     if not endcommand: return
     
     fileContent = open(filePath, 'r', encoding='utf-8', errors='replace').read()
@@ -143,7 +143,7 @@ def loadKruptar(filePath):
     return fileContent, textList
 
 def saveKruptar(filePath, fileContent, textList, transList):
-    endCom = FilesEditorWindow.endCommandCell.toPlainText()
+    endCom = FilesEditorWindow.endCommandCell.getValue()
     for t in range(len(textList)):
         fileContent = fileContent.replace(textList[t] + endCom, transList[t] + endCom, 1)
     

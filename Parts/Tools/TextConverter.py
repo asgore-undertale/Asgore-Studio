@@ -62,13 +62,13 @@ def takeFromCell(celltext):
     return byteInCell(celltext)
 
 def cell():
-    cell._startCommand = takeFromCell(TextConverterOptionsWindow.startCommand.toPlainText())
-    cell._endCommand = takeFromCell(TextConverterOptionsWindow.endCommand.toPlainText())
-    cell._pageCommand = takeFromCell(TextConverterOptionsWindow.pageCommand.toPlainText())
-    cell._lineCommand = takeFromCell(TextConverterOptionsWindow.lineCommand.toPlainText())
-    cell._newpageCommand = takeFromCell(TextConverterOptionsWindow.newpageCommand.toPlainText())
-    cell._newlineCommand = takeFromCell(TextConverterOptionsWindow.newlineCommand.toPlainText())
-    cell._convertedByte = takeFromCell(TextConverterOptionsWindow.convertedByte.toPlainText())
+    cell._startCommand = takeFromCell(TextConverterOptionsWindow.startCommand.getValue())
+    cell._endCommand = takeFromCell(TextConverterOptionsWindow.endCommand.getValue())
+    cell._pageCommand = takeFromCell(TextConverterOptionsWindow.pageCommand.getValue())
+    cell._lineCommand = takeFromCell(TextConverterOptionsWindow.lineCommand.getValue())
+    cell._newpageCommand = takeFromCell(TextConverterOptionsWindow.newpageCommand.getValue())
+    cell._newlineCommand = takeFromCell(TextConverterOptionsWindow.newlineCommand.getValue())
+    cell._convertedByte = takeFromCell(TextConverterOptionsWindow.convertedByte.getValue())
 
 def applyConverts(text):
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()

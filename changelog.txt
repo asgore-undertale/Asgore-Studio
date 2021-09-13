@@ -1,3 +1,8 @@
+Version {2.0.4.64}:
+	- Adding the (Advanced Cells).
+	- Some Fixes
+	- improving {FontTester Options Window}'s code.
+
 Version {2.0.3.64}:
 	- Adding (lctrl+P) and (lctrl+L) shortcuts to write (new line command) and (new page command) instantly.
 

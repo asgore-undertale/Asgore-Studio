@@ -1,6 +1,6 @@
 from Parts.Scripts.AnalyzeText import analyzeText
 from Parts.Scripts.SuggestDTE import suggestDTE
-from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
+from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile
 from PyQt5.QtWidgets import QApplication, QAction
 from sys import argv, exit
 
@@ -8,17 +8,17 @@ app = QApplication(argv)
 from Parts.Windows import TextAnalyzerWindow
 
 def analyze():
-    resultsNum = tryTakeNum(TextAnalyzerWindow.resultsNumCell.toPlainText())
-    text, log = analyzeText(TextAnalyzerWindow.enteredBox.toPlainText(), TextAnalyzerWindow.ignoredDtesCell.toPlainText(), resultsNum)
+    resultsNum = TextAnalyzerWindow.resultsNumCell.getValue()
+    text, log = analyzeText(TextAnalyzerWindow.enteredBox.toPlainText(), TextAnalyzerWindow.ignoredDtesCell.getValue(), resultsNum)
     TextAnalyzerWindow.resultBox.setPlainText(text)
     TextAnalyzerWindow.logBox.setPlainText(log)
 
 def suggest():
-    resultsNum = tryTakeNum(TextAnalyzerWindow.resultsNumCell.toPlainText())
-    mergedCharFromLen = tryTakeNum(TextAnalyzerWindow.mergedCharLenFromCell.toPlainText())
-    mergedCharToLen = tryTakeNum(TextAnalyzerWindow.mergedCharLenToCell.toPlainText())
+    resultsNum = TextAnalyzerWindow.resultsNumCell.getValue()
+    mergedCharFromLen = TextAnalyzerWindow.mergedCharLenFromCell.getValue()
+    mergedCharToLen = TextAnalyzerWindow.mergedCharLenToCell.getValue()
     dteList, log = suggestDTE(TextAnalyzerWindow.enteredBox.toPlainText(),
-        TextAnalyzerWindow.ignoredCharsCell.toPlainText() + '\n\r',
+        TextAnalyzerWindow.ignoredCharsCell.getValue() + '\n\r',
         (mergedCharFromLen, mergedCharToLen), resultsNum
         )
     TextAnalyzerWindow.logBox.setPlainText(log)

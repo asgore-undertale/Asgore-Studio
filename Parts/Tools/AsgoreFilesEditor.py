@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication
-from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, tryTakeNum
+from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile
 from Parts.Scripts.TablesEditorsFunctions import CSVtoList, loadList
 from Parts.Scripts.LoadSaveFiles import *
 from Parts.Scripts.LoadSaveFiles import filesTypesDescription
@@ -57,7 +57,7 @@ def loadFile():
     if not filePath: return
     
     handleText.current_item = 0
-    columnIndex = tryTakeNum(FilesEditorWindow.columnIndexCell.toPlainText()) -1
+    columnIndex = FilesEditorWindow.columnIndexCell.getValue() -1
     textList, transList, oldTransList, fileContent, table, sentencesNum = loadByIndex(index, filePath, columnIndex)
     FilesEditorWindow.per.setText(f"{sentencesNum} \ {0}")
     

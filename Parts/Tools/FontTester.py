@@ -286,8 +286,8 @@ def handleMsyt(fileContent):
     fileContent = '\n'.join(textList)
         
     linesNum = 3
-    fontSize = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
-    pixelsPerLine = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
+    fontSize = FontTesterOptionsWindow.fontSizeCell.getValue()
+    pixelsPerLine = FontTesterOptionsWindow.pixelsPerCell.getValue()
     
     FontTesterOptionsWindow.fontSizeCell.setPlainText(f'{fontSize}')
     FontTesterOptionsWindow.pixelsPerCell.setPlainText(f'{pixelsPerLine}')
@@ -319,17 +319,17 @@ def openFont():
     if _imgPath: ImgPath = _imgPath
 
 def start():
-    fontSize  = tryTakeNum(FontTesterOptionsWindow.fontSizeCell.toPlainText(), 16)
-    boxWidth  = tryTakeNum(FontTesterOptionsWindow.boxWidthCell.toPlainText(), 180)
-    boxHeight = tryTakeNum(FontTesterOptionsWindow.boxHeightCell.toPlainText(), 60)
-    pixelsPer = tryTakeNum(FontTesterOptionsWindow.pixelsPerCell.toPlainText(), 60)
+    fontSize  = FontTesterOptionsWindow.fontSizeCell.getValue()
+    boxWidth  = FontTesterOptionsWindow.boxWidthCell.getValue()
+    boxHeight = FontTesterOptionsWindow.boxHeightCell.getValue()
+    pixelsPer = FontTesterOptionsWindow.pixelsPerCell.getValue()
     
     text         = FontTesterWindow.enteredTextBox.toPlainText()
-    newLineCom   = FontTesterOptionsWindow.newLineCell.toPlainText()
-    newPageCom   = FontTesterOptionsWindow.newPageCell.toPlainText()
-    beforeCom    = FontTesterOptionsWindow.beforeComCell.toPlainText()
-    afterCom     = FontTesterOptionsWindow.afterComCell.toPlainText()
-    offsetCom    = FontTesterOptionsWindow.offsetComCell.toPlainText()
+    newLineCom   = FontTesterOptionsWindow.newLineCell.getValue()
+    newPageCom   = FontTesterOptionsWindow.newPageCell.getValue()
+    beforeCom    = FontTesterOptionsWindow.beforeComCell.getValue()
+    afterCom     = FontTesterOptionsWindow.afterComCell.getValue()
+    offsetCom    = FontTesterOptionsWindow.offsetComCell.getValue()
     fromRight    = FontTesterOptionsWindow.fromRightCheck.isChecked()
     lineBox      = FontTesterOptionsWindow.lineBoxCheck.isChecked()
     charBox      = FontTesterOptionsWindow.charBoxCheck.isChecked()
@@ -344,8 +344,8 @@ def start():
         lineBox, charBox, boxAnimation, offset, offsetWith, offsetCom
         )
 
-FontPath = r'OtherFiles\Fonts\font.aft' * path.exists(r'OtherFiles\Fonts\font.aft')
-ImgPath = r'OtherFiles\Fonts\img.png' * path.exists(r'OtherFiles\Fonts\img.png')
+FontPath = r'OtherFiles\Fonts\AftFont.aft' * path.exists(r'OtherFiles\Fonts\AftFont.aft')
+ImgPath = r'OtherFiles\Fonts\AftFont.png' * path.exists(r'OtherFiles\Fonts\AftFont.png')
 borderThick, borderColor = 10, (255, 255, 255)
 
 app = QApplication(argv)
