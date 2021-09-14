@@ -40,7 +40,8 @@ def saveFont():
     if not path.exists(fontPath) or not imgFileSavePath: return
     
     charsPerCol = (len(chars) // charsPerRow) + (((len(chars) % charsPerRow) > 0) * 1)
-    imgSize = (beforeFirstCol + BetweenCharsX * (((charsPerRow * (charsPerCol > 1)) + (len(chars) * (charsPerCol == 1))) - 1) + (Width * ((charsPerRow * (charsPerCol > 1)) + (len(chars) * (charsPerCol == 1)))),
+    rowLength = ((charsPerRow * (charsPerCol > 1)) + (len(chars) * (charsPerCol == 1)))
+    imgSize = (beforeFirstCol + BetweenCharsX * (rowLength - 1) + (Width * rowLength),
         beforeFirstRow + BetweenCharsY * (charsPerCol - 1) + Height * charsPerCol)
     
     drawFontTable(
