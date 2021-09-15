@@ -1,3 +1,6 @@
+Version {2.0.4.66}:
+	- Adding (Auto Convert) option in (Text Converter) tool.
+
 Version {2.0.4.65}:
 	- A little edit on the Windows code.
 

@@ -141,6 +141,10 @@ def convertByHotkey():
     pyperclip.copy(convert(pyperclip.paste()))
     pyautogui.hotkey('ctrl', 'v')
 
+def AutoConvert():
+    if not TextConverterOptionsWindow.AutoConvertCheck.isChecked(): return
+    TextConverterWindow.resultBox.setPlainText(convert(TextConverterWindow.enteredBox.toPlainText()))
+
 # -------------------------------------------------->
 
 app = QApplication(argv)
@@ -159,10 +163,11 @@ TextConverterWindow.openFileButton.clicked.connect(lambda: opentextFile)
 TextConverterWindow.ConvertFilesButton.clicked.connect(lambda: convertFiles)
 TextConverterOptionsWindow.C_databaseButton.clicked.connect(lambda: openConvertTable)
 TextConverterOptionsWindow.CustomScriptComboBox.currentIndexChanged.connect(loadCustomScripts)
+TextConverterWindow.enteredBox.textChanged.connect(AutoConvert)
 
 keyboard.add_hotkey("ctrl+b", lambda: convertByHotkey())
-keyboard.add_hotkey("ctrl+p", lambda: keyboard.write(takeFromCell(TextConverterOptionsWindow.newpageCommand.toPlainText())))
-keyboard.add_hotkey("ctrl+l", lambda: keyboard.write(takeFromCell(TextConverterOptionsWindow.newlineCommand.toPlainText())))
+keyboard.add_hotkey("ctrl+p", lambda: keyboard.write(TextConverterOptionsWindow.newpageCommand.getValue()))
+keyboard.add_hotkey("ctrl+l", lambda: keyboard.write(TextConverterOptionsWindow.newlineCommand.getValue()))
 
 if __name__ == '__main__':
     TextConverterWindow.show()

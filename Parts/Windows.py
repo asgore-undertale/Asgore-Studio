@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.4.64")
+        self.setWindowTitle("Asgore Studio 2.0.4.66")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -622,7 +622,8 @@ class TextConverterOptionsMotherWindow(QMainWindow):
 
 
         self.FixSlashes = QCheckBox(r"مراعاة (n, \r, \t, \0\)")
-        self.AutoCopyCheck = QCheckBox("النسخ تلقائيا بعد التحويل")
+        self.AutoCopyCheck = QCheckBox("النسخ تلقائياً بعد التحويل")
+        self.AutoConvertCheck = QCheckBox("التحويل تلقائياً عند الكتابة")
         
         containerLayout = QVBoxLayout()
         cellsLayout = QGridLayout()
@@ -679,6 +680,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         checksLayout.addLayout(customScriptLayout)
         checksLayout.addWidget(self.FixSlashes)
         checksLayout.addWidget(self.AutoCopyCheck)
+        checksLayout.addWidget(self.AutoConvertCheck)
         
         containerLayout.addLayout(cellsLayout)
         containerLayout.addWidget(self.DDL_check)
