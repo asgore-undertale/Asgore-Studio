@@ -1,3 +1,6 @@
+Version {2.0.4.67}:
+	- Some Fixes.
+
 Version {2.0.4.66}:
 	- Adding (Auto Convert) option in (Text Converter) tool.
 

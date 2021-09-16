@@ -1,45 +1,59 @@
 from PyQt5.QtWidgets import QApplication, QAction, QTableWidgetItem
-from Parts.Scripts.FixTables import sortACT
+from Parts.Scripts.FixTables import sortACT, fixCharmap
 from Parts.Scripts.TablesEditorsFunctions import *
-from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, openFile, saveFile
+from Parts.Scripts.TakeFromTable import TakeFromTable
+from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, openFile, saveFile, stringToHex
 from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII
 from sys import argv, exit
 import keyboard
 
-
-def saveACT(save_loc : str, Table):
-    if not save_loc: return
-    content = ''
-    
+def tableToCharmap(Table):
+    charmap = {}
     for row in range(Table.rowCount()):
         csv_row = []
         for col in range(Table.columnCount()):
             if not Table.item(row, col): continue
             if not Table.item(row, col).text(): continue
-            content += f'{Table.item(row, col).text()}{_A_SEPARATOR_*4}{hexToString(intToHex(row)[1]+intToHex(col)[1])}\n'
+            charmap[Table.item(row, col).text()] = hexToString(intToHex(row)[1]+intToHex(col)[1])
+    return charmap
+
+def loadACT_CSV(tablePath : str, Table):
+    if not tablePath: return
+    charmap = TakeFromTable(tablePath)
     
-    content = sortACT(deleteTrash(content, _A_SEPARATOR_))
-    content = deleteEmptyLines(content)
+    for k, v in charmap.items():
+        if not v: continue
+        Table.setItem(int(stringToHex(v)[0], 16), int(stringToHex(v)[1], 16), QTableWidgetItem(k))
+
+def saveACT(save_loc : str, Table):
+    if not save_loc: return
+    
+    charmap = fixCharmap(tableToCharmap(Table))
+    content = ''
+    
+    for k, v in charmap.items():
+        content += f'{k}{_A_SEPARATOR_*4}{v}\n'
+    
+    content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
     content = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nالحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل\n' + content
+    content = sortACT(content)
 
     open(save_loc, 'w', encoding="utf-8").write(content)
 
+
 def saveCSV(save_loc : str, Table):
     if not save_loc: return
-    content = ''
-
-    for row in range(Table.rowCount()):
-        for col in range(Table.columnCount()):
-            if not Table.item(row, col): continue
-            if not Table.item(row, col).text(): continue
-            char = Table.item(row, col).text().replace('"', '""')
-            if _CSV_DELIMITER_ in char: char = f'"{char}"'
-            convert = hexToString(intToHex(row)[1]+intToHex(col)[1]).replace(_CSV_DELIMITER_, f'"{_CSV_DELIMITER_}"')
-            content += f'{char}{_A_SEPARATOR_*4}{convert}\n'
     
-    content = sortACT(deleteTrash(content, _A_SEPARATOR_), _A_SEPARATOR_).replace(_A_SEPARATOR_, _CSV_DELIMITER_)
-    content = deleteEmptyLines(content)
-    content = f'الحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل\n' + content
+    charmap = fixCharmap(tableToCharmap(Table))
+    content = ''
+    
+    for k, v in charmap.items():
+        content += f'{k}{_A_SEPARATOR_*4}{v}\n'
+    
+    content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
+    content = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nالحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل\n' + content
+    content = sortACT(content)
+    content = content.replace('"', '""').replace(',', '","').replace(_A_SEPARATOR_, _CSV_DELIMITER_)
 
     open(save_loc, 'w', encoding="utf-8").write(content)
 
@@ -84,8 +98,8 @@ def windowTrig(action):
     def check(text): return action.text() == text
 
     if check("فتح جدول حروف .tbl"): loadTBL(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("فتح جدول حروف .act"): loadATE(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, False)
-    elif check("فتح جدول حروف .csv"): loadCSV(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table, False)
+    elif check("فتح جدول حروف .act"): loadACT_CSV(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("فتح جدول حروف .csv"): loadACT_CSV(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(saveFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .act"): saveACT(saveFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .csv"): saveCSV(saveFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)

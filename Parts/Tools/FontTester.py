@@ -319,23 +319,23 @@ def openFont():
     if _imgPath: ImgPath = _imgPath
 
 def start():
-    fontSize  = FontTesterOptionsWindow.fontSizeCell.getValue()
-    boxWidth  = FontTesterOptionsWindow.boxWidthCell.getValue()
+    fontSize = FontTesterOptionsWindow.fontSizeCell.getValue()
+    boxWidth = FontTesterOptionsWindow.boxWidthCell.getValue()
     boxHeight = FontTesterOptionsWindow.boxHeightCell.getValue()
     pixelsPer = FontTesterOptionsWindow.pixelsPerCell.getValue()
     
-    text         = FontTesterWindow.enteredTextBox.toPlainText()
-    newLineCom   = FontTesterOptionsWindow.newLineCell.getValue()
-    newPageCom   = FontTesterOptionsWindow.newPageCell.getValue()
-    beforeCom    = FontTesterOptionsWindow.beforeComCell.getValue()
-    afterCom     = FontTesterOptionsWindow.afterComCell.getValue()
-    offsetCom    = FontTesterOptionsWindow.offsetComCell.getValue()
-    fromRight    = FontTesterOptionsWindow.fromRightCheck.isChecked()
-    lineBox      = FontTesterOptionsWindow.lineBoxCheck.isChecked()
-    charBox      = FontTesterOptionsWindow.charBoxCheck.isChecked()
+    text = FontTesterWindow.enteredTextBox.toPlainText()
+    newLineCom = FontTesterOptionsWindow.newLineCell.getValue()
+    newPageCom = FontTesterOptionsWindow.newPageCell.getValue()
+    beforeCom = FontTesterOptionsWindow.beforeComCell.getValue()
+    afterCom = FontTesterOptionsWindow.afterComCell.getValue()
+    offsetCom = FontTesterOptionsWindow.offsetComCell.getValue()
+    fromRight = FontTesterOptionsWindow.fromRightCheck.isChecked()
+    lineBox = FontTesterOptionsWindow.lineBoxCheck.isChecked()
+    charBox = FontTesterOptionsWindow.charBoxCheck.isChecked()
     boxAnimation = FontTesterOptionsWindow.boxAnimationCheck.isChecked()
     
-    offset     = FontTesterOptionsWindow.offsetComboBox.currentIndex() -1
+    offset = FontTesterOptionsWindow.offsetComboBox.currentIndex() -1
     offsetWith = FontTesterOptionsWindow.offsetWithComboBox.currentIndex()
     
     testFont(

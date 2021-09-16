@@ -203,13 +203,13 @@ def check(char, convertTo):
     elif char == 'ﭬ': charmap['ڤ'][0] = convertTo
     else: charmap[char] = ['', '', '', convertTo]
 
-def sortACT(tableContent, _SEPARATOR_ = ''):
+def sortACT(tableContent):
     global charmap
     charmap = dict(charmapParent) # dict ليساوي المتغير الجديد قيمة القديم وليس القديم نفسه كي لا يتغير احدهما بتغير الاخر
     newTable = ''
     
     lines = tableContent.split('\n')
-    if not _SEPARATOR_: _SEPARATOR_ = lines[2][11:-1]
+    _SEPARATOR_ = lines[2][11:-1]
     
     for line in lines:
         if _SEPARATOR_ not in line or line == f'SEPARATOR="{_SEPARATOR_}"' or line == f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل':

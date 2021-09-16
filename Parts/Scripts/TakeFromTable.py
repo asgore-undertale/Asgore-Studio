@@ -8,6 +8,7 @@ import pygame, re
 def TakeFromTable(filePath, chars = '', fontSize = 16):
     if not path.exists(filePath): return
     if filePath.endswith('.act'): return TakeFromACT(filePath)
+    if filePath.endswith('.csv'): return TakeFromACT(filePath)
     if filePath.endswith('.zts'): return TakeFromZTS(filePath)
     if filePath.endswith('.ttf'): return TakeFromTTF(filePath, chars, fontSize)
     if filePath.endswith('.aft'): return TakeFromAFT(filePath)

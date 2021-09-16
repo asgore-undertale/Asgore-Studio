@@ -57,7 +57,7 @@ class AdvancedCell(QTextEdit):
         self.Value = DefaultValue
         self.Type = str(type(DefaultValue))[8:-2]
         
-        self.updateCell()
+        self.setPlainText(str(self.Value))
     
     def focusOutEvent(self, event):
         self.updateCell()
