@@ -54,7 +54,7 @@ def remove_col(Table):
     if not Table.columnCount(): return
     Table.setColumnCount(Table.columnCount() - 1)
 
-def listToCharmap(List):
+def tablelistToCharmap(List):
     charmap = {}
     for r in range(len(List)):
         csv_row = []
@@ -124,13 +124,6 @@ def loadTBL(tablePath : str, Table, increaseCells = False):
     
     tableList = TBLtoList(tablePath)
     loadList(tableList, Table, increaseCells)
-    # tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
-    # lines = tablePath.split('\n')
-    
-    # for line in lines:
-        # if not line: continue
-        # parts = line.split('=')
-        # Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
 
 def loadATE(tablePath : str, Table, increaseCells = False):
     if not tablePath: return

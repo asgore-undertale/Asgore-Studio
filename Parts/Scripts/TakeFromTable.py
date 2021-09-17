@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum, hexToString
-from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, listToCharmap
+from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, tablelistToCharmap
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
@@ -155,9 +155,13 @@ def TakeFromCSV(csvPath):
     return sortDictByKeyLengh(fixCharmap(charmap))
 
 def TakeFromTBL(tblPath):
-    charmap = listToCharmap(TBLtoList(tblPath))
+    charmap = {}
+    tablePath = open(tblPath, 'r', encoding="utf-8", errors='replace').read()
+    rows = tablePath.split('\n')
     
-    for k, v in charmap.items():
-        charmap[k] = hexToString(v)
+    for row in rows:
+        if not row: continue
+        parts = row.split('=')
+        charmap[parts[1]] = hexToString(parts[0])
     
     return sortDictByKeyLengh(fixCharmap(charmap))
