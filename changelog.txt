@@ -1,5 +1,8 @@
+Version {2.0.4.68}:
+	- Fixing {Chars Tables Creator} tool even more.
+
 Version {2.0.4.67}:
-	- Some Fixes.
+	- Fixing {Chars Tables Creator} tool.
 
 Version {2.0.4.66}:
 	- Adding (Auto Convert) option in (Text Converter) tool.

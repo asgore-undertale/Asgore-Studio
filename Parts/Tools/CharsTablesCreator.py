@@ -3,9 +3,9 @@ from Parts.Scripts.FixTables import sortACT, fixCharmap
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TakeFromTable import TakeFromTable
 from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, openFile, saveFile, stringToHex
-from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII
+from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_, _CSV_DELIMITER_, FreezedArabicChars, ASCII, _ACT_DESC_, _AFT_DESC_
 from sys import argv, exit
-import keyboard
+import keyboard, csv
 
 def tableToCharmap(Table):
     charmap = {}
@@ -17,8 +17,9 @@ def tableToCharmap(Table):
             charmap[Table.item(row, col).text()] = hexToString(intToHex(row)[1]+intToHex(col)[1])
     return charmap
 
-def loadACT_CSV(tablePath : str, Table):
+def loadTable(tablePath : str, Table):
     if not tablePath: return
+    eraseTable(Table)
     charmap = TakeFromTable(tablePath)
     
     for k, v in charmap.items():
@@ -35,8 +36,8 @@ def saveACT(save_loc : str, Table):
         content += f'{k}{_A_SEPARATOR_*4}{v}\n'
     
     content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
-    content = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nالحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل\n' + content
-    content = sortACT(content)
+    content = sortACT(content, _A_SEPARATOR_)
+    content = _ACT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_) + content
 
     open(save_loc, 'w', encoding="utf-8").write(content)
 
@@ -51,11 +52,13 @@ def saveCSV(save_loc : str, Table):
         content += f'{k}{_A_SEPARATOR_*4}{v}\n'
     
     content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
-    content = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nالحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل\n' + content
-    content = sortACT(content)
-    content = content.replace('"', '""').replace(',', '","').replace(_A_SEPARATOR_, _CSV_DELIMITER_)
-
-    open(save_loc, 'w', encoding="utf-8").write(content)
+    content = sortACT(content, _A_SEPARATOR_)
+    content = _ACT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_) + content
+    
+    with open(save_loc, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in content.split('\n'):
+            spamwriter.writerow(row.split(_A_SEPARATOR_))
 
 def setChars(startSpot, Chars):
     for i in range(len(Chars)):
@@ -98,8 +101,8 @@ def windowTrig(action):
     def check(text): return action.text() == text
 
     if check("فتح جدول حروف .tbl"): loadTBL(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("فتح جدول حروف .act"): loadACT_CSV(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("فتح جدول حروف .csv"): loadACT_CSV(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("فتح جدول حروف .act"): loadTable(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("فتح جدول حروف .csv"): loadTable(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(saveFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .act"): saveACT(saveFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .csv"): saveCSV(saveFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)

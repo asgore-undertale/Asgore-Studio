@@ -13,12 +13,12 @@ from Parts.Scripts.TakeFromTable import TakeFromTable
 
 
 def opentextFile():
-    filePath = openFile(('act', 'zts'), TextConverterWindow, 'جدول التحويل')
+    filePath = openFile(['*'], TextConverterWindow, 'ملف')
     if not filePath: return
     TextConverterWindow.enteredBox.setPlainText(open(filePath, 'r', encoding='utf-8').read())
 
 def openConvertTable():
-    tablePath = openFile(('act', 'zts'), TextConverterOptionsWindow, 'جدول التحويل')
+    tablePath = openFile(('act', 'zts', 'csv'), TextConverterOptionsWindow, 'جدول التحويل')
     if not tablePath: return
     global convertingTablePath, convertDatabase
     convertingTablePath = tablePath

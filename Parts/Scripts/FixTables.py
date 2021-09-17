@@ -54,8 +54,16 @@ charmapParent = {
 		'چ' : ['', '', '', ''],
 		'ڤ' : ['', '', '', ''],
     }
+charsList = (('ﺁ', 'ﺂ', '', ''), ('ﺃ', 'ﺄ', '', ''), ('ﺅ', 'ﺆ', '', ''), ('ﺇ', 'ﺈ', '', ''), ('ﺉ', 'ﺊ', 'ﺌ', 'ﺋ'), ('ﺍ', 'ﺎ', '', ''),
+    ('ﺏ', 'ﺐ', 'ﺒ', 'ﺑ'), ('ﺓ', 'ﺔ', '', ''), ('ﺕ', 'ﺖ', 'ﺘ', 'ﺗ'), ('ﺙ', 'ﺚ', 'ﺜ', 'ﺛ'), ('ﺝ', 'ﺞ', 'ﺠ', 'ﺟ'), ('ﺡ', 'ﺢ', 'ﺤ', 'ﺣ'),
+    ('ﺥ', 'ﺦ', 'ﺨ', 'ﺧ'), ('ﺩ', 'ﺪ', '', ''), ('ﺫ', 'ﺬ', '', ''), ('ﺭ', 'ﺮ', '', ''), ('ﺯ', 'ﺰ', '', ''), ('ﺱ', 'ﺲ', 'ﺴ', 'ﺳ'),
+    ('ﺵ', 'ﺶ', 'ﺸ', 'ﺷ'), ('ﺹ', 'ﺺ', 'ﺼ', 'ﺻ'), ('ﺽ', 'ﺾ', 'ﻀ', 'ﺿ'), ('ﻁ', 'ﻂ', 'ﻄ', 'ﻃ'), ('ﻅ', 'ﻆ', 'ﻈ', 'ﻇ'), ('ﻉ', 'ﻊ', 'ﻌ', 'ﻋ'),
+    ('ﻍ', 'ﻎ', 'ﻐ', 'ﻏ'), ('ﻑ', 'ﻒ', 'ﻔ', 'ﻓ'), ('ﻕ', 'ﻖ', 'ﻘ', 'ﻗ'), ('ﻙ', 'ﻚ', 'ﻜ', 'ﻛ'), ('ﻝ', 'ﻞ', 'ﻠ', 'ﻟ'), ('ﻡ', 'ﻢ', 'ﻤ', 'ﻣ'),
+    ('ﻥ', 'ﻦ', 'ﻨ', 'ﻧ'), ('ﻩ', 'ﻪ', 'ﻬ', 'ﻫ'), ('ﻭ', 'ﻮ', '', ''), ('ﻯ', 'ﻰ', '', ''), ('ﻱ', 'ﻲ', 'ﻴ', 'ﻳ'), ('ﻵ', 'ﻶ', '', ''),
+    ('ﻷ', 'ﻸ', '', ''), ('ﻹ', 'ﻺ', '', ''), ('ﻻ', 'ﻼ', '', ''), ('ﭖ', 'ﭗ', 'ﭙ', 'ﭘ'), ('ﭺ', 'ﭻ', 'ﭽ', 'ﭼ'), ('ﭪ', 'ﭫ', 'ﭭ', 'ﭬ')
+    )
 
-def check(char, convertTo):
+def sort(char, convertTo):
     if   char == 'ﹰ': charmap['ً' ][3] = convertTo
     elif char == 'ﹶ': charmap['َ' ][3] = convertTo
     elif char == 'ﹲ': charmap['ٌ' ][3] = convertTo
@@ -203,23 +211,19 @@ def check(char, convertTo):
     elif char == 'ﭬ': charmap['ڤ'][0] = convertTo
     else: charmap[char] = ['', '', '', convertTo]
 
-def sortACT(tableContent):
+def sortACT(tableContent, _SEPARATOR_): # table content with no description
     global charmap
     charmap = dict(charmapParent) # dict ليساوي المتغير الجديد قيمة القديم وليس القديم نفسه كي لا يتغير احدهما بتغير الاخر
     newTable = ''
     
     lines = tableContent.split('\n')
-    _SEPARATOR_ = lines[2][11:-1]
     
     for line in lines:
-        if _SEPARATOR_ not in line or line == f'SEPARATOR="{_SEPARATOR_}"' or line == f'الحرف{_SEPARATOR_}أول{_SEPARATOR_}وسط{_SEPARATOR_}آخر{_SEPARATOR_}منفصل':
-            newTable += line + '\n'
-            continue
         if line.endswith(_SEPARATOR_*4):
             newTable += Freeze(line[0:-4], False) + '\n'
         
         items = line.split(_SEPARATOR_)
-        check(items[0], items[4])
+        sort(items[0], items[4])
     
     for k, v in charmap.items():
         if not k: continue
@@ -251,49 +255,210 @@ def fillEmptyCells(Charmap : dict, chars : tuple):
     
     return Charmap
 
+def takeFromArabic(Charmap : dict, cells : list):
+    if cells[0] == 'ً':
+        Charmap['ﹰ'] = cells[4]
+    elif cells[0] == 'َ':
+        Charmap['ﹶ'] = cells[4]
+    elif cells[0] == 'ٌ':
+        Charmap['ﹲ'] = cells[4]
+    elif cells[0] == 'ُ':
+        Charmap['ﹸ'] = cells[4]
+    elif cells[0] == 'ٍ':
+        Charmap['ﹴ'] = cells[4]
+    elif cells[0] == 'ِ':
+        Charmap['ﹺ'] = cells[4]
+    elif cells[0] == 'ّ':
+        Charmap['ﹼ'] = cells[4]
+    elif cells[0] == 'ْ':
+        Charmap['ﹾ'] = cells[4]
+    elif cells[0] == 'ء':
+        Charmap['ﺀ'] = cells[4]
+    elif cells[0] == 'آ':
+        Charmap['ﺁ'] = cells[4]
+        Charmap['ﺂ'] = cells[3]
+    elif cells[0] == 'أ':
+        Charmap['ﺃ'] = cells[4]
+        Charmap['ﺄ'] = cells[3]
+    elif cells[0] == 'ؤ':
+        Charmap['ﺅ'] = cells[4]
+        Charmap['ﺆ'] = cells[3]
+    elif cells[0] == 'إ':
+        Charmap['ﺇ'] = cells[4]
+        Charmap['ﺈ'] = cells[3]
+    elif cells[0] == 'ئ':
+        Charmap['ﺉ'] = cells[4]
+        Charmap['ﺊ'] = cells[3]
+        Charmap['ﺌ'] = cells[2]
+        Charmap['ﺋ'] = cells[1]
+    elif cells[0] == 'ا':
+        Charmap['ﺍ'] = cells[4]
+        Charmap['ﺎ'] = cells[3]
+    elif cells[0] == 'ب':
+        Charmap['ﺏ'] = cells[4]
+        Charmap['ﺐ'] = cells[3]
+        Charmap['ﺒ'] = cells[2]
+        Charmap['ﺑ'] = cells[1]
+    elif cells[0] == 'ة':
+        Charmap['ﺓ'] = cells[4]
+        Charmap['ﺔ'] = cells[3]
+    elif cells[0] == 'ت':
+        Charmap['ﺕ'] = cells[4]
+        Charmap['ﺖ'] = cells[3]
+        Charmap['ﺘ'] = cells[2]
+        Charmap['ﺗ'] = cells[1]
+    elif cells[0] == 'ث':
+        Charmap['ﺙ'] = cells[4]
+        Charmap['ﺚ'] = cells[3]
+        Charmap['ﺜ'] = cells[2]
+        Charmap['ﺛ'] = cells[1]
+    elif cells[0] == 'ج':
+        Charmap['ﺝ'] = cells[4]
+        Charmap['ﺞ'] = cells[3]
+        Charmap['ﺠ'] = cells[2]
+        Charmap['ﺟ'] = cells[1]
+    elif cells[0] == 'ح':
+        Charmap['ﺡ'] = cells[4]
+        Charmap['ﺢ'] = cells[3]
+        Charmap['ﺤ'] = cells[2]
+        Charmap['ﺣ'] = cells[1]
+    elif cells[0] == 'خ':
+        Charmap['ﺥ'] = cells[4]
+        Charmap['ﺦ'] = cells[3]
+        Charmap['ﺨ'] = cells[2]
+        Charmap['ﺧ'] = cells[1]
+    elif cells[0] == 'د':
+        Charmap['ﺩ'] = cells[4]
+        Charmap['ﺪ'] = cells[3]
+    elif cells[0] == 'ذ':
+        Charmap['ﺫ'] = cells[4]
+        Charmap['ﺬ'] = cells[3]
+    elif cells[0] == 'ر':
+        Charmap['ﺭ'] = cells[4]
+        Charmap['ﺮ'] = cells[3]
+    elif cells[0] == 'ز':
+        Charmap['ﺯ'] = cells[4]
+        Charmap['ﺰ'] = cells[3]
+    elif cells[0] == 'س':
+        Charmap['ﺱ'] = cells[4]
+        Charmap['ﺲ'] = cells[3]
+        Charmap['ﺴ'] = cells[2]
+        Charmap['ﺳ'] = cells[1]
+    elif cells[0] == 'ش':
+        Charmap['ﺵ'] = cells[4]
+        Charmap['ﺶ'] = cells[3]
+        Charmap['ﺸ'] = cells[2]
+        Charmap['ﺷ'] = cells[1]
+    elif cells[0] == 'ص':
+        Charmap['ﺹ'] = cells[4]
+        Charmap['ﺺ'] = cells[3]
+        Charmap['ﺼ'] = cells[2]
+        Charmap['ﺻ'] = cells[1]
+    elif cells[0] == 'ض':
+        Charmap['ﺽ'] = cells[4]
+        Charmap['ﺾ'] = cells[3]
+        Charmap['ﻀ'] = cells[2]
+        Charmap['ﺿ'] = cells[1]
+    elif cells[0] == 'ط':
+        Charmap['ﻁ'] = cells[4]
+        Charmap['ﻂ'] = cells[3]
+        Charmap['ﻄ'] = cells[2]
+        Charmap['ﻃ'] = cells[1]
+    elif cells[0] == 'ظ':
+        Charmap['ﻅ'] = cells[4]
+        Charmap['ﻆ'] = cells[3]
+        Charmap['ﻈ'] = cells[2]
+        Charmap['ﻇ'] = cells[1]
+    elif cells[0] == 'ع':
+        Charmap['ﻉ'] = cells[4]
+        Charmap['ﻊ'] = cells[3]
+        Charmap['ﻋ'] = cells[2]
+        Charmap['ﻌ'] = cells[1]
+    elif cells[0] == 'غ':
+        Charmap['ﻍ'] = cells[4]
+        Charmap['ﻎ'] = cells[3]
+        Charmap['ﻐ'] = cells[2]
+        Charmap['ﻏ'] = cells[1]
+    elif cells[0] == 'ف':
+        Charmap['ﻑ'] = cells[4]
+        Charmap['ﻒ'] = cells[3]
+        Charmap['ﻔ'] = cells[2]
+        Charmap['ﻓ'] = cells[1]
+    elif cells[0] == 'ق':
+        Charmap['ﻕ'] = cells[4]
+        Charmap['ﻖ'] = cells[3]
+        Charmap['ﻘ'] = cells[2]
+        Charmap['ﻗ'] = cells[1]
+    elif cells[0] == 'ك':
+        Charmap['ﻙ'] = cells[4]
+        Charmap['ﻚ'] = cells[3]
+        Charmap['ﻜ'] = cells[2]
+        Charmap['ﻛ'] = cells[1]
+    elif cells[0] == 'ل':
+        Charmap['ﻝ'] = cells[4]
+        Charmap['ﻞ'] = cells[3]
+        Charmap['ﻠ'] = cells[2]
+        Charmap['ﻟ'] = cells[1]
+    elif cells[0] == 'م':
+        Charmap['ﻡ'] = cells[4]
+        Charmap['ﻢ'] = cells[3]
+        Charmap['ﻤ'] = cells[2]
+        Charmap['ﻣ'] = cells[1]
+    elif cells[0] == 'ن':
+        Charmap['ﻥ'] = cells[4]
+        Charmap['ﻦ'] = cells[3]
+        Charmap['ﻨ'] = cells[2]
+        Charmap['ﻧ'] = cells[1]
+    elif cells[0] == 'ه':
+        Charmap['ﻩ'] = cells[4]
+        Charmap['ﻪ'] = cells[3]
+        Charmap['ﻬ'] = cells[2]
+        Charmap['ﻫ'] = cells[1]
+    elif cells[0] == 'و':
+        Charmap['ﻭ'] = cells[4]
+        Charmap['ﻮ'] = cells[3]
+    elif cells[0] == 'ى':
+        Charmap['ﻯ'] = cells[4]
+        Charmap['ﻰ'] = cells[3]
+    elif cells[0] == 'ي':
+        Charmap['ﻱ'] = cells[4]
+        Charmap['ﻲ'] = cells[3]
+        Charmap['ﻴ'] = cells[2]
+        Charmap['ﻳ'] = cells[1]
+    elif cells[0] == 'لآ':
+        Charmap['ﻵ'] = cells[4]
+        Charmap['ﻶ'] = cells[3]
+    elif cells[0] == 'لأ':
+        Charmap['ﻷ'] = cells[4]
+        Charmap['ﻸ'] = cells[3]
+    elif cells[0] == 'لإ':
+        Charmap['ﻹ'] = cells[4]
+        Charmap['ﻺ'] = cells[3]
+    elif cells[0] == 'لا':
+        Charmap['ﻻ'] = cells[4]
+        Charmap['ﻼ'] = cells[3]
+    elif cells[0] == 'پ':
+        Charmap['ﭖ'] = cells[4]
+        Charmap['ﭗ'] = cells[3]
+        Charmap['ﭙ'] = cells[2]
+        Charmap['ﭘ'] = cells[1]
+    elif cells[0] == 'چ':
+        Charmap['ﭺ'] = cells[4]
+        Charmap['ﭻ'] = cells[3]
+        Charmap['ﭽ'] = cells[2]
+        Charmap['ﭼ'] = cells[1]
+    elif cells[0] == 'ڤ':
+        Charmap['ﭪ'] = cells[4]
+        Charmap['ﭫ'] = cells[3]
+        Charmap['ﭭ'] = cells[2]
+        Charmap['ﭬ'] = cells[1]
+    else:
+        Charmap[cells[0]] = cells[4]
+    return Charmap
+
 def fixCharmap(Charmap : dict):
-    Charmap = fillEmptyCells(Charmap, ('ﺁ', 'ﺂ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺃ', 'ﺄ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺅ', 'ﺆ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺇ', 'ﺈ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺉ', 'ﺊ', 'ﺌ', 'ﺋ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺍ', 'ﺎ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺏ', 'ﺐ', 'ﺒ', 'ﺑ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺓ', 'ﺔ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺕ', 'ﺖ', 'ﺘ', 'ﺗ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺙ', 'ﺚ', 'ﺜ', 'ﺛ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺝ', 'ﺞ', 'ﺠ', 'ﺟ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺡ', 'ﺢ', 'ﺤ', 'ﺣ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺥ', 'ﺦ', 'ﺨ', 'ﺧ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺩ', 'ﺪ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺫ', 'ﺬ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺭ', 'ﺮ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺯ', 'ﺰ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﺱ', 'ﺲ', 'ﺴ', 'ﺳ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺵ', 'ﺶ', 'ﺸ', 'ﺷ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺹ', 'ﺺ', 'ﺼ', 'ﺻ'))
-    Charmap = fillEmptyCells(Charmap, ('ﺽ', 'ﺾ', 'ﻀ', 'ﺿ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻁ', 'ﻂ', 'ﻄ', 'ﻃ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻅ', 'ﻆ', 'ﻈ', 'ﻇ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻉ', 'ﻊ', 'ﻌ', 'ﻋ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻍ', 'ﻎ', 'ﻐ', 'ﻏ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻑ', 'ﻒ', 'ﻔ', 'ﻓ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻕ', 'ﻖ', 'ﻘ', 'ﻗ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻙ', 'ﻚ', 'ﻜ', 'ﻛ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻝ', 'ﻞ', 'ﻠ', 'ﻟ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻡ', 'ﻢ', 'ﻤ', 'ﻣ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻥ', 'ﻦ', 'ﻨ', 'ﻧ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻩ', 'ﻪ', 'ﻬ', 'ﻫ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻭ', 'ﻮ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﻯ', 'ﻰ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﻱ', 'ﻲ', 'ﻴ', 'ﻳ'))
-    Charmap = fillEmptyCells(Charmap, ('ﻵ', 'ﻶ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﻷ', 'ﻸ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﻹ', 'ﻺ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﻻ', 'ﻼ', '', ''))
-    Charmap = fillEmptyCells(Charmap, ('ﭖ', 'ﭗ', 'ﭙ', 'ﭘ'))
-    Charmap = fillEmptyCells(Charmap, ('ﭺ', 'ﭻ', 'ﭽ', 'ﭼ'))
-    Charmap = fillEmptyCells(Charmap, ('ﭪ', 'ﭫ', 'ﭭ', 'ﭬ'))
+    for char in charsList:
+        Charmap = fillEmptyCells(Charmap, char)
     Charmap.pop('', None)
     return Charmap
 

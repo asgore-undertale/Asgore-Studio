@@ -83,7 +83,6 @@ def loadATE(tablePath : str, Table, increaseCells : bool):
 
 def CSVtoList(tablePath : str):
     with open(tablePath, newline='', encoding='utf8', errors='replace') as csvfile:
-        csvfile = [x.replace('""', '"') for x in list(csvfile)]
         spamreader = csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"')
         return list(spamreader)
 
@@ -108,7 +107,7 @@ def saveTBL(save_loc : str, Table):
 
 def saveATE(save_loc : str, Table):
     if not save_loc: return
-    content = f'\nVERSION="1.0"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\n'
+    content = ''
 
     for row in range(Table.rowCount()):
         csv_row = []

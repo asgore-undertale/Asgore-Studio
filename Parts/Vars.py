@@ -8,6 +8,10 @@ _AFF_MIN_SEPARATOR = "/"
 _AFF_FILLER = "•"
 _CSV_DELIMITER_ = ","
 
+_ACT_DESC_ = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="[_SEPARATOR_]"\n#####################\nالحرف[_SEPARATOR_]أول[_SEPARATOR_]وسط[_SEPARATOR_]آخر[_SEPARATOR_]منفصل'
+_AFT_DESC_ = f'\nVERSION="{_AFT_VERSION_}"\nSEPARATOR="[_SEPARATOR_]"\n#####################\nChar[_SEPARATOR_]X[_SEPARATOR_]Y[_SEPARATOR_]Width[_SEPARATOR_]Height[_SEPARATOR_]Xoffset[_SEPARATOR_]Yoffset[_SEPARATOR_]Xadvance'
+_AFF_DESC_ = f'\nVERSION="{_AFF_VERSION_}"\nSEPARATOR="[_SEPARATOR_]"\n#####################\nChar[_SEPARATOR_]X[_SEPARATOR_]Y[_SEPARATOR_]Width[_SEPARATOR_]Height[_SEPARATOR_]Xoffset[_SEPARATOR_]Yoffset[_SEPARATOR_]Xadvance'
+
 def checkVersion(ver, index):
     try: ver = float(ver)
     except: return

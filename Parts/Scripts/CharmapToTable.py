@@ -1,5 +1,5 @@
 from Parts.Scripts.FixTables import *
-from Parts.Vars import _A_SEPARATOR_
+from Parts.Vars import _A_SEPARATOR_, _ACT_DESC_, _AFT_DESC_
 
 def charmapToTable(charmap : dict, type : str):
     if not charmap: return
@@ -8,7 +8,7 @@ def charmapToTable(charmap : dict, type : str):
     if type == 'aft': return charmapToAFT(charmap)
 
 def charmapToAFT(charmap):
-    table = f'\nVERSION="1.0"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nChar{_A_SEPARATOR_}X{_A_SEPARATOR_}Y{_A_SEPARATOR_}Width{_A_SEPARATOR_}Height{_A_SEPARATOR_}Xoffset{_A_SEPARATOR_}Yoffset{_A_SEPARATOR_}Xadvance'
+    table = _AFT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_)
     for k, v in fixCharmap(charmap).items():
         if not isinstance(v, tuple): return
         v = list(map(str, v))
@@ -25,8 +25,8 @@ def charmapToZTS(charmap):
     return f'{line1}\n{line2}'
 
 def charmapToACT(charmap):
-    table = f'\nVERSION="1.0"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nالحرف{_A_SEPARATOR_}أول{_A_SEPARATOR_}وسط{_A_SEPARATOR_}آخر{_A_SEPARATOR_}منفصل'
+    table = ''
     for k, v in fixCharmap(charmap).items():
         if isinstance(v, tuple): return
         table += f'\n{k}{_A_SEPARATOR_*4}{v}'
-    return sortACT(table)
+    return _ACT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_) + sortACT(table, _A_SEPARATOR_)

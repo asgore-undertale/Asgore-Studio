@@ -1,4 +1,4 @@
-from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_
+from Parts.Vars import _ACT_VERSION_, _A_SEPARATOR_, _AFT_DESC_
 from Parts.Scripts.TakeFromTable import TakeFromTable
 
 def CreateAftFontTable(firstX, firstY, BetweenCharsX, BetweenCharsY, cellWidth, cellHeight, charsPerRow, Chars, fontPath, fontSize, monoSized = False, fromRight = False):
@@ -7,7 +7,7 @@ def CreateAftFontTable(firstX, firstY, BetweenCharsX, BetweenCharsY, cellWidth, 
     charHeight = charsTable[char][3]
     per = (fontSize * charHeight / charsTable['tallest'] - charHeight) / charsTable['tallest']
     
-    table = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="{_A_SEPARATOR_}"\n#####################\nChar{_A_SEPARATOR_}X{_A_SEPARATOR_}Y{_A_SEPARATOR_}Width{_A_SEPARATOR_}Height{_A_SEPARATOR_}Xoffset{_A_SEPARATOR_}Yoffset{_A_SEPARATOR_}Xadvance'
+    table = _AFT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_)
     for c in range(len(Chars)):
         if Chars[c] not in charsTable: continue
         Width = int((monoSized * cellWidth) + ((not monoSized) * charsTable[Chars[c]][2]) * (1 + per))
