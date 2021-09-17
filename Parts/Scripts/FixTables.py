@@ -219,6 +219,7 @@ def sortACT(tableContent, _SEPARATOR_): # table content with no description
     lines = tableContent.split('\n')
     
     for line in lines:
+        if not line: continue
         if line.endswith(_SEPARATOR_*4):
             newTable += Freeze(line[0:-4], False) + '\n'
         

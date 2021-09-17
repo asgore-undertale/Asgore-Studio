@@ -1,7 +1,27 @@
 from PyQt5.QtWidgets import QTableWidgetItem
-from Parts.Scripts.UsefulLittleFunctions import intToHex
-from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_
+from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString
+from Parts.Scripts.FixTables import sortACT, fixCharmap
+from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, _ACT_DESC_
 import csv
+
+HexTable = [
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+]
 
 def deleteEmptyLines(tableContent : str):
     while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
@@ -34,17 +54,24 @@ def remove_col(Table):
     if not Table.columnCount(): return
     Table.setColumnCount(Table.columnCount() - 1)
 
-def loadTBL(tablePath : str, Table):
-    if not tablePath: return
-    eraseTable(Table)
-    
-    tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
-    lines = tablePath.split('\n')
-    
-    for line in lines:
-        if not line: continue
-        parts = line.split('=')
-        Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
+def listToCharmap(List):
+    charmap = {}
+    for r in range(len(List)):
+        csv_row = []
+        for c in range(len(List[r])):
+            if not List[r][c]: continue
+            charmap[List[r][c]] = intToHex(r)[1]+intToHex(c)[1]
+    return charmap
+
+def tableToCharmap(Table):
+    charmap = {}
+    for row in range(Table.rowCount()):
+        csv_row = []
+        for col in range(Table.columnCount()):
+            if not Table.item(row, col): continue
+            if not Table.item(row, col).text(): continue
+            charmap[Table.item(row, col).text()] = intToHex(row)[1]+intToHex(col)[1]
+    return charmap
 
 def loadList(tableList : list, Table, increaseCells : bool):
     eraseTable(Table)
@@ -61,32 +88,60 @@ def loadList(tableList : list, Table, increaseCells : bool):
         for c in range(len(tableList[r])):
             Table.setItem(r, c, QTableWidgetItem(tableList[r][c]))
 
+def TBLtoList(tablePath : str):
+    tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
+    rows = tablePath.split('\n')
+    tableList = list(HexTable)
+    
+    for row in range(len(rows)):
+        if not rows[row]: continue
+        parts = rows[row].split('=')
+        tableList[int(parts[0][0], 16)][int(parts[0][1], 16)] = parts[1]
+    
+    return tableList
+
 def ATEtoList(tablePath : str):
     tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
     tablePath = deleteTrash(tablePath, _A_SEPARATOR_)
-    
-    tableList = []
     rows = tablePath.split('\n')
+    tableList = []
     
     for row in range(len(rows)):
+        if not rows[row]: continue
         cells = rows[row].split(_A_SEPARATOR_)
         tableList.append(cells)
     
     return tableList
-
-def loadATE(tablePath : str, Table, increaseCells : bool):
-    if not tablePath: return
-    eraseTable(Table)
-    
-    tableList = ATEtoList(tablePath)
-    loadList(tableList, Table, increaseCells)
 
 def CSVtoList(tablePath : str):
     with open(tablePath, newline='', encoding='utf8', errors='replace') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"')
         return list(spamreader)
 
-def loadCSV(tablePath : str, Table, increaseCells : bool):
+def loadTBL(tablePath : str, Table, increaseCells = False):
+    if not tablePath: return
+    eraseTable(Table)
+    
+    tableList = TBLtoList(tablePath)
+    loadList(tableList, Table, increaseCells)
+    # tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
+    # lines = tablePath.split('\n')
+    
+    # for line in lines:
+        # if not line: continue
+        # parts = line.split('=')
+        # Table.setItem(int(parts[0][0], 16), int(parts[0][1], 16), QTableWidgetItem(parts[1]))
+
+def loadATE(tablePath : str, Table, increaseCells = False):
+    if not tablePath: return
+    eraseTable(Table)
+    
+    tableList = ATEtoList(tablePath)
+    loadList(tableList, Table, increaseCells)
+
+
+def loadCSV(tablePath : str, Table, increaseCells = False
+):
     if not tablePath: return
     eraseTable(Table)
     
@@ -96,12 +151,10 @@ def loadCSV(tablePath : str, Table, increaseCells : bool):
 def saveTBL(save_loc : str, Table):
     if not save_loc: return
     content = ''
+    charmap = tableToCharmap(Table)
     
-    for row in range(Table.rowCount()):
-        for col in range(Table.columnCount()):
-            if Table.item(row, col) and Table.item(row, col).text():
-                for char in Table.item(row, col).text():
-                    content += f'{intToHex(row)[1]}{intToHex(col)[1]}={char}\n'
+    for k, v in charmap.items():
+        content += f'{v}={k}\n'
     
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
 
@@ -121,6 +174,21 @@ def saveATE(save_loc : str, Table):
     content = deleteTrash(content, _A_SEPARATOR_)
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
 
+def saveACT(save_loc : str, Table):
+    if not save_loc: return
+    
+    charmap = fixCharmap(tableToCharmap(Table))
+    content = ''
+    
+    for k, v in charmap.items():
+        content += f'\n{k}{_A_SEPARATOR_*4}{hexToString(v)}'
+    
+    content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
+    content = sortACT(content, _A_SEPARATOR_)
+    content = _ACT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_) + content
+
+    open(save_loc, 'w', encoding="utf-8").write(content)
+
 def saveCSV(save_loc : str, Table):
     if not save_loc: return
     
@@ -138,3 +206,21 @@ def saveCSV(save_loc : str, Table):
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(
         deleteTrash(a, _CSV_DELIMITER_)
         )
+
+def saveCSVC(save_loc : str, Table): # CSV Converting table
+    if not save_loc: return
+    
+    charmap = fixCharmap(tableToCharmap(Table))
+    content = ''
+    
+    for k, v in charmap.items():
+        content += f'\n{k}{_A_SEPARATOR_*4}{hexToString(v)}'
+    
+    content = deleteEmptyLines(deleteTrash(content, _A_SEPARATOR_))
+    content = sortACT(content, _A_SEPARATOR_)
+    content = _ACT_DESC_.replace('[_SEPARATOR_]', _A_SEPARATOR_) + content
+    
+    with open(save_loc, 'w', newline='', encoding="utf-8", errors='replace') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in content.split('\n'):
+            spamwriter.writerow(row.split(_A_SEPARATOR_))

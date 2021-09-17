@@ -18,7 +18,7 @@ def opentextFile():
     TextConverterWindow.enteredBox.setPlainText(open(filePath, 'r', encoding='utf-8').read())
 
 def openConvertTable():
-    tablePath = openFile(('act', 'zts', 'csv'), TextConverterOptionsWindow, 'جدول التحويل')
+    tablePath = openFile(('act', 'zts', 'csv', 'tbl'), TextConverterOptionsWindow, 'جدول التحويل')
     if not tablePath: return
     global convertingTablePath, convertDatabase
     convertingTablePath = tablePath
@@ -159,9 +159,9 @@ if path.exists(convertingTablePath): convertDatabase = TakeFromTable(convertingT
 TextConverterWindow.convertButton.clicked.connect(
     lambda: TextConverterWindow.resultBox.setPlainText(convert(TextConverterWindow.enteredBox.toPlainText()))
     )
-TextConverterWindow.openFileButton.clicked.connect(lambda: opentextFile)
-TextConverterWindow.ConvertFilesButton.clicked.connect(lambda: convertFiles)
-TextConverterOptionsWindow.C_databaseButton.clicked.connect(lambda: openConvertTable)
+TextConverterWindow.openFileButton.clicked.connect(lambda: opentextFile())
+TextConverterWindow.ConvertFilesButton.clicked.connect(lambda: convertFiles())
+TextConverterOptionsWindow.C_databaseButton.clicked.connect(lambda: openConvertTable())
 TextConverterOptionsWindow.CustomScriptComboBox.currentIndexChanged.connect(loadCustomScripts)
 TextConverterWindow.enteredBox.textChanged.connect(AutoConvert)
 

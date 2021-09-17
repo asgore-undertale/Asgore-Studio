@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
-from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum
-from Parts.Scripts.TablesEditorsFunctions import CSVtoList
+from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum, hexToString
+from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, listToCharmap
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
@@ -15,6 +15,7 @@ def TakeFromTable(filePath, chars = '', fontSize = 16):
     if filePath.endswith('.aft'): return TakeFromAFT(filePath)
     if filePath.endswith('.fnt'): return TakeFromFNT(filePath)
     if filePath.endswith('.aff'): return TakeFromAFF(filePath)
+    if filePath.endswith('.tbl'): return TakeFromTBL(filePath)
 
 def TakeFromFNT(fntPath):
     with open(fntPath, 'r', encoding='utf-8') as f: fontContent = f.read()
@@ -150,5 +151,13 @@ def TakeFromCSV(csvPath):
         if not rows[r]: continue
         for i in range(5 - len(rows[r])): rows[r].append('')
         charmap = takeFromArabic(charmap, rows[r])
+    
+    return sortDictByKeyLengh(fixCharmap(charmap))
+
+def TakeFromTBL(tblPath):
+    charmap = listToCharmap(TBLtoList(tblPath))
+    
+    for k, v in charmap.items():
+        charmap[k] = hexToString(v)
     
     return sortDictByKeyLengh(fixCharmap(charmap))
