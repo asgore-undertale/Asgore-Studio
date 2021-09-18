@@ -13,8 +13,10 @@ def windowTrig(action):
     
     if   action == "فتح جدول .ate": loadATE(openFile(('ate', 'aft', 'act'), TableEditorWindow), Table, True)
     elif action == "فتح جدول .csv": loadCSV(openFile(['csv'], TableEditorWindow), Table, True)
+    elif action == "فتح جدول .tbl": loadTBL(openFile(['tbl'], TableEditorWindow), Table, True)
     elif action == "حفظ الجدول كـ .ate": saveATE(saveFile(('ate', 'aft', 'act'), TableEditorWindow), Table)
     elif action == "حفظ الجدول كـ .csv": saveCSV(saveFile(['csv'], TableEditorWindow), Table)
+    elif action == "حفظ الجدول كـ .tbl": saveTBL(saveFile(['tbl'], TableEditorWindow), Table)
     elif action == "إضافة صف": add_row(Table)
     elif action == "حذف صف": remove_row(Table)
     elif action == "إضافة عمود": add_col(Table)

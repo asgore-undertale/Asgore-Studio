@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum, hexToString
-from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, tablelistToCharmap
+from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, ACTtoList, tablelistToCharmap
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
@@ -18,7 +18,7 @@ def TakeFromTable(filePath, chars = '', fontSize = 16):
     if filePath.endswith('.tbl'): return TakeFromTBL(filePath)
 
 def TakeFromFNT(fntPath):
-    with open(fntPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    with open(fntPath, 'r', encoding='utf-8', errors='replace') as f: fontContent = f.read()
     
     if '<?xml version="1.0"?>' in fontContent:
         find = ['<char id="(.*?)"', 'x="(.*?)"', 'y="(.*?)"', 'width="(.*?)"', 'height="(.*?)"', 'xoffset="(.*?)"',
@@ -48,7 +48,7 @@ def TakeFromFNT(fntPath):
     return fixCharmap(charmap)
 
 def TakeFromAFT(aftPath):
-    with open(aftPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    with open(aftPath, 'r', encoding='utf-8', errors='replace') as f: fontContent = f.read()
     rows = fontContent.split('\n')
     
     VERSION = rows[1][9:-1]
@@ -70,7 +70,7 @@ def TakeFromAFT(aftPath):
     return fixCharmap(charmap)
 
 def TakeFromAFF(affPath):
-    with open(affPath, 'r', encoding='utf-8') as f: fontContent = f.read()
+    with open(affPath, 'r', encoding='utf-8', errors='replace') as f: fontContent = f.read()
     rows = fontContent.split('\n')
     
     VERSION = rows[1][9:-1]
@@ -116,7 +116,7 @@ def TakeFromTTF(ttfPath, chars, fontSize):
 
 def TakeFromZTS(ztsPath):
     charmap = {}
-    lines = open(ztsPath, 'r', encoding="utf-8").read().split('\n')
+    lines = open(ztsPath, 'r', encoding="utf-8", errors='replace').read().split('\n')
     string1, string2 = lines[0], lines[1]
     
     for i, j in zip(string1, string2): charmap[j] = i
@@ -124,18 +124,10 @@ def TakeFromZTS(ztsPath):
 
 def TakeFromACT(actPath):
     charmap = {}
-    rows = open(actPath, 'r', encoding="utf-8").read().split('\n')
+    rows = ACTtoList(actPath)
     
-    VERSION = rows[1][9:-1]
-    SEPARATOR = rows[2][11:-1]
-    checkVersion(VERSION, 0)
-    
-    for r in range(5, len(rows)):
-        if not rows[r]: continue
-        for i in range(4 - rows[r].count(SEPARATOR)): rows[r] += SEPARATOR
-        cells = rows[r].split(SEPARATOR)
-        
-        charmap = takeFromArabic(charmap, cells)
+    for r in rows:
+        charmap[r[0]] = r[1]
     
     return sortDictByKeyLengh(fixCharmap(charmap))
 
@@ -156,12 +148,9 @@ def TakeFromCSV(csvPath):
 
 def TakeFromTBL(tblPath):
     charmap = {}
-    tablePath = open(tblPath, 'r', encoding="utf-8", errors='replace').read()
-    rows = tablePath.split('\n')
+    List = TBLtoList(tblPath)
     
-    for row in rows:
-        if not row: continue
-        parts = row.split('=')
-        charmap[parts[1]] = hexToString(parts[0])
+    for row in List:
+        charmap[row[1]] = hexToString(row[0])
     
     return sortDictByKeyLengh(fixCharmap(charmap))

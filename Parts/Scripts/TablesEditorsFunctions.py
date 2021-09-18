@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QTableWidgetItem
-from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString
-from Parts.Scripts.FixTables import sortACT, fixCharmap
-from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, _ACT_DESC_
+from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, stringToHex
+from Parts.Scripts.FixTables import sortACT, fixCharmap, takeFromArabic
+from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, _ACT_DESC_, checkVersion
 import csv
 
 HexTable = [
@@ -91,6 +91,17 @@ def loadList(tableList : list, Table, increaseCells : bool):
 def TBLtoList(tablePath : str):
     tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
     rows = tablePath.split('\n')
+    tableList = []
+    
+    for row in rows:
+        if not row: continue
+        tableList.append(row.split('='))
+    
+    return tableList
+
+def TBLtoHexList(tablePath : str):
+    tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
+    rows = tablePath.split('\n')
     tableList = list(HexTable)
     
     for row in range(len(rows)):
@@ -102,7 +113,6 @@ def TBLtoList(tablePath : str):
 
 def ATEtoList(tablePath : str):
     tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
-    tablePath = deleteTrash(tablePath, _A_SEPARATOR_)
     rows = tablePath.split('\n')
     tableList = []
     
@@ -110,6 +120,28 @@ def ATEtoList(tablePath : str):
         if not rows[row]: continue
         cells = rows[row].split(_A_SEPARATOR_)
         tableList.append(cells)
+    
+    return tableList
+
+def ACTtoList(tablePath : str):
+    tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
+    rows = tablePath.split('\n')
+    tableList = list(HexTable)
+    charmap = {}
+    
+    VERSION = rows[1][9:-1]
+    SEPARATOR = rows[2][11:-1]
+    checkVersion(VERSION, 0)
+    
+    for r in range(5, len(rows)):
+        if not rows[r]: continue
+        row = rows[r].split(SEPARATOR)
+        for i in range(5 - len(row)): row.append('')
+        charmap = takeFromArabic(charmap, row)
+    
+    for k, v in charmap.items():
+        if not v or not k: continue
+        tableList[int(stringToHex(v)[0], 16)][int(stringToHex(v)[1], 16)] = k
     
     return tableList
 
@@ -125,6 +157,14 @@ def loadTBL(tablePath : str, Table, increaseCells = False):
     tableList = TBLtoList(tablePath)
     loadList(tableList, Table, increaseCells)
 
+
+def loadTBLHex(tablePath : str, Table, increaseCells = False):
+    if not tablePath: return
+    eraseTable(Table)
+    
+    tableList = TBLtoHexList(tablePath)
+    loadList(tableList, Table, increaseCells)
+
 def loadATE(tablePath : str, Table, increaseCells = False):
     if not tablePath: return
     eraseTable(Table)
@@ -132,22 +172,38 @@ def loadATE(tablePath : str, Table, increaseCells = False):
     tableList = ATEtoList(tablePath)
     loadList(tableList, Table, increaseCells)
 
+def loadACT(tablePath : str, Table, increaseCells = False):
+    if not tablePath: return
+    eraseTable(Table)
+    
+    tableList = ACTtoList(tablePath)
+    loadList(tableList, Table, increaseCells)
 
-def loadCSV(tablePath : str, Table, increaseCells = False
-):
+def loadCSV(tablePath : str, Table, increaseCells = False):
     if not tablePath: return
     eraseTable(Table)
     
     tableList = CSVtoList(tablePath)
     loadList(tableList, Table, increaseCells)
 
-def saveTBL(save_loc : str, Table):
+def saveTBLHex(save_loc : str, Table):
     if not save_loc: return
     content = ''
     charmap = tableToCharmap(Table)
     
     for k, v in charmap.items():
         content += f'{v}={k}\n'
+    
+    open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
+
+def saveTBL(save_loc : str, Table):
+    if not save_loc: return
+    content = ''
+
+    for r in range(Table.rowCount()):
+        if not Table.item(r, 0) or not Table.item(r, 0).text(): continue
+        if not Table.item(r, 1) or not Table.item(r, 1).text(): continue
+        content += f'{Table.item(r, 0).text()}={Table.item(r, 1).text()}\n'
     
     open(save_loc, 'w', encoding="utf-8", errors='replace').write(content)
 
@@ -200,7 +256,7 @@ def saveCSV(save_loc : str, Table):
         deleteTrash(a, _CSV_DELIMITER_)
         )
 
-def saveCSVC(save_loc : str, Table): # CSV Converting table
+def saveCSVHex(save_loc : str, Table): # CSV Converting table
     if not save_loc: return
     
     charmap = fixCharmap(tableToCharmap(Table))

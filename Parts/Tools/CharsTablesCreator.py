@@ -6,15 +6,6 @@ from Parts.Vars import FreezedArabicChars, ASCII
 from sys import argv, exit
 import keyboard, csv
 
-def loadACT(tablePath : str, Table): # For Act and CSVC
-    if not tablePath: return
-    eraseTable(Table)
-    charmap = TakeFromTable(tablePath)
-    
-    for k, v in charmap.items():
-        if not v: continue
-        Table.setItem(int(stringToHex(v)[0], 16), int(stringToHex(v)[1], 16), QTableWidgetItem(k))
-
 def setChars(startSpot, Chars):
     for i in range(len(Chars)):
         col = int(startSpot[1], 16) + i %  16
@@ -55,12 +46,12 @@ def checkUserChars():
 def windowTrig(action):
     def check(text): return action.text() == text
 
-    if check("فتح جدول حروف .tbl"): loadTBL(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    if check("فتح جدول حروف .tbl"): loadTBLHex(openFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("فتح جدول حروف .act"): loadACT(openFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("فتح جدول حروف .csv"): loadACT(openFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("حفظ جدول الحروف كـ .tbl"): saveTBL(saveFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("حفظ جدول الحروف كـ .tbl"): saveTBLHex(saveFile(['tbl'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("حفظ جدول الحروف كـ .act"): saveACT(saveFile(['act'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
-    elif check("حفظ جدول الحروف كـ .csv"): saveCSVC(saveFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
+    elif check("حفظ جدول الحروف كـ .csv"): saveCSVHex(saveFile(['csv'], CharsTablesCreatorWindow), CharsTablesCreatorWindow.Table)
     elif check("مسح محتوى الجدول"): eraseTable(CharsTablesCreatorWindow.Table)
 
 
