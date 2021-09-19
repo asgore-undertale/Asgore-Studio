@@ -48,9 +48,6 @@ TextConverterOptionsContainer.setWidget(TextConverterOptionsWindow)
 EnteringContainer = QMdiSubWindow()
 EnteringContainer.setWidget(EnteringWindow)
 
-StudioWindow.bar.triggered[QAction].connect(windowTrig)
-
-
 def windowTrig(action):
     action = action.text()
 
@@ -79,6 +76,8 @@ def runCustomScript():
         exec(f"from {ToModulePath(scriptPath)} import Script", globals())
         Script()
     except Exception as e: print(e)
+
+StudioWindow.bar.triggered[QAction].connect(windowTrig)
 
 if __name__ == '__main__':
     StudioWindow.show()
