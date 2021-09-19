@@ -24,10 +24,13 @@ def loadByIndex(index, filePath, columnIndex):
     
     if index == 0:
         fileContent, textList = loadMsyt(filePath)
+        transList = list(textList)
     if index == 1:
         fileContent, textList = loadKruptar(filePath)
+        transList = list(textList)
     if index == 2:
         textList, table = loadCsvTable(filePath, columnIndex)
+        transList = list(textList)
     if index == 3:
         fileContent, textList, transList = loadPo(filePath)
         oldTransList = list(transList)
@@ -36,6 +39,7 @@ def loadByIndex(index, filePath, columnIndex):
         oldTransList = list(transList)
     if index == 5:
         fileContent, textList = loadYaml(filePath)
+        transList = list(textList)
     
     if not transList:
         transList = ['' for i in range(len(textList))]
