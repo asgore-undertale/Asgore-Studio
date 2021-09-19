@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[add new tool].[big update].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.0.4.72")
+        self.setWindowTitle("Asgore Studio 2.0.4.73")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -58,6 +58,7 @@ class StudioMotherWindow(QMainWindow):
         self.tools.addAction("محوّل النصوص")
         self.tools.addAction("خيارات محوّل النصوص")
         self.tools.addAction("المدخل والمستخرج")
+        self.tools.addAction("تشغيل سكربت خارجي")
 
     def newChild(self, widget, container, title):
         if container not in self.mdiArea.subWindowList():

@@ -3,17 +3,17 @@ from PyQt5.QtWidgets import QFileDialog
 from os import path, walk
 import re
 
-def openFile(type : tuple, window, text = 'جدول حروف'):
+def openFile(type : tuple, window = None, text = 'جدول حروف'):
     type = '*.'+' *.'.join(type)
     _open, _ = QFileDialog.getOpenFileName(window, text, '', type)
     return _open * (_open != '/') * (_open != '') * (path.exists(_open))
 
-def saveFile(type : tuple, window, text = 'جدول حروف'):
+def saveFile(type : tuple, window = None, text = 'جدول حروف'):
     type = '*.'+' *.'.join(type)
     _save, _ = QFileDialog.getSaveFileName(window, text, '', type)
     return _save * (_save != '/') * (_save != '')
 
-def selectFolder(window, text = 'اختر مجلداً'):
+def selectFolder(window = None, text = 'اختر مجلداً'):
     _select = QFileDialog.getExistingDirectory(window, text, '')+'/'
     return _select * (_select != '/') * (_select != '') * (path.exists(_select))
 

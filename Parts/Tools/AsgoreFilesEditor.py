@@ -49,12 +49,18 @@ def openTextDataBase():
     elif filePath.endswith('.csv'):
         database = CSVtoList(filePath)
 
-def loadFile():
-    global fileContent, table, textList, transList, oldTransList, sentencesNum
-    
+def getFilePath():
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     filePath = openFile([fileType(index)], FilesEditorWindow, 'ملف')
+    return filePath
+
+def loadFile(filePath = ''):
+    global fileContent, table, textList, transList, oldTransList, sentencesNum
+    
+    if not filePath: filePath = getFilePath()
     if not filePath: return
+    
+    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     
     handleText.current_item = 0
     columnIndex = FilesEditorWindow.columnIndexCell.getValue() -1
@@ -66,11 +72,13 @@ def loadFile():
     if not transList: return
     FilesEditorWindow.translationBox.setPlainText(transList[0])
     
-def save_file():
+def save_file(filePath = ''):
     global transList
-    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
-    filePath = saveFile([fileType(index)], FilesEditorWindow, 'ملف')
+    
+    if not filePath: filePath = getFilePath()
     if not filePath: return
+    
+    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     
     transList[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
     saveByIndex(index, filePath, fileContent, textList, transList, oldTransList)
@@ -133,7 +141,7 @@ FilesEditorWindow.textButton.clicked.connect(lambda: openTextDataBase())
 FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))
 FilesEditorWindow.nextButton.clicked.connect(lambda: handleText(True))
 FilesEditorWindow.saveButton.clicked.connect(lambda: save_file())
-FilesEditorWindow.openButton.clicked.connect(lambda: loadFile())
+FilesEditorWindow.openButton.clicked.connect(lambda: getFilePath())
 FilesEditorWindow.openTableButton.clicked.connect(lambda: openInTablesEditor(textList, transList))
 FilesEditorWindow.Convertbutton.clicked.connect(lambda: Convert())
 FilesEditorWindow.ConvertAllbutton.clicked.connect(lambda: ConvertAll())

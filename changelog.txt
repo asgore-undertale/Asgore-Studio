@@ -1,3 +1,6 @@
+Version {2.0.4.73}:
+	- Adding Option to load Custom Files in the tools list.
+
 Version {2.0.4.72}:
 	- Translation box will be filled automaticlly with the original text when loading a file in {Asgore Files Editor} tool.
 
