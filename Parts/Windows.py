@@ -650,9 +650,9 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         
         newpageComLabel = QLabel("أمر الصفحة الجديد:")
-        self.newpageCommand = AdvancedCell(90, 26, "{page}")
+        self.newpageCommand = AdvancedCell(90, 26, "")
         newlineComLabel = QLabel("أمر السطر جديد:")
-        self.newlineCommand = AdvancedCell(90, 26, "{line}")
+        self.newlineCommand = AdvancedCell(90, 26, "")
         
         
         cellsLayout.addWidget(startComLabel, 0, 0)
