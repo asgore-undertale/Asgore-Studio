@@ -1,1 +1,1 @@
-@RD /s /q Parts\__pycache__, Parts\Scripts\__pycache__, Parts\CustomScripts\__pycache__, Parts\CustomScripts\TextConverterScripts\__pycache__, Parts\Tools\__pycache__
+@RD /s /q Parts\__pycache__, Parts\Scripts\__pycache__, Parts\CustomScripts\__pycache__, CustomScripts\TextConverterScripts\__pycache__, Parts\Tools\__pycache__

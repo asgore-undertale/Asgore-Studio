@@ -25,7 +25,7 @@ def openConvertTable():
     convertDatabase = TakeFromTable(convertingTablePath)
 
 def getCustomScriptsList():
-    return list(filter(lambda x: x.endswith('.py'), dirList(r'Parts\CustomScripts\TextConverterScripts')))
+    return list(filter(lambda x: x.endswith('.py'), dirList(r'CustomScripts\TextConverterScripts')))
 
 def loadCustomScripts():
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
