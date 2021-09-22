@@ -1,3 +1,7 @@
+Version {2.04.74}:
+	- Changing versions system.
+	- Fixing loading and saving file in {Asgore Files Editor} tool.
+
 Version {2.0.4.73}:
 	- Adding Option to load Custom Files in the tools list.
 

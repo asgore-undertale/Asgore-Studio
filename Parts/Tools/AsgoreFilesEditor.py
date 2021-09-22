@@ -55,10 +55,10 @@ def getFilePath():
     return filePath
 
 def loadFile(filePath = ''):
-    global fileContent, table, textList, transList, oldTransList, sentencesNum
-    
     if not filePath: filePath = getFilePath()
     if not filePath: return
+    
+    global fileContent, table, textList, transList, oldTransList, sentencesNum
     
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     
@@ -71,12 +71,17 @@ def loadFile(filePath = ''):
     FilesEditorWindow.textBox.setPlainText(textList[0])
     if not transList: return
     FilesEditorWindow.translationBox.setPlainText(transList[0])
+
+def getFileSavePath():
+    index = FilesEditorWindow.fileTypeComboBox.currentIndex()
+    filePath = saveFile([fileType(index)], FilesEditorWindow, 'ملف')
+    return filePath
     
 def save_file(filePath = ''):
-    global transList
-    
-    if not filePath: filePath = getFilePath()
+    if not filePath: filePath = getFileSavePath()
     if not filePath: return
+    
+    global transList
     
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     
@@ -141,7 +146,7 @@ FilesEditorWindow.textButton.clicked.connect(lambda: openTextDataBase())
 FilesEditorWindow.backButton.clicked.connect(lambda: handleText(False))
 FilesEditorWindow.nextButton.clicked.connect(lambda: handleText(True))
 FilesEditorWindow.saveButton.clicked.connect(lambda: save_file())
-FilesEditorWindow.openButton.clicked.connect(lambda: getFilePath())
+FilesEditorWindow.openButton.clicked.connect(lambda: loadFile())
 FilesEditorWindow.openTableButton.clicked.connect(lambda: openInTablesEditor(textList, transList))
 FilesEditorWindow.Convertbutton.clicked.connect(lambda: Convert())
 FilesEditorWindow.ConvertAllbutton.clicked.connect(lambda: ConvertAll())
