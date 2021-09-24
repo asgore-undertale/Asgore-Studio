@@ -28,7 +28,7 @@ def OffsetLineWithSpaces(line : str, charmap : dict, LineMaxWidth : int, lineOff
     if not spacesNum:
         lineWidth = Width(line, charmap)
         spacesNum = int((LineMaxWidth - lineWidth) / (charmap[' '][2] + charmap[' '][6]))
-    if spacesNum <= 0: return text
+    if spacesNum <= 0: return line
     
     if   lineOffset == 0: # first
         return line + (' ' * spacesNum)
@@ -44,7 +44,7 @@ def OffsetLineWithCommands(line : str, charmap : dict, LineMaxWidth : int, lineO
     if not freeSpace:
         lineWidth = Width(line, charmap)
         freeSpace = LineMaxWidth - lineWidth
-    if freeSpace <= 0: return text
+    if freeSpace <= 0: return line
     
     if   lineOffset == 0: # first
         command = command.replace('(px)', str(freeSpace), 1)

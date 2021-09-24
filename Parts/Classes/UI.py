@@ -54,10 +54,7 @@ class AdvancedCell(QTextEdit):
         super(AdvancedCell, self).__init__()
         
         self.setFixedSize(Width, Height)
-        self.Value = DefaultValue
-        self.Type = str(type(DefaultValue))[8:-2]
-        
-        self.setPlainText(str(self.Value))
+        self.setValue(DefaultValue)
     
     def focusOutEvent(self, event):
         self.updateCell()
@@ -73,6 +70,11 @@ class AdvancedCell(QTextEdit):
     
     def updateCell(self):
         self.updateValue()
+        self.setPlainText(str(self.Value))
+    
+    def setValue(self, value):
+        self.Value = value
+        self.Type = str(type(value))[8:-2]
         self.setPlainText(str(self.Value))
     
     def getValue(self):

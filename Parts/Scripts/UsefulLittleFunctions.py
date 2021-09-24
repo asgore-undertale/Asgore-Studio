@@ -49,7 +49,7 @@ def tryTakeNum(string : str, defaultNum = 0, isInt = True):
     string = str(string)
     
     if not len(string): return defaultNum
-    while string[0] == '0':
+    while string[0] == '0' and len(string) > 1:
         string = string[1:len(string)]
         if not len(string): return defaultNum
     

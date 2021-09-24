@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from Parts.Classes import *
+from Parts.Classes.UI import *
 
 textboxFont = QFont()
 textboxFont.setPointSize(10)
@@ -15,8 +15,8 @@ perFont.setPointSize(14)
 class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # version ([rewrite studio].[big updates].[small updates and fixes])
-        self.setWindowTitle("Asgore Studio 2.04.74")
+        # version ([rewrite studio].[updates].[fixes])
+        self.setWindowTitle("Asgore Studio 2.05.74")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -25,14 +25,7 @@ class StudioMotherWindow(QMainWindow):
         self.createMenus()
         self.createActions()
         
-        self.importantInfo = ('- للكتابة بالبايتات في الحقول الصغيرة اكتب [b] وبعدها البايتات.\n'
-            '(هذا في المدخل وخيارات التحويل فقط) (ولا تضع فراغات)\n'
-            '- اضغط F3 في محرّر الملفات لإضافة <c>.\n'
-            '- اضغط lctrl+B لتحويل النص المحدد.\n'
-            '- اضغط lctrl+P لكتابة أمر الصفحة الجديد من إعدادات محول النصوص.\n'
-            '- اضغط lctrl+L لكتابة أمر السطر الجديد من إعدادات محول النصوص.\n'
-            '- في منشئ جداول الحروف اضغط F3 لكتابة الحرف التالي وF4 للعودة حرفاً للوراء وF5 للعودة لأول حرف.\n'
-            '- اضغط ctrl+S لالتقاط صورة لمربع الحوار في مجرب الخطوط')
+        self.importantInfo = open('Parts/TextFiles/Important Info.txt', 'r', encoding='utf-8', errors='replace').read()
     
     def createBars(self):
         self.bar = self.menuBar()
@@ -396,11 +389,11 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         self.setCentralWidget(container)
         
         cellsLayout = QGridLayout()
-        self.fontSizeCell = AdvancedCell(80, 26, 16)
+        self.fontSizeCell = AdvancedCell(80, 26, 24)
         fontSizeLabel = QLabel("حجم الخط:")
-        self.boxWidthCell = AdvancedCell(80, 26, 180)
+        self.boxWidthCell = AdvancedCell(80, 26, 360)
         boxWidthLabel = QLabel("عرض المربع:")
-        self.boxHeightCell = AdvancedCell(80, 26, 60)
+        self.boxHeightCell = AdvancedCell(80, 26, 120)
         boxHeightLabel = QLabel("ارتفاع المربع:")
         self.pixelsPerCell = AdvancedCell(80, 26, 3)
         pixelsPerLabel = QLabel("البيكسلات بين السطور:")
@@ -434,9 +427,7 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         self.offsetWithComboBox.setInsertPolicy(QComboBox.NoInsert)
         
         self.fromRightCheck = QCheckBox("تدفق النص من اليمين")
-        self.boxAnimationCheck = QCheckBox("أنميشن مربع الحوار")
-        self.lineBoxCheck = QCheckBox("صناديق السطور")
-        self.charBoxCheck = QCheckBox("صناديق الحروف")
+        self.BoxesCheck = QCheckBox("صناديق الحدود")
         
         
         layout.addLayout(cellsLayout)
@@ -464,9 +455,7 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         optionsLayout.addWidget(offsetWithComboBoxLabel)
         optionsLayout.addWidget(self.offsetWithComboBox)
         optionsLayout.addWidget(self.fromRightCheck)
-        optionsLayout.addWidget(self.boxAnimationCheck)
-        optionsLayout.addWidget(self.lineBoxCheck)
-        optionsLayout.addWidget(self.charBoxCheck)
+        optionsLayout.addWidget(self.BoxesCheck)
 
 FontTesterOptionsWindow = FontTesterOptionsMotherWindow()
 

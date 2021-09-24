@@ -51,7 +51,7 @@ EnteringContainer.setWidget(EnteringWindow)
 def windowTrig(action):
     action = action.text()
 
-    if   action == "عني": QMessageBox.about(StudioWindow, "عني", "صفحتي: https://github.com/asgore-undertale\nلك كامل الحرية في التعديل والنشر بشرط ذكري وصفحتي.")
+    if   action == "عني": QMessageBox.about(StudioWindow, "عني", open('Parts/TextFiles/About me.txt', 'r', encoding='utf-8', errors='replace').read())
     elif action == "معلومات مهمة": QMessageBox.about(StudioWindow, "معلومات مهمة", StudioWindow.importantInfo)
     elif action == "تكبير النوافذ وصفها": StudioWindow.mdiArea.tileSubWindows()
     elif action == "تصغير النوافذ": StudioWindow.mdiArea.cascadeSubWindows()

@@ -1,3 +1,8 @@
+Version {2.05.74}:
+	- Some Fixes.
+	- Rewriting the {Font Tester} tool.
+	- Updating (AdvancedCell) class.
+
 Version {2.04.74}:
 	- Changing versions system.
 	- Fixing loading and saving file in {Asgore Files Editor} tool.

@@ -66,17 +66,17 @@ def MsytToTxt(file_content):
         if '- text:' in line:
             new_file_text_line += line.replace('      - text: ', '')
         elif '- control:' in line:
-            new_file_text_line += '＜c' + str(command_num) + '＞'
+            new_file_text_line += '<c' + str(command_num) + '>'
             new_file_commands = new_file_commands.replace(']]', ']') + '[' + str(command_num) + ']]\n'
             command_num += 1
         elif ' ' * 10 in line:
             '''
             if 'animation' in line or 'sound' in line or 'sound2' in line or 'raw' in line:
-                first_commands += '＜c' + str(command_num-1) + '＞'
-                new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
+                first_commands += '<c' + str(command_num-1) + '>'
+                new_file_text_line = new_file_text_line.replace('<c' + str(command_num-1) + '>', '')
                 elif 'auto_advance' in line or 'pause' in line or 'choice' in line or 'single_choice' in line:
-                   last_commands += '＜c' + str(command_num-1) + '＞'
-                  new_file_text_line = new_file_text_line.replace('＜c' + str(command_num-1) + '＞', '')
+                   last_commands += '<c' + str(command_num-1) + '>'
+                  new_file_text_line = new_file_text_line.replace('<c' + str(command_num-1) + '>', '')
             '''
             new_file_commands = new_file_commands.replace(']]', ', ' + line.replace('          ', '') + ']]')
         else:
@@ -102,10 +102,10 @@ def TxtToMsyt(file_content):
     del text_list[0]
     
     def edit_line(line):
-        if line[0] != '＜': line = '      - text: ' + line
-        line = line.replace('\n', '\n      - text: ').replace('＞', '＞      - text: ')
-        line = line.replace('＞      - text: ＜', '＞＜').replace('＞      - text: \n', '＞\n')
-        line = line.replace('＞      - text: ', '＞\n      - text: ').replace('＜', '\n＜')
+        if line[0] != '<': line = '      - text: ' + line
+        line = line.replace('\n', '\n      - text: ').replace('>', '>      - text: ')
+        line = line.replace('>      - text: <', '><').replace('>      - text: \n', '>\n')
+        line = line.replace('>      - text: ', '>\n      - text: ').replace('<', '\n<')
         line = line.replace('""', '')
         TxtToMsyt.newFileContent = TxtToMsyt.newFileContent.replace('\t\t[-----------]', line, 1)
     
@@ -114,7 +114,7 @@ def TxtToMsyt(file_content):
     commands_list = re.findall("\[(.*?)\]", msyt_content_list[1])
     for i in range(len(commands_list)):
         j = '\n      - control:' + commands_list[i].replace(str(i)+', ', ', ').replace(', ', '\n          ')
-        TxtToMsyt.newFileContent = TxtToMsyt.newFileContent.replace('＜c' + str(i) + '＞', j)
+        TxtToMsyt.newFileContent = TxtToMsyt.newFileContent.replace('<c' + str(i) + '>', j)
     
     TxtToMsyt.newFileContent = TxtToMsyt.newFileContent.replace('\n      - text: \n', '\n').replace('\n\n\n      - control:', '\n      - control:')
     TxtToMsyt.newFileContent = TxtToMsyt.newFileContent.replace('\n\n      - control:\n', '\n      - control:\n').replace('}\n\n{\n', '')

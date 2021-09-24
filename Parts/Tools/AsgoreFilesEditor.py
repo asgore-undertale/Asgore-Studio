@@ -19,14 +19,14 @@ def typeCommand():
     
     Text, c = FilesEditorWindow.textBox.toPlainText(), 0
     
-    if '＞' not in Text or '＜' not in Text: return
-    while '＜c'+str(c)+'＞' not in Text:
+    if '>' not in Text or '<' not in Text: return
+    while '<c'+str(c)+'>' not in Text:
         if c == 30: return
         c += 1
     
-    for i in range(Text.count('＞')):
-        if '＜c'+str(c+i)+'＞' not in FilesEditorWindow.translationBox.toPlainText() and '＜c'+str(c+i)+'＞' in Text:
-            keyboard.write('＜c'+str(c+i)+'＞')
+    for i in range(Text.count('>')):
+        if '<c'+str(c+i)+'>' not in FilesEditorWindow.translationBox.toPlainText() and '<c'+str(c+i)+'>' in Text:
+            keyboard.write('<c'+str(c+i)+'>')
             break
 
 def Convert():
