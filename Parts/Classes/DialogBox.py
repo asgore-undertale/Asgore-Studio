@@ -231,6 +231,7 @@ class DialogBox(Commands, PyGame):
         while True: self.Checks()
     
     def writeLine(self, text, x, y):
+        self.checkCommands(text, 0)
         for c in range(len(text)):
             if self.passTimes:
                 self.passTimes -= 1

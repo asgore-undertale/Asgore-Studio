@@ -1,3 +1,6 @@
+Version {2.05.75}:
+	- Fixing commands in the beginning of the text in {Font Tester} tool.
+
 Version {2.05.74}:
 	- Some Fixes.
 	- Rewriting the {Font Tester} tool.
