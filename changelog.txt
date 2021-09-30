@@ -1,3 +1,9 @@
+Version {2.06.75}:
+	- Adding byte support to cells.
+	- Adding (lctrl+lshift+B) shortvut to the {Text Converter} tool to paste and convert.
+	- Upgrading {Text Converter Options} window.
+	- Upgrading byte converting.
+
 Version {2.05.75}:
 	- Fixing commands in the beginning of the text in {Font Tester} tool.
 

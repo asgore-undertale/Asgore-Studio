@@ -24,6 +24,12 @@ def openConvertTable():
     convertingTablePath = tablePath
     convertDatabase = TakeFromTable(convertingTablePath)
 
+def openByteTable():
+    tablePath = openFile(['tbl'], TextConverterOptionsWindow, 'تيبل')
+    if not tablePath: return
+    global byteTable
+    byteTable = TakeFromTable(tablePath)
+
 def getCustomScriptsList():
     return list(filter(lambda x: x.endswith('.py'), dirList(r'CustomScripts\TextConverterScripts')))
 
@@ -58,8 +64,8 @@ def applyCustomScripts(text):
 
 def takeFromCell(celltext):
     if TextConverterOptionsWindow.FixSlashes.isChecked():
-        return fixSlashes(byteInCell(celltext))
-    return byteInCell(celltext)
+        return fixSlashes(celltext)
+    return celltext
 
 def cell():
     cell._startCommand = takeFromCell(TextConverterOptionsWindow.startCommand.getValue())
@@ -68,20 +74,62 @@ def cell():
     cell._lineCommand = takeFromCell(TextConverterOptionsWindow.lineCommand.getValue())
     cell._newpageCommand = takeFromCell(TextConverterOptionsWindow.newpageCommand.getValue())
     cell._newlineCommand = takeFromCell(TextConverterOptionsWindow.newlineCommand.getValue())
-    cell._convertedByte = takeFromCell(TextConverterOptionsWindow.convertedByte.getValue())
+    cell._byte_1 = takeFromCell(TextConverterOptionsWindow.byte_1.getValue())
+    cell._byte_2 = takeFromCell(TextConverterOptionsWindow.byte_2.getValue())
 
 def applyConverts(text):
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
     HarakatOptionindex = TextConverterOptionsWindow.HarakatComboBox.currentIndex()
-    if CustomScriptindex > 1: text = applyCustomScripts(text)# Custom Script
-    if HarakatOptionindex: text = handleHarakat(text, HarakatOptionindex)# Handle Harakat
-    if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked(): text = Freeze(text)# Freeze Arabic
-    if TextConverterOptionsWindow.RT_check.isChecked(): text = Reverse(text) # Reverse whole text
-    if TextConverterOptionsWindow.RAO_check.isChecked(): text = Reverse(text, False) # ‫Reverse Arabic only
-    if TextConverterOptionsWindow.C_check.isChecked(): text = Convert(text, convertDatabase, True)# Convert
-    if TextConverterOptionsWindow.UC_check.isChecked(): text = Convert(text, convertDatabase, False)# Unconvert
-    if TextConverterOptionsWindow.UA_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked(): text = Freeze(text, False)# UnFreeze Arabic
-    if TextConverterOptionsWindow.CB_check.isChecked(): text = convertBytes(text, cell._convertedByte)# Convert bytes
+    UnicodeOptionindex = TextConverterOptionsWindow.unicodeComboBox.currentIndex()
+    useBytesTable = TextConverterOptionsWindow.UseTable.isChecked()
+    
+    if CustomScriptindex > 1:
+        text = applyCustomScripts(text) # Custom Script
+    
+    if UnicodeOptionindex == 1:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, 'hextohex', byteTable, useBytesTable) # Convert bytes
+    if UnicodeOptionindex == 2:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, 'hextotext', byteTable, useBytesTable) # Convert bytes
+    
+    if HarakatOptionindex:
+        text = handleHarakat(text, HarakatOptionindex)# Handle Harakat
+    if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked():
+        text = Freeze(text)# Freeze Arabic
+    if TextConverterOptionsWindow.RT_check.isChecked():
+        text = Reverse(text) # Reverse whole text
+    if TextConverterOptionsWindow.RAO_check.isChecked():
+        text = Reverse(text, False) # ‫Reverse Arabic only
+    if TextConverterOptionsWindow.C_check.isChecked():
+        text = Convert(text, convertDatabase, True)# Convert
+    if TextConverterOptionsWindow.UC_check.isChecked():
+        text = Convert(text, convertDatabase, False)# Unconvert
+    if TextConverterOptionsWindow.UA_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked():
+        text = Freeze(text, False)# UnFreeze Arabic
+    
+    if UnicodeOptionindex == 3:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, 'texttohex', byteTable, useBytesTable) # Convert bytes
+    return text
+
+def sortText(text):
+    textPagesList = Split(text, cell._pageCommand)
+    for p in range(len(textPagesList)):
+        if TextConverterOptionsWindow.DDL_check.isChecked():
+            textPagesList[p] = DeleteDuplicatedLines(textPagesList[p], cell._lineCommand) #Delete Duplicated lines
+            
+        sortOptionindex = TextConverterOptionsWindow.sortComboBox.currentIndex()
+        if sortOptionindex == 1:
+            textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand, 'length') #Sort short to long
+        elif sortOptionindex == 2:
+            textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand, 'length', True) #Sort long to short
+        elif sortOptionindex == 3:
+            textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand) #Sort Alphabetic
+            
+        if TextConverterOptionsWindow.RL_check.isChecked():
+            textPagesList[p] = cell._lineCommand.join(textPagesList[p].split(cell._lineCommand)[::-1]) #Reverse Lines
+    text = cell._pageCommand.join(textPagesList)
+    
+    if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
+    
     return text
 
 def convert(text, thisTool = True):
@@ -101,15 +149,7 @@ def convert(text, thisTool = True):
             )
     text = ''.join(sentences)
     
-    
-    textPagesList = Split(text, cell._pageCommand)
-    for p in range(len(textPagesList)):
-        if TextConverterOptionsWindow.DDL_check.isChecked(): textPagesList[p] = DeleteDuplicatedLines(textPagesList[p], cell._lineCommand) #Delete Duplicated lines
-        if TextConverterOptionsWindow.SSL_check.isChecked(): textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand) #Sort short to long
-        if TextConverterOptionsWindow.SLS_check.isChecked(): textPagesList[p] = SortLines(textPagesList[p], cell._lineCommand, False) #Sort long to short
-        if TextConverterOptionsWindow.RL_check.isChecked():  textPagesList[p] = cell._lineCommand.join(textPagesList[p].split(cell._lineCommand)[::-1]) #Reverse Lines
-    text = cell._pageCommand.join(textPagesList)
-    if TextConverterOptionsWindow.RP_check.isChecked():  text = cell._pageCommand.join(text.split(cell._pageCommand)[::-1]) #Reverse Pages
+    text = sortText(text)
     
     if cell._newpageCommand and cell._pageCommand:
         text = text.replace(cell._pageCommand, cell._newpageCommand)
@@ -133,11 +173,15 @@ def convertFiles():
     
     QMessageBox.about(TextConverterWindow, "!!تهانينا", "انتهى تحويل الملفات.")
 
-def convertByHotkey():
-    # if not TextConverter.isActiveWindow(): return
+def convertSelectedText():
     pyperclip.copy('')
     pyautogui.hotkey('ctrl', 'c')
     time.sleep(.05)  # لنضمن ألا يسبق البرنامج ctrl-c
+    pyperclip.copy(convert(pyperclip.paste()))
+    pyautogui.hotkey('ctrl', 'v')
+
+def PasteAndConvert():
+    time.sleep(.05)
     pyperclip.copy(convert(pyperclip.paste()))
     pyautogui.hotkey('ctrl', 'v')
 
@@ -152,7 +196,7 @@ from Parts.Windows import TextConverterWindow, TextConverterOptionsWindow
 
 
 loadCustomScripts()
-convertDatabase = {}
+convertDatabase, byteTable = {}, {}
 convertingTablePath = r'OtherFiles/Tables/CharsConvertingTable.act'
 if path.exists(convertingTablePath): convertDatabase = TakeFromTable(convertingTablePath)
 
@@ -162,10 +206,12 @@ TextConverterWindow.convertButton.clicked.connect(
 TextConverterWindow.openFileButton.clicked.connect(lambda: opentextFile())
 TextConverterWindow.ConvertFilesButton.clicked.connect(lambda: convertFiles())
 TextConverterOptionsWindow.C_databaseButton.clicked.connect(lambda: openConvertTable())
+TextConverterOptionsWindow.bytesTableButton.clicked.connect(lambda: openByteTable())
 TextConverterOptionsWindow.CustomScriptComboBox.currentIndexChanged.connect(loadCustomScripts)
 TextConverterWindow.enteredBox.textChanged.connect(AutoConvert)
 
-keyboard.add_hotkey("ctrl+b", lambda: convertByHotkey())
+keyboard.add_hotkey("ctrl+b", lambda: convertSelectedText())
+keyboard.add_hotkey("ctrl+shift+b", lambda: PasteAndConvert())
 keyboard.add_hotkey("ctrl+p", lambda: keyboard.write(TextConverterOptionsWindow.newpageCommand.getValue()))
 keyboard.add_hotkey("ctrl+l", lambda: keyboard.write(TextConverterOptionsWindow.newlineCommand.getValue()))
 

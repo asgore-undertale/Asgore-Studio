@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QComboBox, QTextEdit
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QStandardItemModel
 
-from Parts.Scripts.UsefulLittleFunctions import tryTakeNum
+from Parts.Scripts.UsefulLittleFunctions import tryTakeNum, hexToString
 
 class CheckableComboBox(QComboBox):
     def __init__(self):
@@ -53,6 +53,8 @@ class AdvancedCell(QTextEdit):
     def __init__(self, Width, Height, DefaultValue = 0):
         super(AdvancedCell, self).__init__()
         
+        self.bytesign = '[b]'
+        
         self.setFixedSize(Width, Height)
         self.setValue(DefaultValue)
     
@@ -72,10 +74,14 @@ class AdvancedCell(QTextEdit):
         self.updateValue()
         self.setPlainText(str(self.Value))
     
+    def byteToText(self, value):
+        if self.bytesign not in self.Value: return value
+        return hexToString(self.Value.replace(self.bytesign, '').replace(' ', ''))
+    
     def setValue(self, value):
         self.Value = value
         self.Type = str(type(value))[8:-2]
         self.setPlainText(str(self.Value))
     
     def getValue(self):
-        return self.Value
+        return self.byteToText(self.Value)

@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[updates].[fixes])
-        self.setWindowTitle("Asgore Studio 2.05.75")
+        self.setWindowTitle("Asgore Studio 2.06.75")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -566,30 +566,40 @@ class TextConverterOptionsMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        tab1 = QWidget()
-        tab2 = QWidget()
         container = QTabWidget()
+        charsConverter = QWidget()
+        hexConverter = QWidget()
+        pagesAndLines = QWidget()
+        advancedOptions = QWidget()
         
-        container.addTab(tab1, 'صفحة 1')
-        container.addTab(tab2, 'صفحة 2')
+        container.addTab(charsConverter, 'تحويل الحروف')
+        container.addTab(hexConverter, 'تحويل الهيكس')
+        container.addTab(pagesAndLines, 'الأسطر والصفحات')
+        container.addTab(advancedOptions, 'إعدادات متقدمة')
 
-        layout = QGridLayout()
-        layout2 = QGridLayout()
-        tab1.setLayout(layout)
-        tab2.setLayout(layout2)
+        charsConverterLayout = QVBoxLayout()
+        hexConverterLayout = QVBoxLayout()
+        pagesAndLinesLayout = QVBoxLayout()
+        advancedOptionsLayout = QVBoxLayout()
+        
         self.setCentralWidget(container)
+        charsConverter.setLayout(charsConverterLayout)
+        hexConverter.setLayout(hexConverterLayout)
+        pagesAndLines.setLayout(pagesAndLinesLayout)
+        advancedOptions.setLayout(advancedOptionsLayout)
+        
+        # -->
         
         OptionsWindow_Width = 400
         checkbox_size = [OptionsWindow_Width-5, 16]
         
-        checksLayout = QVBoxLayout()
+        charsConverterChecksLayout = QGridLayout()
         self.RA_check = QCheckBox("تجميد النص العربي")
         self.UA_check = QCheckBox("إلغاء تجميد النص العربي")
         self.C_check = QCheckBox("تحويل النص")
         self.UC_check = QCheckBox("إلغاء تحويل النص")
         self.RT_check = QCheckBox("عكس النص كاملاً")
-        self.RAO_check = QCheckBox("عكس العربية في النص (تجريبي)")
-        self.CB_check = QCheckBox("تحويل البايتات")
+        self.RAO_check = QCheckBox("عكس العربية في النص")
         
         harakatLayout = QHBoxLayout()
         HarakatLabel = QLabel("الحركات:")
@@ -604,92 +614,149 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         ]
         self.HarakatComboBox = QComboBox()
         self.HarakatComboBox.addItems(HarakatOptions)
-        self.HarakatComboBox.setFixedSize(160, 27)
+        self.HarakatComboBox.setFixedSize(220, 27)
         
         customScriptLayout = QHBoxLayout()
         CustomScriptLabel = QLabel("سكربتات:")
         self.CustomScriptComboBox = CheckableComboBox()
-        self.CustomScriptComboBox.setFixedSize(160, 27)
+        self.CustomScriptComboBox.setFixedSize(220, 27)
         self.CustomScriptComboBox.AddItems(['تحديث القائمة', '...'])
-
-
-        self.FixSlashes = QCheckBox(r"مراعاة (n, \r, \t, \0\)")
-        self.AutoCopyCheck = QCheckBox("النسخ تلقائياً بعد التحويل")
-        self.AutoConvertCheck = QCheckBox("التحويل تلقائياً عند الكتابة")
         
-        containerLayout = QVBoxLayout()
         cellsLayout = QGridLayout()
-        startComLabel = QLabel("قبل الأوامر:")
+        startComLabel = QLabel("تجاهل النصوص بعد:")
         self.startCommand = AdvancedCell(90, 26, "[")
-        endComLabel = QLabel("بعدها:")
+        endComLabel = QLabel("و قبل:")
         self.endCommand = AdvancedCell(90, 26, "]")
-        pageComLabel = QLabel("أمر الصفحة:")
-        self.pageCommand = AdvancedCell(90, 26, "<page>")
-        lineComLabel = QLabel("أمر السطر:")
-        self.lineCommand = AdvancedCell(90, 26, "<line>")
-        convertedByteLabel = QLabel("صيغة البايت المحول:")
-        self.convertedByte = AdvancedCell(90, 26, r'\xXY')
         
         self.C_databaseButton = QPushButton("فتح جدول تحويل")
         
+        # -->
+        
+        pagesLianesCellsLayout = QGridLayout()
+        pageComLabel = QLabel("أمر الصفحة قبل التحويل:")
+        self.pageCommand = AdvancedCell(90, 26, "<page>")
+        lineComLabel = QLabel("أمر السطر قبل التحويل:")
+        self.lineCommand = AdvancedCell(90, 26, "<line>")
+        newpageComLabel = QLabel("أمر الصفحة بعد التحويل:")
+        self.newpageCommand = AdvancedCell(90, 26, self.pageCommand.getValue())
+        newlineComLabel = QLabel("أمر السطر بعد التحويل:")
+        self.newlineCommand = AdvancedCell(90, 26, self.lineCommand.getValue())
+        
+        pageslinesLayout = QVBoxLayout()
         self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
-        self.SSL_check = QCheckBox("ترتيب أسطر الصفحة تصاعديا")
-        self.SLS_check = QCheckBox("ترتيب أسطر الصفحة تنازليا")
-        self.RL_check = QCheckBox("عكس ترتيب أسطر الصفحات")
+        self.RL_check = QCheckBox("عكس ترتيب الأسطر")
         self.RP_check = QCheckBox("عكس ترتيب الصفحات")
         
+        sortLayout = QHBoxLayout()
+        sortLabel = QLabel("ترتيب السطور:")
+        sortOptions = [
+            "اتركها على حالها",
+            "من الأقصر للأطول",
+            "من الأطول للأقصر",
+            "أبجدياً"
+        ]
+        self.sortComboBox = QComboBox()
+        self.sortComboBox.addItems(sortOptions)
+        self.sortComboBox.setFixedSize(220, 27)
         
-        newpageComLabel = QLabel("أمر الصفحة الجديد:")
-        self.newpageCommand = AdvancedCell(90, 26, "")
-        newlineComLabel = QLabel("أمر السطر جديد:")
-        self.newlineCommand = AdvancedCell(90, 26, "")
+        # -->
         
+        self.FixSlashes = QCheckBox("تغيير (n, \\r, \\t, \\0\\) لأشكالها\nغير الطباعية")
+        self.UseTable = QCheckBox("استعمال التيبل")
+        
+        hexCellsLayout = QGridLayout()
+        byte_1_Label = QLabel("تعبير اليونيكود -1-:")
+        self.byte_1 = AdvancedCell(90, 26, '\\xXY')
+        byte_2_Label = QLabel("تعبير اليونيكود -2-:")
+        self.byte_2 = AdvancedCell(90, 26, '{$XY}')
+        
+        unicodeLayout = QHBoxLayout()
+        unicodeLabel = QLabel("تحويل اليونيكود:")
+        unicodeOptions = [
+            "عدم التحويل",
+            "تحويل من التعبير 1 لـ 2",
+            "تحويل من التعبير 1 للأشكال الطباعية",
+            "تحويل من الأشكال الطباعية للتعبير 1"
+        ]
+        self.unicodeComboBox = QComboBox()
+        self.unicodeComboBox.addItems(unicodeOptions)
+        self.unicodeComboBox.setFixedSize(220, 27)
+        
+        
+        self.bytesTableButton = QPushButton("فتح تيبل")
+        
+        # -->
+        
+        self.AutoCopyCheck = QCheckBox("النسخ تلقائياً بعد التحويل")
+        self.AutoConvertCheck = QCheckBox("التحويل تلقائياً عند الكتابة")
+        
+        # -----------------------------------
         
         cellsLayout.addWidget(startComLabel, 0, 0)
         cellsLayout.addWidget(self.startCommand, 0, 1)
         cellsLayout.addWidget(endComLabel, 1, 0)
         cellsLayout.addWidget(self.endCommand, 1, 1)
-        cellsLayout.addWidget(pageComLabel, 2, 0)
-        cellsLayout.addWidget(self.pageCommand, 2, 1)
-        cellsLayout.addWidget(lineComLabel, 3, 0)
-        cellsLayout.addWidget(self.lineCommand, 3, 1)
-        cellsLayout.addWidget(convertedByteLabel, 4, 0)
-        cellsLayout.addWidget(self.convertedByte, 4, 1)
         
         harakatLayout.addWidget(HarakatLabel)
         harakatLayout.addWidget(self.HarakatComboBox)
         customScriptLayout.addWidget(CustomScriptLabel)
         customScriptLayout.addWidget(self.CustomScriptComboBox)
         
-        checksLayout.addWidget(self.RA_check)
-        checksLayout.addWidget(self.UA_check)
-        checksLayout.addWidget(self.C_check)
-        checksLayout.addWidget(self.UC_check)
-        checksLayout.addWidget(self.RT_check)
-        checksLayout.addWidget(self.RAO_check)
-        checksLayout.addWidget(self.CB_check)
-        checksLayout.addLayout(harakatLayout)
-        checksLayout.addLayout(customScriptLayout)
-        checksLayout.addWidget(self.FixSlashes)
-        checksLayout.addWidget(self.AutoCopyCheck)
-        checksLayout.addWidget(self.AutoConvertCheck)
+        charsConverterChecksLayout.addWidget(self.RA_check, 0, 0)
+        charsConverterChecksLayout.addWidget(self.UA_check, 0, 1)
+        charsConverterChecksLayout.addWidget(self.C_check, 1, 0)
+        charsConverterChecksLayout.addWidget(self.UC_check, 1, 1)
+        charsConverterChecksLayout.addWidget(self.RT_check, 2, 0)
+        charsConverterChecksLayout.addWidget(self.RAO_check, 2, 1)
         
-        containerLayout.addLayout(cellsLayout)
-        containerLayout.addWidget(self.DDL_check)
-        containerLayout.addWidget(self.SSL_check)
-        containerLayout.addWidget(self.SLS_check)
-        containerLayout.addWidget(self.RL_check)
-        containerLayout.addWidget(self.RP_check)
-        containerLayout.addWidget(self.C_databaseButton)
+        charsConverterLayout.addLayout(charsConverterChecksLayout)
+        charsConverterLayout.addLayout(harakatLayout)
+        charsConverterLayout.addLayout(customScriptLayout)
+        charsConverterLayout.addLayout(cellsLayout)
+        charsConverterLayout.addWidget(self.C_databaseButton)
         
-        layout.addLayout(checksLayout, 0, 0)
-        layout.addLayout(containerLayout, 0, 1)
+        # -->
         
-        layout2.addWidget(newpageComLabel, 0, 0)
-        layout2.addWidget(self.newpageCommand, 0, 1)
-        layout2.addWidget(newlineComLabel, 1, 0)
-        layout2.addWidget(self.newlineCommand, 1, 1)
-        # layout2.addWidget()
+        pagesLianesCellsLayout.addWidget(pageComLabel, 0, 0)
+        pagesLianesCellsLayout.addWidget(self.pageCommand, 0, 1)
+        pagesLianesCellsLayout.addWidget(lineComLabel, 1, 0)
+        pagesLianesCellsLayout.addWidget(self.lineCommand, 1, 1)
+        pagesLianesCellsLayout.addWidget(newpageComLabel, 2, 0)
+        pagesLianesCellsLayout.addWidget(self.newpageCommand, 2, 1)
+        pagesLianesCellsLayout.addWidget(newlineComLabel, 3, 0)
+        pagesLianesCellsLayout.addWidget(self.newlineCommand, 3, 1)
+        
+        sortLayout.addWidget(sortLabel)
+        sortLayout.addWidget(self.sortComboBox)
+        
+        pageslinesLayout.addWidget(self.DDL_check)
+        pageslinesLayout.addWidget(self.RL_check)
+        pageslinesLayout.addWidget(self.RP_check)
+        
+        pagesAndLinesLayout.addLayout(pagesLianesCellsLayout)
+        pagesAndLinesLayout.addLayout(pageslinesLayout)
+        pagesAndLinesLayout.addLayout(sortLayout)
+        
+        # -->
+        
+        hexCellsLayout.addWidget(byte_1_Label, 0, 0)
+        hexCellsLayout.addWidget(self.byte_1, 0, 1)
+        hexCellsLayout.addWidget(byte_2_Label, 1, 0)
+        hexCellsLayout.addWidget(self.byte_2, 1, 1)
+        
+        unicodeLayout.addWidget(unicodeLabel)
+        unicodeLayout.addWidget(self.unicodeComboBox)
+        
+        hexConverterLayout.addWidget(self.FixSlashes)
+        hexConverterLayout.addWidget(self.UseTable)
+        hexConverterLayout.addLayout(hexCellsLayout)
+        hexConverterLayout.addLayout(unicodeLayout)
+        hexConverterLayout.addWidget(self.bytesTableButton)
+        
+        # -->
+        
+        advancedOptionsLayout.addWidget(self.AutoCopyCheck)
+        advancedOptionsLayout.addWidget(self.AutoConvertCheck)
 
 TextConverterOptionsWindow = TextConverterOptionsMotherWindow()
 

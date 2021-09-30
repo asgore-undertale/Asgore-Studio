@@ -4,24 +4,7 @@ from Parts.Scripts.FixTables import sortACT, fixCharmap, takeFromArabic
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, _ACT_DESC_, checkVersion
 import csv
 
-HexTable = [
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-]
+HexTable = [[''] * 16] * 16
 
 def deleteEmptyLines(tableContent : str):
     while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
@@ -29,7 +12,9 @@ def deleteEmptyLines(tableContent : str):
 
 def deleteTrash(tableContent : str, seperator : str):
     try:
-        while seperator+'\n' in tableContent: tableContent = tableContent.replace(seperator+'\n', '\n')
+        tries = 20
+        for i in range(tries):
+            while (seperator*(tries-i))+'\n' in tableContent: tableContent = tableContent.replace(seperator+'\n', '\n')
         #while '\n\n' in tableContent: tableContent = tableContent.replace('\n\n', '\n')
         while tableContent[-1] == '\n': tableContent = tableContent[:-1]
     except: pass

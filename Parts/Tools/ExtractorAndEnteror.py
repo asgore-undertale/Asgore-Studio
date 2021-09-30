@@ -116,8 +116,8 @@ def enter(convertBool = True):
             translation, tooLong = prepareTextAndTranslation(text, EnteringWindow.translationBox.toPlainText(), convertBool)
             if translation != None: textList = [[text, translation]]
     
-    before = byteInCell(EnteringWindow.beforeText.getValue())
-    after = byteInCell(EnteringWindow.afterText.getValue())
+    before = EnteringWindow.beforeText.getValue()
+    after = EnteringWindow.afterText.getValue()
     
     for filename in filesList:
         with open(filename, 'rb') as f:
@@ -186,8 +186,8 @@ def getExtractedLists(filepath, fileTypeindex, columnIndex, before, after, mini,
     return extractedTextList, extractedTransList
 
 def extract():
-    before = byteInCell(EnteringWindow.beforeText.toPlainText()).encode()
-    after  = byteInCell(EnteringWindow.afterText.toPlainText()).encode()
+    before = EnteringWindow.beforeText.toPlainText().encode()
+    after  = EnteringWindow.afterText.toPlainText().encode()
     filesList = dirList(inputFolder)
     fileTypeindex = FilesEditorWindow.fileTypeComboBox.currentIndex()
     columnIndex = FilesEditorWindow.columnIndexCell.getValue() -1

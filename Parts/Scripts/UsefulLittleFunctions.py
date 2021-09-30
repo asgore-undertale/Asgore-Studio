@@ -23,7 +23,10 @@ def intToHex(num):
 
 def hexToString(hexstring):
     hexstring = '0'*(len(hexstring) % 2) + hexstring
-    return bytearray.fromhex(hexstring).decode(encoding='utf8', errors='replace')
+    try:
+        return bytearray.fromhex(hexstring).decode(encoding='utf8', errors='replace')
+    except:
+        return 'Error: Byte out of range.'
 
 def hexLength(text):
     hexstring = text.encode().hex()
@@ -101,29 +104,33 @@ def splitTextBySoperators(text : str, soperators : list):
     except: return sentences
 
 commandsChars = '\\.[]{}*+?()^'
-def fixBeforAfterCommands(beforeCom, afterCom):
+def fixRegexPattert(Pattern):
     for char in commandsChars:
         toChar = '\\'+char
-        if isinstance(beforeCom, bytes):  char, toChar = char.encode(), toChar.encode()
-        beforeCom = beforeCom.replace(char, toChar)
-        afterCom = afterCom.replace(char, toChar)
-    return beforeCom, afterCom
+        if isinstance(Pattern, bytes):  char, toChar = char.encode(), toChar.encode()
+        Pattern = Pattern.replace(char, toChar)
+    return Pattern
 
 def getRegexPattern(beforeCom, afterCom):
-    beforeCom, afterCom = fixBeforAfterCommands(beforeCom, afterCom)
+    beforeCom, afterCom = fixRegexPattert(beforeCom), fixRegexPattert(afterCom)
     middle = "(.*?)"
     if isinstance(beforeCom, bytes): middle = middle.encode()
     return beforeCom + middle + afterCom
 
-def SortLines(text, lineCom = '\n', case = True):
+def SortLines(text, lineCom = '\n', sortType = 'alphabet', reverse = False):
     if not lineCom: lineCom = '\n'
 
     linesList = text.split(lineCom)
-    linesList.sort(key=len)
-    if not case: linesList = linesList[::-1]
-    text = lineCom.join(linesList)
     
-    return text
+    if sortType == 'alphabet':
+        linesList.sort()
+    elif sortType == 'length':
+        linesList.sort(key=len)
+    
+    if reverse:
+        linesList = linesList[::-1]
+    
+    return lineCom.join(linesList)
 
 def DeleteDuplicatedLines(text, lineCom = '\n'):
     if not lineCom: lineCom = '\n'
@@ -155,10 +162,6 @@ def splitByBeforeAfterComAndDo(text, beforeCom, afterCom, function, reverse = Fa
 def Split(text, splitter):
     if splitter: return text.split(splitter)
     else: return [text]
-
-def byteInCell(text, subject = '[b]'):
-    if not subject in text: return text
-    return hexToString(text.replace(subject, ''))
 
 def swap(text, bowsList, unused_char = u'\uffff'):
     for bow in bowsList:
