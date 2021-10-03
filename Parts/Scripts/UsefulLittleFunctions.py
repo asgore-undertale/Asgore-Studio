@@ -187,10 +187,12 @@ def swapCharsOnEdges(text, char):
 def ToModulePath(path):
     return path.replace('/', '.').replace('\\', '.').replace('.py', '')
 
-def minimax(text, mini, maxi):
-    if mini and len(text) < mini: return
-    if maxi and len(text) > maxi: return
-    return text
+def minimax(num, min, max):
+    minType = getType(min)
+    maxType = getType(max)
+    if (minType == 'int' or minType == 'float') and num < min: return
+    if (maxType == 'int' or maxType == 'float') and num > max: return
+    return True
     
 def filterAscii(text):
     t = text
@@ -202,3 +204,6 @@ def filterAscii(text):
             return
     
     return text
+
+def getType(value):
+    return str(type(value))[8:-2]

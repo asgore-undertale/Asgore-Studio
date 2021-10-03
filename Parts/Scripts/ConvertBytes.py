@@ -1,82 +1,116 @@
 import re
 from Parts.Scripts.UsefulLittleFunctions import hexToString, fixRegexPattert, stringToHex
+from Parts.Windows import StudioWindow
 
-def convertBytes(text : str, subFrom, subTo, key = 'hextohex', table = {}, useTable = False):
-    # if not text or not subFrom or not subTo: return text
+longestCharBytes = 3
+
+def convertBytes(text : str, subFrom, subTo, readByteLength, resultByteLength, key = 'hextohex', table = {}, placeHolder = '', useTable = False):
+    Bytesindexes = getIndexesList(text, subFrom, readByteLength)
     
     subFromXindexes = [m.start(0) for m in re.finditer('X', subFrom)]
-    subFromYindexes = [m.start(0) for m in re.finditer('Y', subFrom)]
-    
-    regexSubFrom = fixRegexPattert(subFrom)
-    regexSubFrom = regexSubFrom.replace('X', '[A-Z, a-z, 0-9]').replace('Y', '[A-Z, a-z, 0-9]')
-    Bytes = re.findall(regexSubFrom, text)
-    
-    subFromindexes = [m.start(0) for m in re.finditer(regexSubFrom, text)]
-    
+    convertBytes.Report = []
+    resultText = ''
     
     if key == 'hextohex':
-        for uni in Bytes:
-            newUni = subTo
-            for x in subFromXindexes:
-                newUni = newUni.replace('X', uni[x], 1)
-            for y in subFromYindexes:
-                newUni = newUni.replace('Y', uni[y], 1)
-            text = text.replace(uni, newUni)
-        
-    elif key == 'hextotext':
-        bytes = mergBytes(text, subFrom, subFromindexes, subFromXindexes, subFromYindexes)
-        for byte in bytes:
-            string = hexToString(convertByte(byte, table, useTable))
-            num = len(byte)//2
-            text = re.sub(regexSubFrom*num, string, text, 1)
-        
-    elif key == 'texttohex':
-        hexText = stringToHex(convertString(text, table, useTable))
-        text = ''
-        for n in range(0, len(hexText), 2):
-            text += subFrom.replace('X', hexText[n]).replace('Y', hexText[n+1])
+        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindexes)
+        resultText = ''.join(
+            [subTo.replace('X', byte[b:b+(resultByteLength*2)], 1) for byte in bytesList for b in range(0, len(byte), resultByteLength*2)]
+            )
     
-    return text
+    elif key == 'hextotext':
+        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindexes)
+        resultText = ''.join(hexToString(convertByte(byte, table, placeHolder, useTable)) for byte in bytesList)
+        report()
+    
+    elif key == 'texttohex':
+        hexText = stringToHex(convertString(text, table, placeHolder, useTable))
+        resultText = ''.join(subTo.replace('X', hexText[n:n+(resultByteLength*2)]) for n in range(0, len(hexText), resultByteLength*2))
+        report()
+    
+    elif key == 'unicodetotext':
+        unicodes =  re.findall(r'\\u' + ('[A-Z, a-z, 0-9]'*4), text)
+        resultText = text
+        for uni in unicodes:
+            uni = '\\' + uni
+            resultText = re.sub(uni, chr(int(uni[3:], 16)), resultText)
+    
+    elif key == 'texttounicode':
+        resultText = ''.join(r'\u{:04X}'.format(ord(char)) for char in text)
+    
+    return resultText
 
-def mergBytes(text, subFrom, subFromindexes, subFromXindexes, subFromYindexes):
-    bytes = []
+def getIndexesList(text, subFrom, readByteLength):
+    Bytesindexes, indexesRom = [], []
+    regexSubFrom = fixRegexPattert(subFrom)
+    for i in range(readByteLength[0], readByteLength[1]+1):
+        _rSubFrom = regexSubFrom.replace('X', '[A-Z, a-z, 0-9]' * i*2)
+        
+        for m in re.finditer(_rSubFrom, text):
+            if m.start(0) in indexesRom: continue
+            indexesRom.append(m.start(0))
+            Bytesindexes.append([m.start(0), i*2])
+    
+    return sorted(Bytesindexes, key=lambda x: x[0])
+
+def report():
+    strLog = '\n'.join(convertBytes.Report)
+    StudioWindow.Report(f'({len(convertBytes.Report)}) عنصر غير موجود في التيبل', strLog)
+
+def addToReport(value):
+    if value in convertBytes.Report: return
+    convertBytes.Report.append(value)
+
+def mergBytes(text, subFrom, subFromindexes, subFromXindexes):
+    bytesList = []
+    subFromLen = len(subFrom.replace('X', ''))
     for i in range(len(subFromindexes)):
         byte = ''
-        if subFromindexes[i] - subFromindexes[i-1] == len(subFrom):
-            for x in subFromXindexes:
-                byte += text[subFromindexes[i]+x]
-            for y in subFromYindexes:
-                byte += text[subFromindexes[i]+y]
-            bytes[-1] += byte
+        for x in subFromXindexes:
+            byte += text[x+subFromindexes[i][0] : x+subFromindexes[i][0]+subFromindexes[i][1]]
+        
+        if subFromindexes[i][0] - subFromindexes[i-1][0] == subFromLen + subFromindexes[i-1][1]:
+            bytesList[-1] += byte
         else:
-            for x in subFromXindexes:
-                byte += text[subFromindexes[i]+x]
-            for y in subFromYindexes:
-                byte += text[subFromindexes[i]+y]
-            bytes.append(byte)
-    return bytes
+            bytesList.append(byte)
+    
+    return bytesList
 
-def convertString(string, table, useTable):
+def convertString(string, table, placeHolder, useTable):
     if not table or not useTable: return string
-    for k, v in table.items():
-        if string != k: continue
-        string = v
-        break
-    return string
-
-def convertByte(byte, table, useTable):
-    if not table or not useTable: return byte
-    byte = hexToString(byte)
-    for k, v in table.items():
-        if byte != v: continue
-        byte = k
-        break
-    else:
-        s = ''
-        for b in byte:
-            for k, v in table.items():
-                if b != v: continue
-                s += k
+    value = ''
+    for char in string:
+        for k, v in table.items():
+            if char == k:
+                value += v
                 break
-        byte = s
-    return stringToHex(byte)
+        else:
+            value += placeHolder
+            addToReport(char)
+    return value
+
+def convertByte(bytes, table, placeHolder, useTable):
+    if not table or not useTable: return bytes
+    value = ''
+    passTimes = 0
+    
+    for i in range(0, len(bytes), 2):
+        b = False
+        if passTimes:
+            passTimes -= 1
+            continue
+            
+        for k, v in table.items():
+            for j in range(0, longestCharBytes):
+                j = longestCharBytes - j
+                charBytes = bytes[i:i + (j*2)]
+                if charBytes == stringToHex(v):
+                    value += k
+                    passTimes = j - 1
+                    b = True
+                    break
+            if b: break
+        else:
+            value += placeHolder
+            addToReport(hexToString(charBytes))
+    
+    return stringToHex(value)

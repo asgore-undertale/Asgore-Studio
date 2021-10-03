@@ -6,16 +6,16 @@ from Parts.Scripts.FixTables import *
 from os import path
 import pygame, re
 
-def TakeFromTable(filePath, chars = '', fontSize = 16):
+def TakeFromTable(filePath, chars = '', fontSize = 16, hexToStr = True):
     if not path.exists(filePath): return
     if filePath.endswith('.act'): return TakeFromACT(filePath)
-    if filePath.endswith('.csv'): return TakeFromCSV(filePath) # csv converting table
+    if filePath.endswith('.csv'): return TakeFromCSV(filePath)
     if filePath.endswith('.zts'): return TakeFromZTS(filePath)
     if filePath.endswith('.ttf'): return TakeFromTTF(filePath, chars, fontSize)
     if filePath.endswith('.aft'): return TakeFromAFT(filePath)
     if filePath.endswith('.fnt'): return TakeFromFNT(filePath)
     if filePath.endswith('.aff'): return TakeFromAFF(filePath)
-    if filePath.endswith('.tbl'): return TakeFromTBL(filePath)
+    if filePath.endswith('.tbl'): return TakeFromTBL(filePath, hexToStr)
 
 def TakeFromFNT(fntPath):
     with open(fntPath, 'r', encoding='utf-8', errors='replace') as f: fontContent = f.read()
@@ -146,11 +146,15 @@ def TakeFromCSV(csvPath):
     
     return sortDictByKeyLengh(fixCharmap(charmap))
 
-def TakeFromTBL(tblPath):
+def TakeFromTBL(tblPath, hexToStr = True):
     charmap = {}
     List = TBLtoList(tblPath)
     
     for row in List:
-        charmap[row[1]] = hexToString(row[0])
+        if hexToStr:
+            value = hexToString(row[0])
+        else:
+            value = row[0]
+        charmap[row[1]] = value
     
     return sortDictByKeyLengh(fixCharmap(charmap))

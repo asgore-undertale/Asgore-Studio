@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[updates].[fixes])
-        self.setWindowTitle("Asgore Studio 2.06.75")
+        self.setWindowTitle("Asgore Studio 2.07.75")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -384,7 +384,7 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         
         container = QWidget()
 
-        layout = QHBoxLayout()
+        layout = QVHBoxLayout()
         container.setLayout(layout)
         self.setCentralWidget(container)
         
@@ -402,9 +402,9 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         self.newPageCell = AdvancedCell(80, 26, "<page>")
         newPageLabel = QLabel("أمر الصفحة:")
         self.beforeComCell = AdvancedCell(80, 26, "[")
-        beforeComLabel = QLabel("ما قبل الأوامر:")
+        beforeComLabel = QLabel("قبل الأوامر:")
         self.afterComCell = AdvancedCell(80, 26, "]")
-        afterComLabel = QLabel("ما بعدها:")
+        afterComLabel = QLabel("بعدها:")
         self.offsetComCell = AdvancedCell(80, 26, "{(px)}")
         offsetComLabel = QLabel("أمر الإزاحة:")
         
@@ -417,12 +417,12 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         
         offsetComboBoxLabel = QLabel("إزاحة:")
         self.offsetComboBox = QComboBox()
-        self.offsetComboBox.setFixedSize(220, 30)
+        self.offsetComboBox.setFixedSize(240, 30)
         self.offsetComboBox.addItems(offsetComboBoxOptions)
         self.offsetComboBox.setInsertPolicy(QComboBox.NoInsert)
         offsetWithComboBoxLabel = QLabel("باستعمال:")
         self.offsetWithComboBox = QComboBox()
-        self.offsetWithComboBox.setFixedSize(220, 30)
+        self.offsetWithComboBox.setFixedSize(240, 30)
         self.offsetWithComboBox.addItems(offsetWithComboBoxOptions)
         self.offsetWithComboBox.setInsertPolicy(QComboBox.NoInsert)
         
@@ -430,32 +430,18 @@ class FontTesterOptionsMotherWindow(QMainWindow):
         self.BoxesCheck = QCheckBox("صناديق الحدود")
         
         
-        layout.addLayout(cellsLayout)
-        layout.addLayout(optionsLayout)
-        cellsLayout.addWidget(fontSizeLabel, 0, 0)
-        cellsLayout.addWidget(self.fontSizeCell, 0, 1)
-        cellsLayout.addWidget(boxWidthLabel, 1, 0)
-        cellsLayout.addWidget(self.boxWidthCell, 1, 1)
-        cellsLayout.addWidget(boxHeightLabel, 2, 0)
-        cellsLayout.addWidget(self.boxHeightCell, 2, 1)
-        cellsLayout.addWidget(pixelsPerLabel, 3, 0)
-        cellsLayout.addWidget(self.pixelsPerCell, 3, 1)
-        cellsLayout.addWidget(newLineLabel, 4, 0)
-        cellsLayout.addWidget(self.newLineCell, 4, 1)
-        cellsLayout.addWidget(newPageLabel, 5, 0)
-        cellsLayout.addWidget(self.newPageCell, 5, 1)
-        cellsLayout.addWidget(beforeComLabel, 6, 0)
-        cellsLayout.addWidget(self.beforeComCell, 6, 1)
-        cellsLayout.addWidget(afterComLabel, 7, 0)
-        cellsLayout.addWidget(self.afterComCell, 7, 1)
-        cellsLayout.addWidget(offsetComLabel, 8, 0)
-        cellsLayout.addWidget(self.offsetComCell, 8, 1)
-        optionsLayout.addWidget(offsetComboBoxLabel)
-        optionsLayout.addWidget(self.offsetComboBox)
-        optionsLayout.addWidget(offsetWithComboBoxLabel)
-        optionsLayout.addWidget(self.offsetWithComboBox)
-        optionsLayout.addWidget(self.fromRightCheck)
-        optionsLayout.addWidget(self.BoxesCheck)
+        layoutItemsGrid = [
+            [fontSizeLabel, self.fontSizeCell],
+            [pixelsPerLabel, self.pixelsPerCell],
+            [boxWidthLabel, self.boxWidthCell, boxHeightLabel, self.boxHeightCell],
+            [newLineLabel, self.newLineCell, newPageLabel, self.newPageCell],
+            [beforeComLabel, self.beforeComCell, afterComLabel, self.afterComCell],
+            [offsetComboBoxLabel, self.offsetComboBox],
+            [offsetWithComboBoxLabel, self.offsetWithComboBox],
+            [self.fromRightCheck, self.BoxesCheck]
+            ]
+        
+        layout.addwidgetsGrid(layoutItemsGrid)
 
 FontTesterOptionsWindow = FontTesterOptionsMotherWindow()
 
@@ -573,13 +559,13 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         advancedOptions = QWidget()
         
         container.addTab(charsConverter, 'تحويل الحروف')
-        container.addTab(hexConverter, 'تحويل الهيكس')
+        container.addTab(hexConverter, 'يونيكود')
         container.addTab(pagesAndLines, 'الأسطر والصفحات')
-        container.addTab(advancedOptions, 'إعدادات متقدمة')
+        container.addTab(advancedOptions, 'آخر')
 
-        charsConverterLayout = QVBoxLayout()
-        hexConverterLayout = QVBoxLayout()
-        pagesAndLinesLayout = QVBoxLayout()
+        charsConverterLayout = QVHBoxLayout()
+        hexConverterLayout = QVHBoxLayout()
+        pagesAndLinesLayout = QVHBoxLayout()
         advancedOptionsLayout = QVBoxLayout()
         
         self.setCentralWidget(container)
@@ -593,7 +579,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         OptionsWindow_Width = 400
         checkbox_size = [OptionsWindow_Width-5, 16]
         
-        charsConverterChecksLayout = QGridLayout()
         self.RA_check = QCheckBox("تجميد النص العربي")
         self.UA_check = QCheckBox("إلغاء تجميد النص العربي")
         self.C_check = QCheckBox("تحويل النص")
@@ -601,7 +586,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         self.RT_check = QCheckBox("عكس النص كاملاً")
         self.RAO_check = QCheckBox("عكس العربية في النص")
         
-        harakatLayout = QHBoxLayout()
         HarakatLabel = QLabel("الحركات:")
         HarakatOptions = [
             "اتركها كما هي",
@@ -614,16 +598,14 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         ]
         self.HarakatComboBox = QComboBox()
         self.HarakatComboBox.addItems(HarakatOptions)
-        self.HarakatComboBox.setFixedSize(220, 27)
+        self.HarakatComboBox.setFixedSize(240, 27)
         
-        customScriptLayout = QHBoxLayout()
         CustomScriptLabel = QLabel("سكربتات:")
         self.CustomScriptComboBox = CheckableComboBox()
-        self.CustomScriptComboBox.setFixedSize(220, 27)
+        self.CustomScriptComboBox.setFixedSize(240, 27)
         self.CustomScriptComboBox.AddItems(['تحديث القائمة', '...'])
         
-        cellsLayout = QGridLayout()
-        startComLabel = QLabel("تجاهل النصوص بعد:")
+        startComLabel = QLabel("تجاهل ما بعد:")
         self.startCommand = AdvancedCell(90, 26, "[")
         endComLabel = QLabel("و قبل:")
         self.endCommand = AdvancedCell(90, 26, "]")
@@ -632,7 +614,6 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         # -->
         
-        pagesLianesCellsLayout = QGridLayout()
         pageComLabel = QLabel("أمر الصفحة قبل التحويل:")
         self.pageCommand = AdvancedCell(90, 26, "<page>")
         lineComLabel = QLabel("أمر السطر قبل التحويل:")
@@ -642,12 +623,10 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         newlineComLabel = QLabel("أمر السطر بعد التحويل:")
         self.newlineCommand = AdvancedCell(90, 26, self.lineCommand.getValue())
         
-        pageslinesLayout = QVBoxLayout()
         self.DDL_check = QCheckBox("حذف أسطر الصفحة المكررة")
         self.RL_check = QCheckBox("عكس ترتيب الأسطر")
         self.RP_check = QCheckBox("عكس ترتيب الصفحات")
         
-        sortLayout = QHBoxLayout()
         sortLabel = QLabel("ترتيب السطور:")
         sortOptions = [
             "اتركها على حالها",
@@ -657,33 +636,40 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         ]
         self.sortComboBox = QComboBox()
         self.sortComboBox.addItems(sortOptions)
-        self.sortComboBox.setFixedSize(220, 27)
+        self.sortComboBox.setFixedSize(240, 27)
         
         # -->
         
-        self.FixSlashes = QCheckBox("تغيير (n, \\r, \\t, \\0\\) لأشكالها\nغير الطباعية")
-        self.UseTable = QCheckBox("استعمال التيبل")
+        self.FixSlashes = QCheckBox("تغيير (n, \\r, \\t, \\0\\)\nلأشكالهاغير الطباعية")
+        self.UseTable = QCheckBox("استعمال تيبل المستخدم")
+        self.UseTable.setCheckState(Qt.Checked)
         
-        hexCellsLayout = QGridLayout()
-        byte_1_Label = QLabel("تعبير اليونيكود -1-:")
-        self.byte_1 = AdvancedCell(90, 26, '\\xXY')
-        byte_2_Label = QLabel("تعبير اليونيكود -2-:")
-        self.byte_2 = AdvancedCell(90, 26, '{$XY}')
+        byte_1_Label = QLabel("تعبير البايت -1-:")
+        self.byte_1 = AdvancedCell(90, 26, '\\xX')
+        byte_2_Label = QLabel(":-2-")
+        self.byte_2 = AdvancedCell(90, 26, '{$X}')
+        readByteLengthLabel = QLabel("طول البايت المقروء:")
+        self.readByteLength = AdvancedCell(42, 26, 1)
+        self.readByteLength2 = AdvancedCell(41, 26, 2)
+        resultByteLengthLabel = QLabel("طول البايت المستخرج:")
+        self.resultByteLength = AdvancedCell(90, 26, 1)
+        placeHolderLabel = QLabel("الرمز الافتراضي: (لما ينقص من التيبل)")
+        self.placeHolder = AdvancedCell(90, 26, '?')
         
-        unicodeLayout = QHBoxLayout()
-        unicodeLabel = QLabel("تحويل اليونيكود:")
+        unicodeLabel = QLabel("تحويل البايت:")
         unicodeOptions = [
             "عدم التحويل",
             "تحويل من التعبير 1 لـ 2",
             "تحويل من التعبير 1 للأشكال الطباعية",
-            "تحويل من الأشكال الطباعية للتعبير 1"
+            "تحويل من الأشكال الطباعية للتعبير 2",
+            "تحويل من يونيكود للأشكال الطباعية",
+            "تحويل من الأشكال الطباعية ليونيكود"
         ]
         self.unicodeComboBox = QComboBox()
         self.unicodeComboBox.addItems(unicodeOptions)
-        self.unicodeComboBox.setFixedSize(220, 27)
+        self.unicodeComboBox.setFixedSize(240, 27)
         
-        
-        self.bytesTableButton = QPushButton("فتح تيبل")
+        self.bytesTableButton = QPushButton("فتح تيبل هيكس")
         
         # -->
         
@@ -692,66 +678,45 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         # -----------------------------------
         
-        cellsLayout.addWidget(startComLabel, 0, 0)
-        cellsLayout.addWidget(self.startCommand, 0, 1)
-        cellsLayout.addWidget(endComLabel, 1, 0)
-        cellsLayout.addWidget(self.endCommand, 1, 1)
+        ConvertItemsGrid = [
+            [self.RA_check, self.UA_check],
+            [self.C_check, self.UC_check],
+            [self.RT_check, self.RAO_check],
+            [HarakatLabel, self.HarakatComboBox],
+            [CustomScriptLabel, self.CustomScriptComboBox],
+            [startComLabel, self.startCommand, endComLabel, self.endCommand],
+            [self.C_databaseButton]
+            ]
         
-        harakatLayout.addWidget(HarakatLabel)
-        harakatLayout.addWidget(self.HarakatComboBox)
-        customScriptLayout.addWidget(CustomScriptLabel)
-        customScriptLayout.addWidget(self.CustomScriptComboBox)
-        
-        charsConverterChecksLayout.addWidget(self.RA_check, 0, 0)
-        charsConverterChecksLayout.addWidget(self.UA_check, 0, 1)
-        charsConverterChecksLayout.addWidget(self.C_check, 1, 0)
-        charsConverterChecksLayout.addWidget(self.UC_check, 1, 1)
-        charsConverterChecksLayout.addWidget(self.RT_check, 2, 0)
-        charsConverterChecksLayout.addWidget(self.RAO_check, 2, 1)
-        
-        charsConverterLayout.addLayout(charsConverterChecksLayout)
-        charsConverterLayout.addLayout(harakatLayout)
-        charsConverterLayout.addLayout(customScriptLayout)
-        charsConverterLayout.addLayout(cellsLayout)
-        charsConverterLayout.addWidget(self.C_databaseButton)
+        charsConverterLayout.addwidgetsGrid(ConvertItemsGrid)
         
         # -->
         
-        pagesLianesCellsLayout.addWidget(pageComLabel, 0, 0)
-        pagesLianesCellsLayout.addWidget(self.pageCommand, 0, 1)
-        pagesLianesCellsLayout.addWidget(lineComLabel, 1, 0)
-        pagesLianesCellsLayout.addWidget(self.lineCommand, 1, 1)
-        pagesLianesCellsLayout.addWidget(newpageComLabel, 2, 0)
-        pagesLianesCellsLayout.addWidget(self.newpageCommand, 2, 1)
-        pagesLianesCellsLayout.addWidget(newlineComLabel, 3, 0)
-        pagesLianesCellsLayout.addWidget(self.newlineCommand, 3, 1)
+        pagesAndLinesItemsGrid = [
+            [pageComLabel, self.pageCommand],
+            [lineComLabel, self.lineCommand],
+            [newpageComLabel, self.newpageCommand],
+            [newlineComLabel, self.newlineCommand],
+            [sortLabel, self.sortComboBox],
+            [self.DDL_check],
+            [self.RL_check, self.RP_check]
+            ]
         
-        sortLayout.addWidget(sortLabel)
-        sortLayout.addWidget(self.sortComboBox)
-        
-        pageslinesLayout.addWidget(self.DDL_check)
-        pageslinesLayout.addWidget(self.RL_check)
-        pageslinesLayout.addWidget(self.RP_check)
-        
-        pagesAndLinesLayout.addLayout(pagesLianesCellsLayout)
-        pagesAndLinesLayout.addLayout(pageslinesLayout)
-        pagesAndLinesLayout.addLayout(sortLayout)
+        pagesAndLinesLayout.addwidgetsGrid(pagesAndLinesItemsGrid)
         
         # -->
         
-        hexCellsLayout.addWidget(byte_1_Label, 0, 0)
-        hexCellsLayout.addWidget(self.byte_1, 0, 1)
-        hexCellsLayout.addWidget(byte_2_Label, 1, 0)
-        hexCellsLayout.addWidget(self.byte_2, 1, 1)
+        hexCellsGrid = [
+            [self.FixSlashes, self.UseTable],
+            [readByteLengthLabel, self.readByteLength, self.readByteLength2],
+            [resultByteLengthLabel, self.resultByteLength],
+            [placeHolderLabel, self.placeHolder],
+            [byte_1_Label, self.byte_1, byte_2_Label, self.byte_2],
+            [unicodeLabel, self.unicodeComboBox],
+            [self.bytesTableButton]
+            ]
         
-        unicodeLayout.addWidget(unicodeLabel)
-        unicodeLayout.addWidget(self.unicodeComboBox)
-        
-        hexConverterLayout.addWidget(self.FixSlashes)
-        hexConverterLayout.addWidget(self.UseTable)
-        hexConverterLayout.addLayout(hexCellsLayout)
-        hexConverterLayout.addLayout(unicodeLayout)
-        hexConverterLayout.addWidget(self.bytesTableButton)
+        hexConverterLayout.addwidgetsGrid(hexCellsGrid)
         
         # -->
         

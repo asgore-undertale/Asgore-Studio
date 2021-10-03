@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QComboBox, QTextEdit
+from PyQt5.QtWidgets import QComboBox, QTextEdit, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QStandardItemModel
 
-from Parts.Scripts.UsefulLittleFunctions import tryTakeNum, hexToString
+from Parts.Scripts.UsefulLittleFunctions import tryTakeNum, hexToString, minimax, getType
 
 class CheckableComboBox(QComboBox):
     def __init__(self):
@@ -49,11 +49,14 @@ class CheckableComboBox(QComboBox):
         # self.clear()
         # self.blockSignals(False)
 
+
 class AdvancedCell(QTextEdit):
-    def __init__(self, Width, Height, DefaultValue = 0):
+    def __init__(self, Width, Height, DefaultValue = 0, min = False, max = False):
         super(AdvancedCell, self).__init__()
         
         self.bytesign = '[b]'
+        self.min = min
+        self.max = max
         
         self.setFixedSize(Width, Height)
         self.setValue(DefaultValue)
@@ -64,24 +67,51 @@ class AdvancedCell(QTextEdit):
     
     def updateValue(self):
         if self.Type == 'str':
-            self.Value = self.toPlainText()
+            value = self.toPlainText()
+            if minimax(len(value), self.min, self.max):
+                self.Value = value
+            
         elif self.Type == 'int':
-            self.Value = tryTakeNum(self.toPlainText(), self.Value)
+            value = tryTakeNum(self.toPlainText(), self.Value)
+            if minimax(value, self.min, self.max):
+                self.Value = value
+            
         elif self.Type == 'float':
-            self.Value = tryTakeNum(self.toPlainText(), self.Value, False)
+            value = tryTakeNum(self.toPlainText(), self.Value, False)
+            if minimax(value, self.min, self.max):
+                self.Value = value
     
     def updateCell(self):
         self.updateValue()
         self.setPlainText(str(self.Value))
     
     def byteToText(self, value):
+        if self.Type != 'str': return value
         if self.bytesign not in self.Value: return value
         return hexToString(self.Value.replace(self.bytesign, '').replace(' ', ''))
     
     def setValue(self, value):
         self.Value = value
-        self.Type = str(type(value))[8:-2]
+        self.Type = getType(value)
         self.setPlainText(str(self.Value))
     
     def getValue(self):
         return self.byteToText(self.Value)
+
+
+class QVHBoxLayout(QVBoxLayout):
+    def __init__(self):
+        super(QVHBoxLayout, self).__init__()
+    
+    def addwidget(self, item):
+        self.addWidget(item)
+    
+    def addwidgetsRow(self, itemsList):
+        H = QHBoxLayout()
+        for item in itemsList:
+            H.addWidget(item)
+        self.addLayout(H)
+    
+    def addwidgetsGrid(self, itemsGrid):
+        for row in itemsGrid:
+            self.addwidgetsRow(row)

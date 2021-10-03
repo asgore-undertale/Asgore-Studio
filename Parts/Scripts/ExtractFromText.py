@@ -35,7 +35,7 @@ def Extract(text, before, after, addBeforeAfter = False, mini = False, maxi = Fa
     
     if mini or maxi:
         for i in range(len(extractedList)):
-            extractedList[i] = minimax(extractedList[i], mini, maxi)
+            extractedList[i] = extractedList[i] * minimax(len(extractedList[i]), mini, maxi)
         extractedList = list(filter(lambda a: a, extractedList))
     
     return extractedList

@@ -76,6 +76,10 @@ def cell():
     cell._newlineCommand = takeFromCell(TextConverterOptionsWindow.newlineCommand.getValue())
     cell._byte_1 = takeFromCell(TextConverterOptionsWindow.byte_1.getValue())
     cell._byte_2 = takeFromCell(TextConverterOptionsWindow.byte_2.getValue())
+    cell._resultByteLength = takeFromCell(TextConverterOptionsWindow.resultByteLength.getValue())
+    cell._readByteLength = takeFromCell(TextConverterOptionsWindow.readByteLength.getValue())
+    cell._readByteLength2 = takeFromCell(TextConverterOptionsWindow.readByteLength2.getValue())
+    cell._placeHolder = takeFromCell(TextConverterOptionsWindow.placeHolder.getValue())
 
 def applyConverts(text):
     CustomScriptindex = TextConverterOptionsWindow.CustomScriptComboBox.currentIndex()
@@ -87,9 +91,11 @@ def applyConverts(text):
         text = applyCustomScripts(text) # Custom Script
     
     if UnicodeOptionindex == 1:
-        text = convertBytes(text, cell._byte_1, cell._byte_2, 'hextohex', byteTable, useBytesTable) # Convert bytes
-    if UnicodeOptionindex == 2:
-        text = convertBytes(text, cell._byte_1, cell._byte_2, 'hextotext', byteTable, useBytesTable) # Convert bytes
+        text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
+            'hextohex', byteTable, cell._placeHolder, useBytesTable) # Convert bytes
+    elif UnicodeOptionindex == 2:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
+            'hextotext', byteTable, cell._placeHolder, useBytesTable) # Convert bytes
     
     if HarakatOptionindex:
         text = handleHarakat(text, HarakatOptionindex)# Handle Harakat
@@ -107,7 +113,15 @@ def applyConverts(text):
         text = Freeze(text, False)# UnFreeze Arabic
     
     if UnicodeOptionindex == 3:
-        text = convertBytes(text, cell._byte_1, cell._byte_2, 'texttohex', byteTable, useBytesTable) # Convert bytes
+        text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
+            'texttohex', byteTable, cell._placeHolder, useBytesTable) # Convert bytes
+    elif UnicodeOptionindex == 4:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
+            'unicodetotext', byteTable, cell._placeHolder, useBytesTable) # Convert bytes
+    elif UnicodeOptionindex == 5:
+        text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
+            'texttounicode', byteTable, cell._placeHolder, useBytesTable) # Convert bytes
+    
     return text
 
 def sortText(text):
