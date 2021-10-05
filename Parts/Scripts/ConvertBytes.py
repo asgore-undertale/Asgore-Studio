@@ -2,23 +2,25 @@ import re
 from Parts.Scripts.UsefulLittleFunctions import hexToString, fixRegexPattert, stringToHex
 from Parts.Windows import StudioWindow
 
-longestCharBytes = 3
+longestCharBytes = 2
 
 def convertBytes(text : str, subFrom, subTo, readByteLength, resultByteLength, key = 'hextohex', table = {}, placeHolder = '', useTable = False):
     Bytesindexes = getIndexesList(text, subFrom, readByteLength)
     
-    subFromXindexes = [m.start(0) for m in re.finditer('X', subFrom)]
+    for m in re.finditer('X', subFrom):
+        subFromXindex = m.start(0)
+        break
     convertBytes.Report = []
     resultText = ''
     
     if key == 'hextohex':
-        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindexes)
+        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindex)
         resultText = ''.join(
             [subTo.replace('X', byte[b:b+(resultByteLength*2)], 1) for byte in bytesList for b in range(0, len(byte), resultByteLength*2)]
             )
     
     elif key == 'hextotext':
-        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindexes)
+        bytesList = mergBytes(text, subFrom, Bytesindexes, subFromXindex)
         resultText = ''.join(hexToString(convertByte(byte, table, placeHolder, useTable)) for byte in bytesList)
         report()
     
@@ -43,6 +45,7 @@ def getIndexesList(text, subFrom, readByteLength):
     Bytesindexes, indexesRom = [], []
     regexSubFrom = fixRegexPattert(subFrom)
     for i in range(readByteLength[0], readByteLength[1]+1):
+        i = readByteLength[1]+1 - i
         _rSubFrom = regexSubFrom.replace('X', '[A-Z, a-z, 0-9]' * i*2)
         
         for m in re.finditer(_rSubFrom, text):
@@ -60,18 +63,16 @@ def addToReport(value):
     if value in convertBytes.Report: return
     convertBytes.Report.append(value)
 
-def mergBytes(text, subFrom, subFromindexes, subFromXindexes):
+def mergBytes(text, subFrom, subFromindexes, subFromXindex):
     bytesList = []
     subFromLen = len(subFrom.replace('X', ''))
     for i in range(len(subFromindexes)):
-        byte = ''
-        for x in subFromXindexes:
-            byte += text[x+subFromindexes[i][0] : x+subFromindexes[i][0]+subFromindexes[i][1]]
+        byte = text[subFromXindex+subFromindexes[i][0] : subFromXindex+subFromindexes[i][0]+subFromindexes[i][1]]
         
-        if subFromindexes[i][0] - subFromindexes[i-1][0] == subFromLen + subFromindexes[i-1][1]:
-            bytesList[-1] += byte
-        else:
-            bytesList.append(byte)
+        # if subFromindexes[i][0] - subFromindexes[i-1][0] == subFromLen + subFromindexes[i-1][1]:
+            # bytesList[-1] += byte
+        # else:
+        bytesList.append(byte)
     
     return bytesList
 

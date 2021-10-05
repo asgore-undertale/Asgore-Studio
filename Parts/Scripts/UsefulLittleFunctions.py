@@ -17,30 +17,52 @@ def selectFolder(window = None, text = 'اختر مجلداً'):
     _select = QFileDialog.getExistingDirectory(window, text, '')+'/'
     return _select * (_select != '/') * (_select != '') * (path.exists(_select))
 
+def fixHexLength(hexstring):
+    return '0'*(len(hexstring) % 2) + hexstring
+
+def fixHexbite(hexstring):
+    return '0'*(len(hexstring) % 4) + hexstring
+
 def intToHex(num):
-    hexstring = str(hex(num)).replace("0x","")
-    return (len(hexstring) % 2 * '0') + hexstring
+    hexstring = str(hex(num))[2:]
+    return fixHexLength(hexstring)
+
+# def hexToString(hexstring):
+    # hexstring = '0'*(len(hexstring) % 2) + hexstring
+    # try:
+        # return bytearray.fromhex(hexstring).decode(encoding='utf8', errors='replace')
+    # except:
+        # return 'Error: Byte out of range.'
 
 def hexToString(hexstring):
-    hexstring = '0'*(len(hexstring) % 2) + hexstring
+    string = ''
+    hexstring = fixHexbite(hexstring)
     try:
-        return bytearray.fromhex(hexstring).decode(encoding='utf8', errors='replace')
+        for c in range(0, len(hexstring), 4):
+            string += chr(int(hexstring[c:c+4], 16))
     except:
-        return 'Error: Byte out of range.'
+        string = 'Error'
+    return string
+
+# def stringToHex(string):
+    # return string.encode().hex()
+
+def stringToHex(string):
+    hexvalue = ''
+    for char in string:
+        v = str(hex(ord(char)))[2:]
+        hexvalue += fixHexLength(v)
+    return hexvalue
 
 def hexLength(text):
     hexstring = text.encode().hex()
-    hexstring = '0'*(len(hexstring) % 2) + hexstring
-    return len(hexstring) // 2
+    return len(fixHexLength(hexstring)) // 2
 
 def bytesToString(Bytes):
     try: Bytes = Bytes.decode()
     except:
         Bytes = str(Bytes)[2:-1].replace("\\'", "'").replace('\\"', '"').replace('\\\\', '\\').replace('\\r\\n', '\\n').replace('\\n', '\n')
     return Bytes
-
-def stringToHex(string):
-    return string.encode().hex()
 
 def sortDictByKeyLengh(Dict):
     newDict = {}

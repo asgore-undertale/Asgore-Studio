@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[updates].[fixes])
-        self.setWindowTitle("Asgore Studio 2.07.75")
+        self.setWindowTitle("Asgore Studio 2.07.76")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -649,8 +649,8 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         byte_2_Label = QLabel(":-2-")
         self.byte_2 = AdvancedCell(90, 26, '{$X}')
         readByteLengthLabel = QLabel("طول البايت المقروء:")
-        self.readByteLength = AdvancedCell(42, 26, 1)
-        self.readByteLength2 = AdvancedCell(41, 26, 2)
+        self.readByteLength = AdvancedCell(42, 26, 1, 1, 1)
+        self.readByteLength2 = AdvancedCell(41, 26, 2, 1, 2)
         resultByteLengthLabel = QLabel("طول البايت المستخرج:")
         self.resultByteLength = AdvancedCell(90, 26, 1)
         placeHolderLabel = QLabel("الرمز الافتراضي: (لما ينقص من التيبل)")

@@ -1,3 +1,7 @@
+Version {2.07.76}:
+	- Fixing text-hex converting.
+	- Fixing tables loading.
+
 Version {2.07.75}:
 	- Fixing and Improving byte converting.
 	- Adding unicode converting.
