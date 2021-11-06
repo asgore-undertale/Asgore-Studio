@@ -113,8 +113,8 @@ class PyGame:
     
     def winShot(self, eventType):
         if eventType == pygame.KEYDOWN:
-            all_keys = pygame.key.get_pressed()
-            if not all_keys[pygame.K_LCTRL] or not all_keys[pygame.K_s]: return
+            keys = pygame.key.get_pressed()
+            if not keys[pygame.K_LCTRL] or not keys[pygame.K_s]: return
             
             savePath = saveFile(['png'], None, 'صورة')
             if savePath: pygame.image.save(self.textzone, savePath)

@@ -61,6 +61,11 @@ letters_Table = {#<initial><medial><final><isolated>
                     #"ْ"  : ['ﹾ', 'ﹿ', 'ﹾ', 'ﹾ'],
     }
 
+LaList = [
+    ('ﻟﺂ', 'ﻵ'), ('ﻠﺂ', 'ﻶ'), ('ﻟﺄ', 'ﻷ'), ('ﻠﺄ', 'ﻸ'),
+    ('ﻟﺈ', 'ﻹ'), ('ﻠﺈ', 'ﻺ'), ('ﻟﺎ', 'ﻻ'), ('ﻠﺎ', 'ﻼ')
+    ]
+
 def Freeze(text, case = True, mergLA = True):
     if case:
         reshaped_text = ''
@@ -94,10 +99,6 @@ def Freeze(text, case = True, mergLA = True):
                     reshaped_text += letters_Table[textlist[i]][3]
 
         if mergLA:
-            LaList = [
-                ('ﻟﺂ', 'ﻵ'), ('ﻠﺂ', 'ﻶ'), ('ﻟﺄ', 'ﻷ'), ('ﻠﺄ', 'ﻸ'),
-                ('ﻟﺈ', 'ﻹ'), ('ﻠﺈ', 'ﻺ'), ('ﻟﺎ', 'ﻻ'), ('ﻠﺎ', 'ﻼ')
-            ]
             for la in LaList:
                 reshaped_text = reshaped_text.replace(la[0], la[1])
         
