@@ -1,10 +1,9 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum, hexToString
-from Parts.Scripts.TablesEditorsFunctions import CSVtoList, TBLtoList, ACTtoList, tablelistToCharmap
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion
 from Parts.Scripts.FixTables import *
 from os import path
-import pygame, re
+import pygame, re, csv
 
 def TakeFromTable(filePath, chars = '', fontSize = 16, hexToStr = True):
     if not path.exists(filePath): return
@@ -123,17 +122,27 @@ def TakeFromZTS(ztsPath):
     return fixCharmap(charmap)
 
 def TakeFromACT(actPath):
+    actPath = open(actPath, 'r', encoding="utf-8", errors='replace').read()
+    rows = actPath.split('\n')
     charmap = {}
-    rows = ACTtoList(actPath)
     
-    for r in rows:
-        charmap[r[0]] = r[1]
+    VERSION = rows[1][9:-1]
+    SEPARATOR = rows[2][11:-1]
+    checkVersion(VERSION, 0)
     
-    return sortDictByKeyLengh(fixCharmap(charmap))
+    for r in range(5, len(rows)):
+        if not rows[r]: continue
+        row = rows[r].split(SEPARATOR)
+        for i in range(5 - len(row)): row.append('')
+        charmap = takeFromArabic(charmap, row)
+    
+    return charmap
 
 def TakeFromCSV(csvPath):
     charmap = {}
-    rows = CSVtoList(csvPath)
+    
+    with open(csvPath, newline='', encoding='utf8', errors='replace') as csvfile:
+        rows = list(csv.reader(csvfile, delimiter=_CSV_DELIMITER_, quotechar='"'))
     
     VERSION = rows[1][9:-1]
     SEPARATOR = rows[2][11:]
@@ -147,8 +156,16 @@ def TakeFromCSV(csvPath):
     return sortDictByKeyLengh(fixCharmap(charmap))
 
 def TakeFromTBL(tblPath, hexToStr = True):
+    # ---------- (tblToList) from (TablrsEditorsFonctions) because of circle import.
+    tblPath = open(tblPath, 'r', encoding="utf-8", errors='replace').read()
+    rows = tblPath.split('\n')
     charmap = {}
-    List = TBLtoList(tblPath)
+    List = []
+    
+    for row in rows:
+        if not row: continue
+        List.append(row.split('=', 1))
+    # ----------
     
     for row in List:
         if hexToStr:

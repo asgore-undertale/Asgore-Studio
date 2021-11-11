@@ -1,3 +1,6 @@
+Version {2.07.77}:
+	- Fixing Converting Tables loading.
+
 Version {2.07.76}:
 	- Fixing text-hex converting.
 	- Fixing tables loading.

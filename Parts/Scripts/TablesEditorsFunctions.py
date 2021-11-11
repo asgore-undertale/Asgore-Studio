@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QTableWidgetItem
 from Parts.Scripts.UsefulLittleFunctions import intToHex, hexToString, stringToHex
 from Parts.Scripts.FixTables import sortACT, fixCharmap, takeFromArabic
+from Parts.Scripts.TakeFromTable import TakeFromACT
 from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, _ACT_DESC_, checkVersion
 import csv
 
@@ -98,7 +99,7 @@ def TBLtoList(tablePath : str):
     
     for row in rows:
         if not row: continue
-        tableList.append(row.split('='))
+        tableList.append(row.split('=', 1))
     
     return tableList
 
@@ -109,7 +110,7 @@ def TBLtoHexList(tablePath : str):
     
     for row in range(len(rows)):
         if not rows[row]: continue
-        parts = rows[row].split('=')
+        parts = rows[row].split('=', 1)
         tableList[int(parts[0][0], 16)][int(parts[0][1], 16)] = parts[1]
     
     return tableList
@@ -127,20 +128,8 @@ def ATEtoList(tablePath : str):
     return tableList
 
 def ACTtoList(tablePath : str):
-    tablePath = open(tablePath, 'r', encoding="utf-8", errors='replace').read()
-    rows = tablePath.split('\n')
+    charmap = TakeFromACT(tablePath)
     tableList = list(HexTable)
-    charmap = {}
-    
-    VERSION = rows[1][9:-1]
-    SEPARATOR = rows[2][11:-1]
-    checkVersion(VERSION, 0)
-    
-    for r in range(5, len(rows)):
-        if not rows[r]: continue
-        row = rows[r].split(SEPARATOR)
-        for i in range(5 - len(row)): row.append('')
-        charmap = takeFromArabic(charmap, row)
     
     for k, v in charmap.items():
         if not v or not k: continue
