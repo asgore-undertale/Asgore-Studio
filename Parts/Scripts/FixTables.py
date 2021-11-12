@@ -233,26 +233,22 @@ def sortACT(tableContent, _SEPARATOR_): # table content with no description
         
     return newTable
 
-def fillEmptyCells(Charmap : dict, chars : tuple):
-    if chars[0] in Charmap and chars[1] in Charmap and chars[2] in Charmap and chars[3] in Charmap: return Charmap
-    
+def fillHalfs(Charmap : dict, chars : tuple):
     if chars[1] not in Charmap and chars[0] in Charmap: Charmap[chars[1]] = Charmap[chars[0]]
     if chars[0] not in Charmap and chars[1] in Charmap: Charmap[chars[0]] = Charmap[chars[1]]
     
     if chars[3] not in Charmap and chars[2] in Charmap: Charmap[chars[3]] = Charmap[chars[2]]
     if chars[2] not in Charmap and chars[3] in Charmap: Charmap[chars[2]] = Charmap[chars[3]]
+    
+    return Charmap
 
-    if chars[0] not in Charmap and chars[3] in Charmap: Charmap[chars[0]] = Charmap[chars[3]]
+def fillEmptyCells(Charmap : dict, chars : tuple):
+    if chars[0] in Charmap and chars[1] in Charmap and chars[2] in Charmap and chars[3] in Charmap: return Charmap
+    
+    Charmap = fillHalfs(Charmap, chars)
     if chars[1] not in Charmap and chars[2] in Charmap: Charmap[chars[1]] = Charmap[chars[2]]
-    
-    if chars[0] not in Charmap and chars[2] in Charmap: Charmap[chars[0]] = Charmap[chars[2]]
-    if chars[1] not in Charmap and chars[3] in Charmap: Charmap[chars[1]] = Charmap[chars[3]]
-    
-    if chars[3] not in Charmap and chars[0] in Charmap: Charmap[chars[3]] = Charmap[chars[0]]
-    if chars[2] not in Charmap and chars[1] in Charmap: Charmap[chars[2]] = Charmap[chars[1]]
-
-    if chars[2] not in Charmap and chars[0] in Charmap: Charmap[chars[2]] = Charmap[chars[0]]
-    if chars[3] not in Charmap and chars[1] in Charmap: Charmap[chars[3]] = Charmap[chars[1]]
+    if chars[0] not in Charmap and chars[3] in Charmap: Charmap[chars[0]] = Charmap[chars[3]]
+    Charmap = fillHalfs(Charmap, chars)
     
     return Charmap
 

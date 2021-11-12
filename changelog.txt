@@ -1,3 +1,6 @@
+Version {2.07.78}:
+	- Fixing Converting Tables charmap fixing.
+
 Version {2.07.77}:
 	- Fixing Converting Tables loading.
 
