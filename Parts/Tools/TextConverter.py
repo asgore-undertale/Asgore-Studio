@@ -101,8 +101,6 @@ def applyConverts(text):
         text = handleHarakat(text, HarakatOptionindex)# Handle Harakat
     if TextConverterOptionsWindow.RA_check.isChecked() or TextConverterOptionsWindow.C_check.isChecked():
         text = Freeze(text)# Freeze Arabic
-    if TextConverterOptionsWindow.UA_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked():
-        text = Freeze(text, False)# UnFreeze Arabic
     if TextConverterOptionsWindow.RT_check.isChecked():
         text = Reverse(text) # Reverse whole text
     if TextConverterOptionsWindow.RAO_check.isChecked():
@@ -111,6 +109,8 @@ def applyConverts(text):
         text = Convert(text, convertDatabase, True)# Convert
     if TextConverterOptionsWindow.UC_check.isChecked():
         text = Convert(text, convertDatabase, False)# Unconvert
+    if TextConverterOptionsWindow.UA_check.isChecked() or TextConverterOptionsWindow.UC_check.isChecked():
+        text = Freeze(text, False)# UnFreeze Arabic
     
     if UnicodeOptionindex == 3:
         text = convertBytes(text, cell._byte_1, cell._byte_2, (cell._readByteLength, cell._readByteLength2), cell._resultByteLength,
