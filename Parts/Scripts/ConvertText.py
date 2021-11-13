@@ -1,5 +1,5 @@
-def Convert(text, convert_dic, case = True, ANITC = True): # Add Not In Table Chars
-    if not convert_dic: return
+def Convert(text, convert_dic, case = True): #, ANITC = True # Add Not In Table Chars
+    if not convert_dic: return text
     
     if case:
         for k, v in convert_dic.items():
