@@ -1,5 +1,6 @@
 Version {2.07.79}:
 	- Adding (ExtendedASCII) to {Chars Tables Creator} tool.
+	- Renaming {Chars Tables Creator} to {ASCII Convering Table Creator}
 
 Version {2.07.78}:
 	- Fixing Converting Tables charmap fixing.

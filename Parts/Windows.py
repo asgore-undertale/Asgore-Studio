@@ -43,7 +43,7 @@ class StudioMotherWindow(QMainWindow):
         self.tools.addAction("جداول آسغور")
         self.tools.addAction("مختزل النصوص")
         self.tools.addAction("محرّر الملفات")
-        self.tools.addAction("منشئ جداول الحروف")
+        self.tools.addAction("منشئ جداول تحويل الآسكي")
         self.tools.addAction("محوّل الجداول")
         self.tools.addAction("محوّل الخطوط")
         self.tools.addAction("مجرب الخطوط")

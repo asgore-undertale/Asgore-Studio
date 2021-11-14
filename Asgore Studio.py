@@ -60,7 +60,7 @@ def windowTrig(action):
     elif action == "مختزل النصوص": StudioWindow.newChild(TextAnalyzerWindow, TextAnalyzerContainer, 'مختزل النصوص')
     elif action == "محوّل الخطوط": StudioWindow.newChild(FontsConverterWindow, FontsConverterContainer, 'محوّل الخطوط')
     elif action == "محوّل الجداول": StudioWindow.newChild(TablesConverterWindow, TablesConverterContainer, 'محوّل الجداول')
-    elif action == "منشئ جداول الحروف": StudioWindow.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول الحروف')
+    elif action == "منشئ جداول تحويل الآسكي": StudioWindow.newChild(CharsTablesCreatorWindow, CharsTablesCreatorContainer, 'منشئ جداول تحويل الآسكي')
     elif action == "مجرب الخطوط": StudioWindow.newChild(FontTesterWindow, FontTesterContainer, 'مجرب الخطوط')
     elif action == "إعدادات مجرب الخطوط": StudioWindow.newChild(FontTesterOptionsWindow, FontTesterOptionsContainer, 'إعدادات مجرب الخطوط')
     elif action == "محرّر الملفات": StudioWindow.newChild(FilesEditorWindow, FilesEditorContainer, 'محرّر الملفات')
