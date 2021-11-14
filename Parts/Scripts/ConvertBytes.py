@@ -68,10 +68,6 @@ def mergBytes(text, subFrom, subFromindexes, subFromXindex):
     subFromLen = len(subFrom.replace('X', ''))
     for i in range(len(subFromindexes)):
         byte = text[subFromXindex+subFromindexes[i][0] : subFromXindex+subFromindexes[i][0]+subFromindexes[i][1]]
-        
-        # if subFromindexes[i][0] - subFromindexes[i-1][0] == subFromLen + subFromindexes[i-1][1]:
-            # bytesList[-1] += byte
-        # else:
         bytesList.append(byte)
     
     return bytesList

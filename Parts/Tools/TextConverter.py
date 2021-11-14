@@ -18,7 +18,7 @@ def opentextFile():
     TextConverterWindow.enteredBox.setPlainText(open(filePath, 'r', encoding='utf-8').read())
 
 def openConvertTable():
-    tablePath = openFile(('act', 'zts', 'csv', 'tbl'), TextConverterOptionsWindow, 'جدول التحويل')
+    tablePath = openFile(('act', 'csv', 'tbl', 'zts', 'zta'), TextConverterOptionsWindow, 'جدول التحويل')
     if not tablePath: return
     global convertingTablePath, convertDatabase
     convertingTablePath = tablePath

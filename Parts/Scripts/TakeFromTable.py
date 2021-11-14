@@ -1,6 +1,6 @@
 from Parts.Scripts.FreezeArabic import Freeze
 from Parts.Scripts.UsefulLittleFunctions import sortDictByKeyLengh, tryTakeNum, hexToString
-from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion
+from Parts.Vars import _A_SEPARATOR_, _CSV_DELIMITER_, checkVersion, _ZTA_SEPARATOR_, _ZTA_RANGE_
 from Parts.Scripts.FixTables import *
 from os import path
 import pygame, re, csv
@@ -9,12 +9,13 @@ def TakeFromTable(filePath, chars = '', fontSize = 16, hexToStr = True):
     if not path.exists(filePath): return
     if filePath.endswith('.act'): return TakeFromACT(filePath)
     if filePath.endswith('.csv'): return TakeFromCSV(filePath)
-    if filePath.endswith('.zts'): return TakeFromZTS(filePath)
     if filePath.endswith('.ttf'): return TakeFromTTF(filePath, chars, fontSize)
     if filePath.endswith('.aft'): return TakeFromAFT(filePath)
     if filePath.endswith('.fnt'): return TakeFromFNT(filePath)
     if filePath.endswith('.aff'): return TakeFromAFF(filePath)
     if filePath.endswith('.tbl'): return TakeFromTBL(filePath, hexToStr)
+    if filePath.endswith('.zts'): return TakeFromZTS(filePath)
+    if filePath.endswith('.zta'): return TakeFromZTA(filePath)
 
 def TakeFromFNT(fntPath):
     with open(fntPath, 'r', encoding='utf-8', errors='replace') as f: fontContent = f.read()
@@ -113,14 +114,6 @@ def TakeFromTTF(ttfPath, chars, fontSize):
     charmap['tallest'] = tallest
     return fixCharmap(charmap)
 
-def TakeFromZTS(ztsPath):
-    charmap = {}
-    lines = open(ztsPath, 'r', encoding="utf-8", errors='replace').read().split('\n')
-    string1, string2 = lines[0], lines[1]
-    
-    for i, j in zip(string1, string2): charmap[j] = i
-    return fixCharmap(charmap)
-
 def TakeFromACT(actPath):
     actPath = open(actPath, 'r', encoding="utf-8", errors='replace').read()
     rows = actPath.split('\n')
@@ -175,3 +168,33 @@ def TakeFromTBL(tblPath, hexToStr = True):
         charmap[row[1]] = value
     
     return sortDictByKeyLengh(fixCharmap(charmap))
+
+def TakeFromZTS(ztsPath):
+    charmap = {}
+    lines = open(ztsPath, 'r', encoding="utf-8", errors='replace').read().split('\n')
+    for i, j in zip(lines[0], lines[1]): charmap[j] = i
+    
+    return fixCharmap(charmap)
+
+def TakeFromZTA(ztaPath):
+    charmap = {}
+    text = open(ztaPath, 'r', encoding="utf-8", errors='replace').read()
+    ranges = re.findall(_ZTA_RANGE_, text)
+    
+    for r in ranges:
+        try:
+            startPoint = int(r[0])
+            steps = int(r[1])
+            
+            chars = []
+            for j in range(startPoint, startPoint+steps):
+                chars.append(chr(j))
+            
+            replacement = _ZTA_RANGE_.replace('(.*?)', r[0], 1).replace('(.*?)', r[1], 1).replace('\\', '')
+            text = text.replace(replacement, _ZTA_SEPARATOR_.join(chars))
+        except: pass
+    
+    lines = text.split('\n')
+    for i, j in zip(lines[0].split(_ZTA_SEPARATOR_), lines[1].split(_ZTA_SEPARATOR_)): charmap[j] = i
+    
+    return fixCharmap(charmap)

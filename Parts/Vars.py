@@ -7,6 +7,8 @@ _A_SEPARATOR_ = "█"
 _AFF_MIN_SEPARATOR = "/"
 _AFF_FILLER = "•"
 _CSV_DELIMITER_ = ","
+_ZTA_SEPARATOR_ = "█"
+_ZTA_RANGE_ = "\{(.*?):(.*?)\}"
 
 _ACT_DESC_ = f'\nVERSION="{_ACT_VERSION_}"\nSEPARATOR="[_SEPARATOR_]"\n#####################\nالحرف[_SEPARATOR_]أول[_SEPARATOR_]وسط[_SEPARATOR_]آخر[_SEPARATOR_]منفصل\n'
 _AFT_DESC_ = f'\nVERSION="{_AFT_VERSION_}"\nSEPARATOR="[_SEPARATOR_]"\n#####################\nChar[_SEPARATOR_]X[_SEPARATOR_]Y[_SEPARATOR_]Width[_SEPARATOR_]Height[_SEPARATOR_]Xoffset[_SEPARATOR_]Yoffset[_SEPARATOR_]Xadvance\n'

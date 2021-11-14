@@ -1,3 +1,6 @@
+Version {2.08.79}:
+	- Adding .zta (Zip Tow Arrays), A new type of converting tables.
+
 Version {2.07.79}:
 	- Adding (ExtendedASCII) to {Chars Tables Creator} tool.
 	- Renaming {Chars Tables Creator} to {ASCII Convering Table Creator}
