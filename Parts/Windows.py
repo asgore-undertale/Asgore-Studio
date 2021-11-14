@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[updates].[fixes])
-        self.setWindowTitle("Asgore Studio 2.07.78")
+        self.setWindowTitle("Asgore Studio 2.07.79")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -642,7 +642,7 @@ class TextConverterOptionsMotherWindow(QMainWindow):
         
         self.FixSlashes = QCheckBox("تغيير (n, \\r, \\t, \\0\\)\nلأشكالهاغير الطباعية")
         self.UseTable = QCheckBox("استعمال تيبل المستخدم")
-        self.UseTable.setCheckState(Qt.Checked)
+        # self.UseTable.setCheckState(Qt.Checked)
         
         byte_1_Label = QLabel("تعبير البايت -1-:")
         self.byte_1 = AdvancedCell(90, 26, '\\xX')

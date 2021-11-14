@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QAction, QTableWidgetItem
 from Parts.Scripts.TablesEditorsFunctions import *
 from Parts.Scripts.TakeFromTable import TakeFromTable
 from Parts.Scripts.UsefulLittleFunctions import openFile, saveFile, stringToHex
-from Parts.Vars import FreezedArabicChars, ASCII
+from Parts.Vars import FreezedArabicChars, ASCII, ExtendedASCII
 from sys import argv, exit
 import keyboard, csv
 
@@ -70,6 +70,7 @@ keyboard.add_hotkey("F4", lambda: previousChar())
 keyboard.add_hotkey("F5", lambda: resetCharCounter())
 
 setChars('20', ASCII)
+setChars('a1', ExtendedASCII)
 
 if __name__ == '__main__':
     CharsTablesCreatorWindow.show()
