@@ -1,3 +1,6 @@
+Version {2.08.81}:
+	- Fixing (Persian) Freezing
+
 Version {2.08.80}:
 	- Adding (Persian) letters to (Chars Freezing Table)
 
