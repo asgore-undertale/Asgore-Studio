@@ -158,10 +158,10 @@ def fixExtractedItem(item):
         item = item.decode(encoding='utf8', errors='replace')
     item = item.replace('"', '""')
     
-    if _CSV_DELIMITER_ in item or '"' in item:
-        item = f'"{item}"'
-        for r in Returns:
-            item = item.replace(r, f'"{r}"')
+    # if _CSV_DELIMITER_ in item or '"' in item:
+    item = f'"{item}"'
+    for r in Returns:
+        item = item.replace(r, f'"{r}"')
     return item
 
 def getExtractedLists(filepath, fileTypeindex, columnIndex, before, after, mini, maxi):
