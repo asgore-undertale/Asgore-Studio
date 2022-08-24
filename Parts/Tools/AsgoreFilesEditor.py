@@ -86,7 +86,7 @@ def save_file(filePath = ''):
     index = FilesEditorWindow.fileTypeComboBox.currentIndex()
     
     transList[handleText.current_item] = FilesEditorWindow.translationBox.toPlainText()
-    saveByIndex(index, filePath, fileContent, textList, transList, oldTransList)
+    saveByIndex(index, filePath, fileContent, table, FilesEditorWindow.columnIndexCell.getValue() -1, textList, transList, oldTransList)
 
 def handleText(direction = True):
     if not sentencesNum: return

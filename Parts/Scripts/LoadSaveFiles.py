@@ -47,7 +47,7 @@ def loadByIndex(index, filePath, columnIndex):
     
     return textList, transList, oldTransList, fileContent, table, len(textList)-1
 
-def saveByIndex(index, filePath, fileContent, textList, transList, oldTransList):
+def saveByIndex(index, filePath, fileContent, table, columnIndex, textList, transList, oldTransList):
     if index == 0: saveMsyt(filePath, fileContent, textList, transList)
     if index == 1: saveKruptar(filePath, fileContent, textList, transList)
     if index == 2: saveCsvTable(filePath, table, columnIndex, textList, transList)

@@ -1,3 +1,6 @@
+Version {2.08.82}:
+	- Fixing .csv file saving in {Chars Tables Creator} tool.
+
 Version {2.08.81}:
 	- Fixing (Persian) Freezing
 
