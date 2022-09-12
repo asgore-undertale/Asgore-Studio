@@ -14,7 +14,7 @@ def reverseArabic(text):
             container = ''
     text = text.replace(container, container[::-1], 1)
     
-    return swapCharsOnEdges(text[::-1], '')
+    return swapCharsOnEdges(text[::-1], ' ')
 
 def Reverse(text, case = True):
     if case: return text[::-1]

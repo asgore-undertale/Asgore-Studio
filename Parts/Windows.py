@@ -16,7 +16,7 @@ class StudioMotherWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # version ([rewrite studio].[updates].[fixes])
-        self.setWindowTitle("Asgore Studio 2.08.82")
+        self.setWindowTitle("Asgore Studio 2.08.83")
  
         self.mdiArea = QMdiArea()
         self.setCentralWidget(self.mdiArea)
